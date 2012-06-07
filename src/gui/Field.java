@@ -16,11 +16,14 @@ public class Field extends JPanel{
 	public static void main(String[] args) {
 		Window window = new Window(true);
 	}
-	public Board board;
+	private Board board;
 	public Field(){
-		this.board = new Board();
+		setBoard(new Board());
 	}
 	public Field(Board board){
+		setBoard(board);
+	}
+	public void setBoard(Board board){
 		this.board = board;
 	}
 	@Override
@@ -41,11 +44,10 @@ public class Field extends JPanel{
 		
 		for(int i=0; i< Board.WIDTH; i++){
 			for(int j=0; j<Board.HEIGHT; j++){
-//				if(board.getPiece(i, j) == Board.WALL){
-//					g2.fillRect((int)((float)(w*(i))/Board.WIDTH), (int)((float)(h*(j))/Board.HEIGHT), w/Board.WIDTH, h/Board.HEIGHT);
-//				}
-				g.setColor(Board.COLORS[board.getPiece(i, j)]);
-				g2.fillRect((int)((float)(w*(i))/Board.WIDTH), (int)((float)(h*(j))/Board.HEIGHT), w/Board.WIDTH+1, h/Board.HEIGHT+1);
+				if(board.getPoint(i, j) != Board.EMPTY){
+					g.setColor(Board.COLORS[board.getPoint(i, j)]);
+					g2.fillRect((int)((float)(w*(i))/Board.WIDTH), (int)((float)(h*(j))/Board.HEIGHT), w/Board.WIDTH+1, h/Board.HEIGHT+1);
+				}
 			}
 		}
 	}

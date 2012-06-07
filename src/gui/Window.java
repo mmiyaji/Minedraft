@@ -1,5 +1,7 @@
 package gui;
 
+import game.*;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -10,9 +12,13 @@ import javax.swing.UIManager;
 public class Window extends JFrame{
 
 	private static final long serialVersionUID = 1L;
-	
+	public Field field;
 	public Window(Boolean isVisible){
-		this.init();
+		this.init(new Board());
+		this.setVisible(isVisible);
+	}
+	public Window(Boolean isVisible, Board board){
+		this.init(board);
 		this.setVisible(isVisible);
 	}
 	
@@ -20,12 +26,13 @@ public class Window extends JFrame{
 		Window window = new Window(true);
 	}
 
-	private void init() {
+	private void init(Board board) {
 		setTitle("Dreadnought");	// ウィンドウのタイトル
 		initBounds();		// ウィンドウの位置の初期化
 		initLookFeel();		// ウィンドウの外観の初期化
 		setResizable(true);	// ウィンドウサイズを可変にする
-		this.add(new Field(), BorderLayout.CENTER);
+		field = new Field(board);
+		this.add(field, BorderLayout.CENTER);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	/**
@@ -54,5 +61,7 @@ public class Window extends JFrame{
 			e.printStackTrace();
 		}
 	}
-	
+	public void setBoard(Board board){
+		field.setBoard(board);
+	}
 }
