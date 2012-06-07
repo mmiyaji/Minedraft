@@ -36,11 +36,13 @@ public class Field extends JPanel{
 		g.setColor(Color.red);
 		for(int i=0; i< Board.WIDTH; i++){
 			for(int j=0; j<Board.HEIGHT; j++){
+				System.out.print(board.getPiece(i, j));
 				if(board.getPiece(i, j) == Board.WALL){
-					System.out.println((int)((float)(w*(i-1))/Board.WIDTH)+":"+(int)((float)(h*(i-1))/Board.HEIGHT));
-					g2.fillRect((int)((float)(w*(i-1))/Board.WIDTH), (int)((float)(h*(i-1))/Board.HEIGHT), (int)((float)(w*i)/Board.WIDTH), (int)((float)(h*i)/Board.HEIGHT));
+					System.out.print("@");
+					g2.fillRect((int)((float)(w*(i))/Board.WIDTH), (int)((float)(h*(j))/Board.HEIGHT), w/Board.WIDTH, h/Board.HEIGHT);
 				}
 			}
+			System.out.println("J");
 		}
 		board.showBoard();
 	}
