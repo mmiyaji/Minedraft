@@ -1,10 +1,11 @@
 package gui;
 
-import javax.swing.JFrame;
-import javax.swing.UIManager;
-
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+
+import javax.swing.JFrame;
+import javax.swing.UIManager;
 
 public class Window extends JFrame{
 
@@ -24,6 +25,8 @@ public class Window extends JFrame{
 		initBounds();		// ウィンドウの位置の初期化
 		initLookFeel();		// ウィンドウの外観の初期化
 		setResizable(true);	// ウィンドウサイズを可変にする
+		this.add(new Field(), BorderLayout.CENTER);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	/**
 	 * 画面の中央にウィンドウを表示
