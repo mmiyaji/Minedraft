@@ -3,8 +3,6 @@ package game;
 import java.awt.Color;
 
 public abstract class Piece {
-	public static final int WIDTH = 20;
-	public static final int HEIGHT = 20;
 	public static final int EMPTY = 0;
 	public static final int WALL = 1;
 	public static final int ENEMY = 2;

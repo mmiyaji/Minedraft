@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import game.*;
+
 import javax.swing.JPanel;
 
 public class Field extends JPanel{
@@ -35,18 +36,18 @@ public class Field extends JPanel{
 		g.setColor(Color.white);
 		g2.fillRect(0, 0, w, h);
 		g2.setPaint(new Color(0,0,255,100));
-		for(int i = 0;i < Board.WIDTH;i++){
-			g2.drawLine((int)((float)(w*i)/Board.WIDTH), 0, (int)((float)(w*i)/Board.WIDTH), h);
+		for(int i = 0;i < Board.WIDTH+2;i++){
+			g2.drawLine((int)((float)(w*i)/(Board.WIDTH+2)), 0, (int)((float)(w*i)/(Board.WIDTH+2)), h);
 		}
-		for(int i = 0;i < Board.HEIGHT;i++){
-			g2.drawLine(0, (int)((float)(h*i)/Board.HEIGHT), w, (int)((float)(h*i)/Board.HEIGHT));
+		for(int i = 0;i < Board.HEIGHT+2;i++){
+			g2.drawLine(0, (int)((float)(h*i)/(Board.HEIGHT+2)), w, (int)((float)(h*i)/(Board.HEIGHT+2)));
 		}
 		
-		for(int i=0; i< Board.WIDTH; i++){
-			for(int j=0; j<Board.HEIGHT; j++){
-				if(board.getPoint(i, j) != Board.EMPTY){
-					g.setColor(Board.COLORS[board.getPoint(i, j)]);
-					g2.fillRect((int)((float)(w*(i))/Board.WIDTH), (int)((float)(h*(j))/Board.HEIGHT), w/Board.WIDTH+1, h/Board.HEIGHT+1);
+		for(int i=0; i< Board.WIDTH+2; i++){
+			for(int j=0; j<Board.HEIGHT+2; j++){
+				if(board.getPoint(i, j) != Piece.EMPTY){
+					g.setColor(Piece.COLORS[board.getPoint(i, j)]);
+					g2.fillRect((int)((float)(w*(i))/(Board.WIDTH+2)), (int)((float)(h*(j))/(Board.HEIGHT+2)), w/(Board.WIDTH+2)+1, h/(Board.HEIGHT+2)+1);
 				}
 			}
 		}
