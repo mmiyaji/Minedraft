@@ -16,7 +16,13 @@ public class Field extends JPanel{
 	public static void main(String[] args) {
 		Window window = new Window(true);
 	}
-	public Board board = new Board();
+	public Board board;
+	public Field(){
+		this.board = new Board();
+	}
+	public Field(Board board){
+		this.board = board;
+	}
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -33,17 +39,14 @@ public class Field extends JPanel{
 			g2.drawLine(0, (int)((float)(h*i)/Board.HEIGHT), w, (int)((float)(h*i)/Board.HEIGHT));
 		}
 		
-		g.setColor(Color.red);
 		for(int i=0; i< Board.WIDTH; i++){
 			for(int j=0; j<Board.HEIGHT; j++){
-				System.out.print(board.getPiece(i, j));
-				if(board.getPiece(i, j) == Board.WALL){
-					System.out.print("@");
-					g2.fillRect((int)((float)(w*(i))/Board.WIDTH), (int)((float)(h*(j))/Board.HEIGHT), w/Board.WIDTH, h/Board.HEIGHT);
-				}
+//				if(board.getPiece(i, j) == Board.WALL){
+//					g2.fillRect((int)((float)(w*(i))/Board.WIDTH), (int)((float)(h*(j))/Board.HEIGHT), w/Board.WIDTH, h/Board.HEIGHT);
+//				}
+				g.setColor(Board.COLORS[board.getPiece(i, j)]);
+				g2.fillRect((int)((float)(w*(i))/Board.WIDTH), (int)((float)(h*(j))/Board.HEIGHT), w/Board.WIDTH+1, h/Board.HEIGHT+1);
 			}
-			System.out.println("J");
 		}
-		board.showBoard();
 	}
 }
