@@ -43,29 +43,32 @@ class AiAlgorithm extends AI
 	{
 		long now_time = 0;
 		this.start_time = System.currentTimeMillis();
-//		Vector movables = board.getMovablePos();
+		Vector<Point> movables = board.getMovablePos();
+		
 		// 打てる箇所がない場合はパス
-//		if(movables.size() == 0)
-//		{
-//			// パス
-////			board.pass();
-//			System.out.println("パスします");
-//			return;
-//		}
-//		if(movables.size() == 1)
-//		{
-//			// 打てる箇所が一カ所だけなら探索は行わず、即座に打って返る
-//			board.move((Point) movables.get(0));
-//			System.out.print((Point) movables.get(0));
-//			return;
-//		}
+		if(movables.size() == 0)
+		{
+			// パス
+			board.pass();
+			System.out.println("パスします");
+			return;
+		}
+		if(movables.size() == 1)
+		{
+			// 打てる箇所が一カ所だけなら探索は行わず、即座に打って返る
+			board.move((Point) movables.get(0));
+			System.out.print((Point) movables.get(0));
+			return;
+		}
+		
 //
 //		// これ以降を工夫してAIを作る．
 //		// 例として今打てるすべての手のうち，自分の石を最大化するような手を探す方法を示す．
 //		int eval, eval_max = Integer.MIN_VALUE;
-//		Point p = null;
-//		for(int i=0; i<movables.size(); i++)
-//		{
+		Point p = null;
+//		for(int i=0; i<movables.size(); i++){
+//			p = (Point) movables.get(0);
+//		}
 //			// 一旦 打ってみる
 //			board.move((Point) movables.get(i));
 //			// 評価値計算
@@ -85,8 +88,11 @@ class AiAlgorithm extends AI
 //		}
 		// 実際に手を進める
 //		board.move(p);
+		Random rand = new Random();
+		p = (Point) movables.get((int)(rand.nextDouble()*movables.size()));
+
 		Point now_point = board.getPosition(Piece.ME);
-		board.move(now_point, new Point(now_point.x+1, 3));
+		board.move(p);
 		System.out.print("HOGE\n");
 		
 	}

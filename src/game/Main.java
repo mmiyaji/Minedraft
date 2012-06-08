@@ -57,7 +57,7 @@ class AIEnemy implements Player
 	{
 		System.out.println(name+"が思考中...");
 		long start = System.currentTimeMillis();
-//		enemy.move(board);
+		enemy.move(board);
 		System.out.println(" 完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
 		if(board.isGameOver()) throw new GameOverException();
 	}
@@ -82,13 +82,13 @@ class AIPlayer implements Player
 	{
 		System.out.println(name+"が思考中...");
 		long start = System.currentTimeMillis();
-//		Ai.move(board);
+		Ai.move(board);
 		System.out.println(" 完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
 		if(board.isGameOver()) throw new GameOverException();
 	}
 };
 public class Main{
-	final static int ENEMY_NUM = 2;
+	final static int ENEMY_NUM = 12;
 	public static void main(String[] args) {
 		System.out.print("Program start");
 		Vector<Player> players = new Vector<Player>();
@@ -110,6 +110,7 @@ public class Main{
 		start = System.currentTimeMillis();
 		while(true){
 			try{
+				System.out.println(current_turn);
 				((Player) players.get(current_turn)).onTurn(board);
 				if(is_window){
 					window.repaint();
@@ -137,7 +138,7 @@ public class Main{
 			}
 
 			try{
-				Thread.sleep(200);
+				Thread.sleep(100);
 			}catch(InterruptedException e){}
 //			ターン交代
 			current_turn = ++current_turn % players.size();
