@@ -1,19 +1,28 @@
 package game;
-import game.*;
 import gui.Window;
 
-import java.util.Random;
+//import java.util.Random;
 import java.util.Vector;
 import java.io.*;
 
 interface Player{
-	int TYPE = 2;
+	public int getType();
+	public int getID();
+	public int getHP();
+	public String getName();
+	public int getEnergy();
 	public void onTurn(Board board) throws Exception;
 }
-class UndoException extends Exception{}
-class ExitException extends Exception{}
-class GameOverException extends Exception{}
+class UndoException extends Exception{private static final long serialVersionUID = 1L;}
+class ExitException extends Exception{private static final long serialVersionUID = 1L;}
+class GameOverException extends Exception{private static final long serialVersionUID = 1L;}
 class HumanPlayer implements Player{
+	private int id;
+	private int hp;
+	private int energy;
+	public String name = "Human";
+	private int type = Piece.ME; 
+
 	public void onTurn(Board board) throws Exception
 	{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -40,18 +49,32 @@ class HumanPlayer implements Player{
 			break;
 		}
 	}
+	@Override
+	public int getID(){return this.id;}
+	@Override
+	public int getType(){return this.type;}
+	@Override
+	public int getHP(){return this.hp;}
+	@Override
+	public int getEnergy(){return this.energy;}
+	@Override
+	public String getName(){return this.name;}
 }
 class AIEnemy implements Player
 {
 	private Enemy enemy = null;
-	public int id;
+	private int id;
+	private int hp;
+	private int energy;
 	public String name = "Enemy";
-	public int TYPE = Piece.ENEMY; 
+	private int type = Piece.ENEMY; 
 	public AIEnemy(String name, int id)
 	{
+		enemy = new EnemyAlgorithm();
 		this.name = name;
 		this.id = id;
-		enemy = new EnemyAlgorithm();
+		this.hp = 100;
+		this.energy = 1000;
 	}
 	public void onTurn(Board board) throws GameOverException
 	{
@@ -61,15 +84,29 @@ class AIEnemy implements Player
 		System.out.println(" 完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
 		if(board.isGameOver()) throw new GameOverException();
 	}
+	@Override
+	public int getID(){return this.id;}
+	@Override
+	public int getType(){return this.type;}
+	@Override
+	public int getHP(){return this.hp;}
+	@Override
+	public int getEnergy(){return this.energy;}
+	@Override
+	public String getName(){return this.name;}
 };
 class AIPlayer implements Player
 {
 	private AI Ai = null;
-	public int id;
-	public String name = "AI";
-	public int TYPE = Piece.ME; 
+	private int id;
+	private int hp;
+	private int energy;
+	private String name = "AI";
+	private int type = Piece.ME; 
 	public AIPlayer(int id){
 		this.id = id;
+		this.hp = 100;
+		this.energy = 1000;
 		Ai = new AiAlgorithm();
 	}
 	public AIPlayer(String name, int id)
@@ -77,6 +114,8 @@ class AIPlayer implements Player
 		Ai = new AiAlgorithm();
 		this.name = name;
 		this.id = id;
+		this.hp = 100;
+		this.energy = 1000;
 	}
 	public void onTurn(Board board) throws GameOverException
 	{
@@ -86,6 +125,16 @@ class AIPlayer implements Player
 		System.out.println(" 完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
 		if(board.isGameOver()) throw new GameOverException();
 	}
+	@Override
+	public int getID(){return this.id;}
+	@Override
+	public int getType(){return this.type;}
+	@Override
+	public int getHP(){return this.hp;}
+	@Override
+	public int getEnergy(){return this.energy;}
+	@Override
+	public String getName(){return this.name;}
 };
 public class Main{
 	final static int ENEMY_NUM = 12;
@@ -103,9 +152,6 @@ public class Main{
 		if(is_window){
 			window = new Window(true, board);
 		}
-		long seed = 1000;
-		Random rand = new Random(seed);
-		int x, y;
 		long start, stop, diff;
 		start = System.currentTimeMillis();
 		while(true){
@@ -136,7 +182,6 @@ public class Main{
 				System.out.println("Unexpected exception: " + e);
 				return;
 			}
-
 			try{
 				Thread.sleep(100);
 			}catch(InterruptedException e){}

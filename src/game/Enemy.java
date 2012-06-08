@@ -41,9 +41,9 @@ class EnemyAlgorithm extends Enemy
 	};	
 	public void move(Board board)
 	{
-		long now_time = 0;
+//		long now_time = 0;
 		this.start_time = System.currentTimeMillis();
-		Vector movables = board.getMovablePos();
+		Vector<Point> movables = board.getMovablePos();
 		// 打てる箇所がない場合はパス
 		if(movables.size() == 0)
 		{
@@ -91,12 +91,12 @@ class EnemyAlgorithm extends Enemy
 		System.out.print("\n"+p);
 	}
 	// この関数を工夫する
-	private int evaluate(Board board)
-	{
-		int eval = 0;
-//		eval = board.getCurrentColor()
-//			* (board.countDisc(Disc.BLACK) - board.countDisc(Disc.WHITE));
-		return eval;
-	}
+//	private int evaluate(Board board)
+//	{
+//		int eval = 0;
+////		eval = board.getCurrentColor()
+////			* (board.countDisc(Disc.BLACK) - board.countDisc(Disc.WHITE));
+//		return eval;
+//	}
 
 }

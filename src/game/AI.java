@@ -39,6 +39,9 @@ class AiAlgorithm extends AI
 			eval = e;
 		}
 	};	
+	public void action(Board board){
+		
+	}
 	public void move(Board board)
 	{
 		long now_time = 0;

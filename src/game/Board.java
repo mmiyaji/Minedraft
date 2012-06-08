@@ -4,14 +4,13 @@ import java.util.Random;
 import java.util.Vector;
 
 public class Board{
-	public static final int WIDTH = 50;
-	public static final int HEIGHT = 50;
-	public static final int MAX_TURNS  = 160;
+	public static final int WIDTH = 10;
+	public static final int HEIGHT = 10;
+	public static final int MAX_TURNS  = 60;
 	private int[][] board = new int[WIDTH+2][HEIGHT+2];
 	private Vector<Point> PlayersPos = new Vector<Point>();
 	private Vector<Point> MovablePos[] = new Vector[MAX_TURNS+1];
 	private Vector<Player> Players;
-	private boolean attack;
 	private int turns; // 手数(0からはじまる)
 	private int current_player_id;
 	private int ENEMY_NUM = 1;
@@ -69,9 +68,11 @@ public class Board{
 			PlayersPos.add(new Point(x, y));
 //			無理やり型判定
 			if(players.get(i) instanceof AIEnemy){
-				board[x][y] = (int)((AIEnemy)players.get(i)).TYPE;
+//				board[x][y] = (int)((AIEnemy)players.get(i)).getType();
+				board[x][y] = players.get(i).getType();
 			}else if(players.get(i) instanceof AIPlayer){
-				board[x][y] = (int)((AIPlayer)players.get(i)).TYPE;
+//				board[x][y] = (int)((AIPlayer)players.get(i)).TYPE;
+				board[x][y] = players.get(i).getType();
 			}
 		}
 		initMovable();
@@ -83,11 +84,11 @@ public class Board{
 		Point pos;
 		if(player instanceof AIEnemy){
 			me = false;
-			pos = PlayersPos.get((int)((AIEnemy)player).id);
+			pos = PlayersPos.get((int)((AIEnemy)player).getID());
 			System.out.println(((AIEnemy)player).name+":"+current_player_id);
 		}else{
-			pos = PlayersPos.get((int)((AIPlayer)player).id);
-			System.out.println(((AIPlayer)player).name+":"+current_player_id);
+			pos = PlayersPos.get((int)((AIPlayer)player).getID());
+			System.out.println(player.getName()+":"+current_player_id);
 		}
 		for(int i=0;i<3;i++){
 			for(int j=0;j<3;j++){
@@ -162,9 +163,9 @@ public class Board{
 		Point pos;
 		if(player instanceof AIEnemy){
 			me = false;
-			pos = PlayersPos.get((int)((AIEnemy)player).id);
+			pos = PlayersPos.get((int)((AIEnemy)player).getID());
 		}else{
-			pos = PlayersPos.get((int)((AIPlayer)player).id);
+			pos = PlayersPos.get((int)((AIPlayer)player).getID());
 		}
 		int tmp = 0;
 //		flipDiscs(point);
