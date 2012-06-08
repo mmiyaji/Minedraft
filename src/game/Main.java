@@ -7,6 +7,7 @@ import java.util.Vector;
 import java.io.*;
 
 interface Player{
+	int TYPE = 2;
 	public void onTurn(Board board) throws Exception;
 }
 class UndoException extends Exception{}
@@ -43,9 +44,9 @@ class HumanPlayer implements Player{
 class AIEnemy implements Player
 {
 	private Enemy enemy = null;
-	public static int id;
+	public int id;
 	public String name = "Enemy";
-	
+	public int TYPE = Piece.ENEMY; 
 	public AIEnemy(String name, int id)
 	{
 		this.name = name;
@@ -64,11 +65,10 @@ class AIEnemy implements Player
 class AIPlayer implements Player
 {
 	private AI Ai = null;
-	public static int id;
+	public int id;
 	public String name = "AI";
-	
-	public AIPlayer(int id)
-	{
+	public int TYPE = Piece.ME; 
+	public AIPlayer(int id){
 		this.id = id;
 		Ai = new AiAlgorithm();
 	}
@@ -82,7 +82,7 @@ class AIPlayer implements Player
 	{
 		System.out.println(name+"が思考中...");
 		long start = System.currentTimeMillis();
-		Ai.move(board);
+//		Ai.move(board);
 		System.out.println(" 完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
 		if(board.isGameOver()) throw new GameOverException();
 	}
@@ -91,13 +91,13 @@ public class Main{
 	final static int ENEMY_NUM = 2;
 	public static void main(String[] args) {
 		System.out.print("Program start");
-		Vector players = new Vector();
+		Vector<Player> players = new Vector<Player>();
 		int current_turn = 0;
 		players.add(new AIPlayer(0));
 		for(int i=1;i<=ENEMY_NUM;i++){
 			players.add(new AIEnemy("Enemy"+i, i));
 		}
-		Board board = new Board(ENEMY_NUM);
+		Board board = new Board(ENEMY_NUM, players);
 		Window window = null;
 		final Boolean is_window = true;
 		if(is_window){
@@ -117,7 +117,6 @@ public class Main{
 				}else{
 					board.showBoard();
 				}
-
 			}
 			catch(ExitException e)
 			{

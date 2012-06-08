@@ -8,8 +8,8 @@ public class Board{
 	public static final int HEIGHT = 10;
 	public static final int MAX_TURNS  = 60;
 	private int[][] board = new int[WIDTH+2][HEIGHT+2];
-	private Vector PlayersPos = new Vector();
-	private Vector MovablePos[] = new Vector[MAX_TURNS+1];
+	private Vector<Point> PlayersPos = new Vector<Point>();
+	private Vector<Point> MovablePos[] = new Vector[MAX_TURNS+1];
 	private boolean attack;
 	private int turns; // 手数(0からはじまる)
 	private int ENEMY_NUM = 1;
@@ -17,19 +17,19 @@ public class Board{
 	public Board(){
 		// Vectorの配列を初期化
 		for(int i=0; i<=MAX_TURNS; i++){
-			MovablePos[i] = new Vector();
+			MovablePos[i] = new Vector<Point>();
 		}
-		initBoard(10);
+//		initBoard(10);
 	}
-	public Board(int num){
+	public Board(int num, Vector<Player> players){
 		ENEMY_NUM = num;
 		// Vectorの配列を初期化
 		for(int i=0; i<=MAX_TURNS; i++){
-			MovablePos[i] = new Vector();
+			MovablePos[i] = new Vector<Point>();
 		}
-		initBoard(10);
+		initBoard(10, players);
 	}
-	public void initBoard(long seed){
+	public void initBoard(long seed, Vector<Player> players){
 		Random rand = new Random(seed);
 		turns = 0;
 //		全マスを空にする
@@ -53,7 +53,7 @@ public class Board{
 		}
 		int x = 0;
 		int y = 0;
-		for(int i=0;i<ENEMY_NUM;i++){
+		for(int i=0;i<players.size();i++){
 			while(true){
 				x = (int)(rand.nextDouble()*WIDTH)+1;
 				y = (int)(rand.nextDouble()*HEIGHT)+1;
@@ -62,12 +62,22 @@ public class Board{
 				}
 			}
 			PlayersPos.add(new Point(x, y));
-			board[x][y] = Piece.ENEMY;
+//			無理やり型判定
+			if(players.get(i) instanceof AIEnemy){
+				board[x][y] = (int)((AIEnemy)players.get(i)).TYPE;
+			}else if(players.get(i) instanceof AIPlayer){
+				board[x][y] = (int)((AIPlayer)players.get(i)).TYPE;
+			}
 		}
 	}
-	private void initMovable(){
+	private void initMovable(Player player){
 		MovablePos[turns].clear();
+//		Boolean me = true;
+//		if(player instanceof AIEnemy){
+//			me = false;
+//		}
 		
+
 	}
 	public Point getPosition(int id){
 		Point point = new Point();
