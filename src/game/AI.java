@@ -1,7 +1,7 @@
 package game;
 import java.util.*;
 
-public abstract class AI
+abstract class AI
 {
 	abstract public void move(Board board);
 

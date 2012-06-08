@@ -1,11 +1,16 @@
-COMP=javac
+TARGET=Main
+JC=javac
 EXEC=java
-OUTFILE=Main
+OUTFILE=${TARGET}
 OUTDIR=bin
 OUTPACKAGE=game
-all:
-	${COMP} src/game/*.java src/gui/*.java -d ${OUTDIR} #-classpath bin/
-	cd ${OUTDIR}
-	pwd
-	${EXEC} ${OUTPACKAGE}.${OUTFILE} -classpath ${OUTDIR}/${OUTPACKAGE}
-	cd ../
+
+all:build
+	cd ${OUTDIR}; ${EXEC} ${OUTPACKAGE}.${OUTFILE} -classpath ${OUTDIR}/${OUTPACKAGE}; cd ../
+build:
+	${JC} src/game/*.java src/gui/*.java -d ${OUTDIR} #-classpath bin/
+
+clean:
+	rm -rf ${OUTDIR}/${OUTPACKAGE}/$(TARGET).{log,class}
+
+.PHONY: clean

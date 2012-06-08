@@ -18,6 +18,7 @@ public class Board{
 	}
 	public void initBoard(long seed){
 		Random rand = new Random(seed);
+		turns = 0;
 //		全マスを空にする
 		for(int i=0; i<WIDTH+2; i++){
 			for(int j=0; j<WIDTH+2; j++){
@@ -70,7 +71,7 @@ public class Board{
 //				if(checkMobility(disc) != NONE) return false;
 //			}
 //		}
-		return true;
+		return false;
 	}
 	public Vector getMovablePos()
 	{
