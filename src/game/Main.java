@@ -43,7 +43,15 @@ class HumanPlayer implements Player{
 class AIEnemy implements Player
 {
 	private Enemy enemy = null;
+	public static int id;
 	public String name = "Enemy";
+	
+	public AIEnemy(String name, int id)
+	{
+		this.name = name;
+		this.id = id;
+		enemy = new EnemyAlgorithm();
+	}
 	public void onTurn(Board board) throws GameOverException
 	{
 		System.out.println(name+"が思考中...");
@@ -56,44 +64,40 @@ class AIEnemy implements Player
 class AIPlayer implements Player
 {
 	private AI Ai = null;
+	public static int id;
 	public String name = "AI";
-	public AIPlayer()
+	
+	public AIPlayer(int id)
 	{
+		this.id = id;
 		Ai = new AiAlgorithm();
 	}
-	public AIPlayer(String name)
+	public AIPlayer(String name, int id)
 	{
 		Ai = new AiAlgorithm();
 		this.name = name;
+		this.id = id;
 	}
-	// 時間制限あり(秒)
-	public AIPlayer(String name, int time)
-	{
-		Ai = new AiAlgorithm(time);
-		this.name = name;
-	}
-
 	public void onTurn(Board board) throws GameOverException
 	{
 		System.out.println(name+"が思考中...");
 		long start = System.currentTimeMillis();
-//		Ai.move(board);
+		Ai.move(board);
 		System.out.println(" 完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
 		if(board.isGameOver()) throw new GameOverException();
 	}
 };
 public class Main{
-	final static int ENEMY_NUM = 10;
+	final static int ENEMY_NUM = 2;
 	public static void main(String[] args) {
 		System.out.print("Program start");
 		Vector players = new Vector();
 		int current_turn = 0;
-		players.add(new AIPlayer());
-		for(int i=0;i<ENEMY_NUM;i++){
-			players.add(new AIEnemy());
+		players.add(new AIPlayer(0));
+		for(int i=1;i<=ENEMY_NUM;i++){
+			players.add(new AIEnemy("Enemy"+i, i));
 		}
-		
-		Board board = new Board();
+		Board board = new Board(ENEMY_NUM);
 		Window window = null;
 		final Boolean is_window = true;
 		if(is_window){
@@ -107,6 +111,13 @@ public class Main{
 		while(true){
 			try{
 				((Player) players.get(current_turn)).onTurn(board);
+				if(is_window){
+					window.repaint();
+					window.setBoard(board);
+				}else{
+					board.showBoard();
+				}
+
 			}
 			catch(ExitException e)
 			{
@@ -115,12 +126,6 @@ public class Main{
 			catch(GameOverException e)
 			{
 				stop = System.currentTimeMillis();
-				if(is_window){
-					window.repaint();
-					window.setBoard(board);
-				}else{
-					board.showBoard();
-				}
 				diff = stop - start;
 				System.out.println("ゲーム時間 : "+diff/1000.0+"秒");
 				return;

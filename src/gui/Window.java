@@ -25,7 +25,11 @@ public class Window extends JFrame{
 	public static void main(String[] args) {
 		Window window = new Window(true);
 	}
-
+	@Override
+	public void repaint(){
+		super.repaint();
+		field.repaint();
+	}
 	private void init(Board board) {
 		setTitle("Dreadnought");	// ウィンドウのタイトル
 		initBounds();		// ウィンドウの位置の初期化

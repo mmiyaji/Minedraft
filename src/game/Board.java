@@ -7,13 +7,26 @@ public class Board{
 	public static final int WIDTH = 10;
 	public static final int HEIGHT = 10;
 	public static final int MAX_TURNS  = 60;
-
-	private int[][] board = new int[WIDTH+2][HEIGHT+2];;
+	private int[][] board = new int[WIDTH+2][HEIGHT+2];
+	private Vector PlayersPos = new Vector();
 	private Vector MovablePos[] = new Vector[MAX_TURNS+1];
-	private int MovableDir[][][] = new int[MAX_TURNS+1][WIDTH+2][WIDTH+2];
 	private boolean attack;
 	private int turns; // 手数(0からはじまる)
+	private int ENEMY_NUM = 1;
+	
 	public Board(){
+		// Vectorの配列を初期化
+		for(int i=0; i<=MAX_TURNS; i++){
+			MovablePos[i] = new Vector();
+		}
+		initBoard(10);
+	}
+	public Board(int num){
+		ENEMY_NUM = num;
+		// Vectorの配列を初期化
+		for(int i=0; i<=MAX_TURNS; i++){
+			MovablePos[i] = new Vector();
+		}
 		initBoard(10);
 	}
 	public void initBoard(long seed){
@@ -38,6 +51,36 @@ public class Board{
 		for(int i=1; i<=WIDTH; i++){
 			board[i][(int)(rand.nextDouble()*HEIGHT)+1] = Piece.WALL;
 		}
+		int x = 0;
+		int y = 0;
+		for(int i=0;i<ENEMY_NUM;i++){
+			while(true){
+				x = (int)(rand.nextDouble()*WIDTH)+1;
+				y = (int)(rand.nextDouble()*HEIGHT)+1;
+				if(board[x][y] == Piece.EMPTY){
+					break;
+				}
+			}
+			PlayersPos.add(new Point(x, y));
+			board[x][y] = Piece.ENEMY;
+		}
+	}
+	private void initMovable(){
+		MovablePos[turns].clear();
+		
+	}
+	public Point getPosition(int id){
+		Point point = new Point();
+		for(int i=1;i<WIDTH;i++){
+			for(int j=1;j<HEIGHT;j++){
+				if(board[i][j]==id){
+					point.x = i;
+					point.y = j;
+					break;
+				}
+			}
+		}
+		return point;
 	}
 	public int getPoint(int x, int y){
 		return this.board[x][y];
@@ -77,14 +120,20 @@ public class Board{
 	{
 		return MovablePos[turns];
 	}
-	public boolean move(Point point)
+	public boolean move(Point point){
+		return true;
+	}
+	public boolean move(Point now_point, Point point)
 	{
 		if(point.x <= 0 || point.x > WIDTH) return false;
 		if(point.y <= 0 || point.y > HEIGHT) return false;
-		if(MovableDir[turns][point.x][point.y] == Piece.EMPTY) return false;
+//		if(MovableDir[turns][point.x][point.y] == Piece.EMPTY) return false;
 		
 //		flipDiscs(point);
-
+		if(board[point.x][point.y] == Piece.EMPTY){
+			board[now_point.x][now_point.y] = Piece.EMPTY;
+			board[point.x][point.y] = Piece.ME;
+		}
 		turns++;
 //		CurrentColor = -CurrentColor;
 
