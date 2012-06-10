@@ -340,7 +340,7 @@ public class Minedraft {
             glEnable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);
             glBindTexture(GL_TEXTURE_2D, 0);
-//            glCallList(objectDisplayList);
+            glCallList(objectDisplayList);
 
             glLoadIdentity();
             glRotatef(rotation.x, 1, 0, 0);
@@ -349,11 +349,11 @@ public class Minedraft {
             glTranslatef(position.x, position.y, position.z);
 
             inputScanner();
-            GL11.glPushMatrix();
-            	tposition.x +=0.01;
-            	glTranslatef(tposition.x, tposition.y, tposition.z);
-            	glCallList(objectDisplayList);
-            GL11.glPopMatrix();
+//            GL11.glPushMatrix();
+//            	tposition.x +=0.01;
+//            	glTranslatef(tposition.x, tposition.y, tposition.z);
+//            	glCallList(objectDisplayList);
+//            GL11.glPopMatrix();
             if (resizable) {
                 if (Display.wasResized()) {
                     glViewport(0, 0, Display.getWidth(), Display.getHeight());

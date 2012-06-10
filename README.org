@@ -9,6 +9,7 @@ Java製対戦ゲームっぽい何かです．
 ** 課題内容
 AI部分の作成を行ってもらいます．
 
+[[file:images/screenshot1.png]]
 
 * License
 packege game:
