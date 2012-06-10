@@ -155,8 +155,7 @@ public class Minedraft {
         }
         fps++;
     }
-
-    public static void main(String[] args) {
+    Minedraft(){
         try {
             if (fullscreen) {
                 Display.setDisplayModeAndFullscreen(Display.getDesktopDisplayMode());
@@ -218,7 +217,7 @@ public class Minedraft {
         {
             InputStream in = null;
             try {
-                in = new FileInputStream("res/floor.png");
+                in = new FileInputStream("res/grass1.png");
                 PNGDecoder decoder = new PNGDecoder(in);
                 ByteBuffer buffer = BufferUtils.createByteBuffer(4 * decoder.getWidth() * decoder.getHeight());
                 decoder.decode(buffer, decoder.getWidth() * 4, Format.RGBA);
@@ -597,6 +596,9 @@ public class Minedraft {
         glDeleteLists(objectDisplayList, 1);
         Display.destroy();
         System.exit(0);
+    }
+    public static void main(String[] args) {
+    	new Minedraft();
     }
     public static int setWall(int meta){
         int wallDisplayList = glGenLists(meta);
