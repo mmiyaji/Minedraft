@@ -4,8 +4,8 @@ import java.util.Random;
 import java.util.Vector;
 
 public class Board{
-	public static final int WIDTH = 10;
-	public static final int HEIGHT = 10;
+	public static final int WIDTH = 1000;
+	public static final int HEIGHT = 200;
 	public static final int MAX_TURNS  = 60;
 	private int[][] board = new int[WIDTH+2][HEIGHT+2];
 	private Vector<Point> PlayersPos = new Vector<Point>();
@@ -24,7 +24,7 @@ public class Board{
 //		initBoard(10);
 	}
 	public Board(int num, Vector<Player> players){
-		ENEMY_NUM = num;
+		ENEMY_NUM = players.size();
 		Players = players;
 		// Vectorの配列を初期化
 		for(int i=0; i<=MAX_TURNS; i++){
@@ -38,7 +38,7 @@ public class Board{
 		current_player_id = 0;
 //		全マスを空にする
 		for(int i=0; i<WIDTH+2; i++){
-			for(int j=0; j<WIDTH+2; j++){
+			for(int j=0; j<HEIGHT+2; j++){
 				board[i][j] = Piece.EMPTY;
 			}
 		}
@@ -57,7 +57,7 @@ public class Board{
 		}
 		int x = 0;
 		int y = 0;
-		for(int i=0;i<players.size();i++){
+		for(int i=0;i<ENEMY_NUM;i++){
 			while(true){
 				x = (int)(rand.nextDouble()*WIDTH)+1;
 				y = (int)(rand.nextDouble()*HEIGHT)+1;
@@ -66,14 +66,15 @@ public class Board{
 				}
 			}
 			PlayersPos.add(new Point(x, y));
-//			無理やり型判定
-			if(players.get(i) instanceof AIEnemy){
-//				board[x][y] = (int)((AIEnemy)players.get(i)).getType();
-				board[x][y] = players.get(i).getType();
-			}else if(players.get(i) instanceof AIPlayer){
-//				board[x][y] = (int)((AIPlayer)players.get(i)).TYPE;
-				board[x][y] = players.get(i).getType();
-			}
+////			無理やり型判定
+//			if(players.get(i) instanceof AIEnemy){
+////				board[x][y] = (int)((AIEnemy)players.get(i)).getType();
+//				board[x][y] = players.get(i).getType();
+//			}else if(players.get(i) instanceof AIPlayer){
+////				board[x][y] = (int)((AIPlayer)players.get(i)).TYPE;
+//				board[x][y] = players.get(i).getType();
+//			}
+			board[x][y] = players.get(i).getType();
 		}
 		initMovable();
 	}
@@ -159,25 +160,23 @@ public class Board{
 		if(point.y <= 0 || point.y > HEIGHT) return false;
 //		if(MovableDir[turns][point.x][point.y] == Piece.EMPTY) return false;
 		Player player = Players.get(current_player_id);
-		Boolean me = true;
-		Point pos;
-		if(player instanceof AIEnemy){
-			me = false;
-			pos = PlayersPos.get((int)((AIEnemy)player).getID());
-		}else{
-			pos = PlayersPos.get((int)((AIPlayer)player).getID());
-		}
+//		Boolean me = true;
+		Point pos = PlayersPos.get(current_player_id);
+//		if(player instanceof AIEnemy){
+//			me = false;
+//		}else{
+//			pos = PlayersPos.get((int)((AIPlayer)player).getID());
+//		}
 		int tmp = 0;
 //		flipDiscs(point);
 		if(board[point.x][point.y] == Piece.EMPTY){
 			tmp = board[pos.x][pos.y];
 			board[pos.x][pos.y] = Piece.EMPTY;
 			board[point.x][point.y] = tmp;
-			PlayersPos.get(current_player_id).x = point.x;
-			PlayersPos.get(current_player_id).y = point.y;
+			PlayersPos.set(current_player_id, point);
 		}
 		turns++;
-		current_player_id = ++current_player_id % (ENEMY_NUM+1);
+		current_player_id = ++current_player_id % (ENEMY_NUM);
 //		CurrentColor = -CurrentColor;
 		System.out.println(turns+"@"+ current_player_id);
 		initMovable();
@@ -195,7 +194,7 @@ public class Board{
 //		
 //		UpdateLog.add(new Vector());
 		turns++;
-		current_player_id = ++current_player_id % (ENEMY_NUM+1);
+		current_player_id = ++current_player_id % (ENEMY_NUM);
 		initMovable();
 		return true;
 	}
