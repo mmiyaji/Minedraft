@@ -266,8 +266,7 @@ public class Minedraft {
         glEnable(GL_FOG);
 
         {
-            FloatBuffer fogColours = BufferUtils.createFloatBuffer(
-                    4);
+            FloatBuffer fogColours = BufferUtils.createFloatBuffer(4);
             fogColours.put(new float[]{fogColor.r, fogColor.g, fogColor.b, fogColor.a});
             glClearColor(fogColor.r, fogColor.g, fogColor.b, fogColor.a);
             fogColours.flip();
@@ -500,7 +499,7 @@ public class Minedraft {
         	sphere.setDrawStyle(GLU.GLU_LINE);
         	GL11.glPushMatrix();
         	GL11.glTranslatef(0.0f, 0.0f, -2.0f);
-        	sphere.draw(1.0f, 16, 16);
+        	sphere.draw(0.5f, 16, 16);
         	GL11.glPopMatrix();
         }
         glEndList();
