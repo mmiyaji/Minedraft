@@ -527,7 +527,7 @@ public class Minedraft {
 //        if (moveSlower && !moveFaster) {
 //            walkingSpeed /= 10f;
 //        }
-        if(keyRight && !flyDown){
+        if(keyRight && !flyDown && !flyUp){
             if (rotation.y + rotateSpan >= 360) {
                 rotation.y = rotation.y + rotateSpan - 360;
             } else if (rotation.y + rotateSpan < 0) {
@@ -536,7 +536,7 @@ public class Minedraft {
                 rotation.y += rotateSpan;
             }
         }
-        if(keyLeft && !flyDown){
+        if(keyLeft && !flyDown && !flyUp){
         	float rotateSpan = -1f;
             if (rotation.y + rotateSpan >= 360) {
                 rotation.y = rotation.y + rotateSpan - 360;
@@ -546,7 +546,7 @@ public class Minedraft {
                 rotation.y += rotateSpan;
             }
         }
-        if(keyUp && !flyDown){
+        if(keyUp && !flyDown && !flyUp){
         	float rotateSpan = 1f;
             if (rotation.x - rotateSpan >= maxLookDown && rotation.x - rotateSpan <= maxLookUp) {
                 rotation.x += -rotateSpan;
@@ -556,7 +556,7 @@ public class Minedraft {
                 rotation.x = maxLookUp;
             }
         }
-        if(keyDown && !flyDown){
+        if(keyDown && !flyDown && !flyUp){
         	float rotateSpan = -1f;
             if (rotation.x - rotateSpan >= maxLookDown && rotation.x - rotateSpan <= maxLookUp) {
                 rotation.x += -rotateSpan;
@@ -673,8 +673,6 @@ public class Minedraft {
           newPosition.x -= overstaande;
           position.z = newPosition.z;
           position.x = newPosition.x;
-      	System.out.println("x:"+position.x);
-      	System.out.println("z:"+position.z);
         }
         if (flyDown && keyLeft) {
           float angle = rotation.y - 90;
@@ -686,9 +684,20 @@ public class Minedraft {
           newPosition.x -= overstaande;
           position.z = newPosition.z;
           position.x = newPosition.x;
-        	System.out.println("x:"+position.x);
-          	System.out.println("z:"+position.z);
         }
+        if (flyUp && keyUp) {
+            position.z += tileSize;
+         }
+        if (flyUp && keyDown) {
+            position.z -= tileSize;
+          }
+        if (flyUp && keyRight) {
+            position.x += tileSize;
+          }
+        if (flyUp && keyLeft) {
+            position.x -= tileSize;
+          }
+
 //        if (moveFaster && !moveSlower) {
 //            walkingSpeed /= 4f;
 //        }
