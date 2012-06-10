@@ -1,7 +1,68 @@
 package gui;
 
-import de.matthiasmann.twl.utils.PNGDecoder;
-import de.matthiasmann.twl.utils.PNGDecoder.Format;
+import static org.lwjgl.opengl.GL11.GL_ALPHA_TEST;
+import static org.lwjgl.opengl.GL11.GL_BACK;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_COMPILE;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_FOG;
+import static org.lwjgl.opengl.GL11.GL_FOG_COLOR;
+import static org.lwjgl.opengl.GL11.GL_FOG_DENSITY;
+import static org.lwjgl.opengl.GL11.GL_FOG_END;
+import static org.lwjgl.opengl.GL11.GL_FOG_HINT;
+import static org.lwjgl.opengl.GL11.GL_FOG_MODE;
+import static org.lwjgl.opengl.GL11.GL_FOG_START;
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_NICEST;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_PERSPECTIVE_CORRECTION_HINT;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glCallList;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glCullFace;
+import static org.lwjgl.opengl.GL11.glDeleteLists;
+import static org.lwjgl.opengl.GL11.glDeleteTextures;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glEndList;
+import static org.lwjgl.opengl.GL11.glFog;
+import static org.lwjgl.opengl.GL11.glFogf;
+import static org.lwjgl.opengl.GL11.glFogi;
+import static org.lwjgl.opengl.GL11.glGenLists;
+import static org.lwjgl.opengl.GL11.glGenTextures;
+import static org.lwjgl.opengl.GL11.glHint;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glMatrixMode;
+import static org.lwjgl.opengl.GL11.glNewList;
+import static org.lwjgl.opengl.GL11.glRotatef;
+import static org.lwjgl.opengl.GL11.glTexCoord2f;
+import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL11.glTranslatef;
+import static org.lwjgl.opengl.GL11.glVertex3d;
+import static org.lwjgl.opengl.GL11.glVertex3f;
+import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.util.glu.GLU.gluPerspective;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,6 +71,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -17,11 +79,15 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import static org.lwjgl.opengl.GL11.*;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
-import static org.lwjgl.util.glu.GLU.gluPerspective;
+import org.lwjgl.util.glu.GLU;
+import org.lwjgl.util.glu.Sphere;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.Color;
+
+import de.matthiasmann.twl.utils.PNGDecoder;
+import de.matthiasmann.twl.utils.PNGDecoder.Format;
 
 /**
 * A LWJGL port of the awesome MineFront Pre-ALPHA 0.02 Controls: W/UP =
@@ -255,53 +321,8 @@ public class Minedraft {
 
         int wallDisplayList = setWall(1);
         int floorDisplayList = setFloor(1);
-
-        int objectDisplayList = glGenLists(1);
-        glNewList(objectDisplayList, GL_COMPILE);
-        {
-            double topPoint = 0.75;
-            glBegin(GL_TRIANGLES);
-            glColor4f(1, 1, 0, 1f);
-            glVertex3d(0, topPoint, -5);
-            glColor4f(0, 0, 1, 1f);
-            glVertex3d(-1, -0.75, -4);
-            glColor4f(0, 0, 1, 1f);
-            glVertex3d(1, -.75, -4);
-
-            glColor4f(1, 1, 0, 1f);
-            glVertex3d(0, topPoint, -5);
-            glColor4f(0, 0, 1, 1f);
-            glVertex3d(1, -0.75, -4);
-            glColor4f(0, 0, 1, 1f);
-            glVertex3d(1, -0.75, -6);
-
-            glColor4f(1, 1, 0, 1f);
-            glVertex3d(0, topPoint, -5);
-            glColor4f(0, 0, 1, 1f);
-            glVertex3d(1, -0.75, -6);
-            glColor4f(0, 0, 1, 1f);
-            glVertex3d(-1, -.75, -6);
-            
-            glColor4f(1, 1, 0, 1f);
-            glVertex3d(0, topPoint, -5);
-            glColor4f(0, 0, 1, 1f);
-            glVertex3d(-1, -0.75, -6);
-            glColor4f(0, 0, 1, 1f);
-            glVertex3d(-1, -.75, -4);
-            
-            glEnd();
-            // Here below if the dull old triangle, if you so desire.
-// glBegin(GL_TRIANGLES);
-// glColor4f(1, 0, 0, 0.9f);
-// glVertex3f(-0.75f, -0.75f, -5);
-// glColor4f(0, 1, 0, 0.9f);
-// glVertex3f(0.75f, -0.75f, -5);
-// glColor4f(0, 0, 1, 0.9f);
-// glVertex3f(0.75f, 0.75f, -5.5f);
-// glEnd();
-            glColor4f(1, 1, 1, 1);
-        }
-        glEndList();
+//        int objectDisplayList = setTarget(1);
+        int objectDisplayList = setSphere(1);
 
         getDelta();
         lastFPS = getTime();
@@ -309,7 +330,6 @@ public class Minedraft {
         while (running) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            int delta = getDelta();
             glBindTexture(GL_TEXTURE_2D, floorTexture);
 
             glEnable(GL_CULL_FACE);
@@ -432,25 +452,80 @@ public class Minedraft {
         glEndList();
         return floorDisplayList;
     }
-    public void inputScanner(){
-        if (Mouse.isGrabbed()) {
-            float mouseDX = Mouse.getDX() * mouseSpeed * 0.16f;
-            float mouseDY = Mouse.getDY() * mouseSpeed * 0.16f;
-            if (rotation.y + mouseDX >= 360) {
-                rotation.y = rotation.y + mouseDX - 360;
-            } else if (rotation.y + mouseDX < 0) {
-                rotation.y = 360 - rotation.y + mouseDX;
-            } else {
-                rotation.y += mouseDX;
-            }
-            if (rotation.x - mouseDY >= maxLookDown && rotation.x - mouseDY <= maxLookUp) {
-                rotation.x += -mouseDY;
-            } else if (rotation.x - mouseDY < maxLookDown) {
-                rotation.x = maxLookDown;
-            } else if (rotation.x - mouseDY > maxLookUp) {
-                rotation.x = maxLookUp;
-            }
+    public int setTarget(int meta){
+        int objectDisplayList = glGenLists(meta);
+        glNewList(objectDisplayList, GL_COMPILE);
+        {
+            double topPoint = 0.75;
+            glBegin(GL_TRIANGLES);
+            glColor4f(1, 1, 0, 1f);
+            glVertex3d(0, topPoint, -5);
+            glColor4f(0, 0, 1, 1f);
+            glVertex3d(-1, -0.75, -4);
+            glColor4f(0, 0, 1, 1f);
+            glVertex3d(1, -.75, -4);
+
+            glColor4f(1, 1, 0, 1f);
+            glVertex3d(0, topPoint, -5);
+            glColor4f(0, 0, 1, 1f);
+            glVertex3d(1, -0.75, -4);
+            glColor4f(0, 0, 1, 1f);
+            glVertex3d(1, -0.75, -6);
+
+            glColor4f(1, 1, 0, 1f);
+            glVertex3d(0, topPoint, -5);
+            glColor4f(0, 0, 1, 1f);
+            glVertex3d(1, -0.75, -6);
+            glColor4f(0, 0, 1, 1f);
+            glVertex3d(-1, -.75, -6);
+            
+            glColor4f(1, 1, 0, 1f);
+            glVertex3d(0, topPoint, -5);
+            glColor4f(0, 0, 1, 1f);
+            glVertex3d(-1, -0.75, -6);
+            glColor4f(0, 0, 1, 1f);
+            glVertex3d(-1, -.75, -4);
+            
+            glEnd();
+            glColor4f(1, 1, 1, 1);
         }
+        glEndList();
+        return objectDisplayList;
+    }
+    public int setSphere(int meta){
+        int objectDisplayList = glGenLists(meta);
+        glNewList(objectDisplayList, GL_COMPILE);
+        {
+        	Sphere sphere = new Sphere(); 
+        	sphere.setDrawStyle(GLU.GLU_LINE);
+        	GL11.glPushMatrix();
+        	GL11.glTranslatef(0.0f, 0.0f, -2.0f);
+        	sphere.draw(1.0f, 16, 16);
+        	GL11.glPopMatrix();
+        }
+        glEndList();
+        return objectDisplayList;
+    }
+    public void inputScanner(){
+        int delta = getDelta();
+//        if (Mouse.isGrabbed()) {
+//            float mouseDX = Mouse.getDX() * mouseSpeed * 0.16f;
+//            float mouseDY = Mouse.getDY() * mouseSpeed * 0.16f;
+//            if (rotation.y + mouseDX >= 360) {
+//                rotation.y = rotation.y + mouseDX - 360;
+//            } else if (rotation.y + mouseDX < 0) {
+//                rotation.y = 360 - rotation.y + mouseDX;
+//            } else {
+//                rotation.y += mouseDX;
+//            }
+//            if (rotation.x - mouseDY >= maxLookDown && rotation.x - mouseDY <= maxLookUp) {
+//                rotation.x += -mouseDY;
+//            } else if (rotation.x - mouseDY < maxLookDown) {
+//                rotation.x = maxLookDown;
+//            } else if (rotation.x - mouseDY > maxLookUp) {
+//                rotation.x = maxLookUp;
+//            }
+//        }
 
         boolean keyUp = Keyboard.isKeyDown(Keyboard.KEY_UP) || Keyboard.isKeyDown(Keyboard.KEY_W);
         boolean keyDown = Keyboard.isKeyDown(Keyboard.KEY_DOWN) || Keyboard.isKeyDown(Keyboard.KEY_S);
@@ -595,14 +670,14 @@ public class Minedraft {
 //            position.z = newPosition.z;
 //            position.x = newPosition.x;
 //        }
-//        if (flyUp && !flyDown) {
-//            double newPositionY = (walkingSpeed * 0.0002) * delta;
-//            position.y -= newPositionY;
-//        }
-//        if (flyDown && !flyUp) {
-//            double newPositionY = (walkingSpeed * 0.0002) * delta;
-//            position.y += newPositionY;
-//        }
+        if (flyUp && !flyDown) {
+            double newPositionY = (walkingSpeed * 0.0002) * delta;
+            position.y -= newPositionY;
+        }
+        if (flyDown && !flyUp) {
+            double newPositionY = (walkingSpeed * 0.0002) * delta;
+            position.y += newPositionY;
+        }
 //        if (moveFaster && !moveSlower) {
 //            walkingSpeed /= 4f;
 //        }
