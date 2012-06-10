@@ -113,6 +113,7 @@ public class Minedraft {
 * The position of the player as a 3D vector (xyz).
 */
     public static Vector3f position = new Vector3f(0, 0, 0);
+    public static Vector3f tposition = new Vector3f(0, 0, 0);
     /**
 * The rotation of the axis (where to the player looks). The X component
 * stands for the rotation along the x-axis, where 0 is dead ahead, 180 is
@@ -339,7 +340,7 @@ public class Minedraft {
             glEnable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);
             glBindTexture(GL_TEXTURE_2D, 0);
-            glCallList(objectDisplayList);
+//            glCallList(objectDisplayList);
 
             glLoadIdentity();
             glRotatef(rotation.x, 1, 0, 0);
@@ -348,6 +349,11 @@ public class Minedraft {
             glTranslatef(position.x, position.y, position.z);
 
             inputScanner();
+            GL11.glPushMatrix();
+            	tposition.x +=0.01;
+            	glTranslatef(tposition.x, tposition.y, tposition.z);
+            	glCallList(objectDisplayList);
+            GL11.glPopMatrix();
             if (resizable) {
                 if (Display.wasResized()) {
                     glViewport(0, 0, Display.getWidth(), Display.getHeight());
@@ -498,8 +504,8 @@ public class Minedraft {
         	Sphere sphere = new Sphere(); 
         	sphere.setDrawStyle(GLU.GLU_LINE);
         	GL11.glPushMatrix();
-        	GL11.glTranslatef(0.0f, 0.0f, -2.0f);
-        	sphere.draw(0.5f, 16, 16);
+        		GL11.glTranslatef(0.0f, 0.0f, -2.0f);
+        		sphere.draw(0.5f, 16, 16);
         	GL11.glPopMatrix();
         }
         glEndList();
@@ -507,25 +513,6 @@ public class Minedraft {
     }
     public void inputScanner(){
         int delta = getDelta();
-//        if (Mouse.isGrabbed()) {
-//            float mouseDX = Mouse.getDX() * mouseSpeed * 0.16f;
-//            float mouseDY = Mouse.getDY() * mouseSpeed * 0.16f;
-//            if (rotation.y + mouseDX >= 360) {
-//                rotation.y = rotation.y + mouseDX - 360;
-//            } else if (rotation.y + mouseDX < 0) {
-//                rotation.y = 360 - rotation.y + mouseDX;
-//            } else {
-//                rotation.y += mouseDX;
-//            }
-//            if (rotation.x - mouseDY >= maxLookDown && rotation.x - mouseDY <= maxLookUp) {
-//                rotation.x += -mouseDY;
-//            } else if (rotation.x - mouseDY < maxLookDown) {
-//                rotation.x = maxLookDown;
-//            } else if (rotation.x - mouseDY > maxLookUp) {
-//                rotation.x = maxLookUp;
-//            }
-//        }
-
         boolean keyUp = Keyboard.isKeyDown(Keyboard.KEY_UP) || Keyboard.isKeyDown(Keyboard.KEY_W);
         boolean keyDown = Keyboard.isKeyDown(Keyboard.KEY_DOWN) || Keyboard.isKeyDown(Keyboard.KEY_S);
         boolean keyLeft = Keyboard.isKeyDown(Keyboard.KEY_LEFT) || Keyboard.isKeyDown(Keyboard.KEY_A);
@@ -534,7 +521,6 @@ public class Minedraft {
         boolean flyDown = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
         boolean moveFaster = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
         boolean moveSlower = Keyboard.isKeyDown(Keyboard.KEY_TAB);
-
 //        if (moveFaster && !moveSlower) {
 //            walkingSpeed *= 4f;
 //        }
