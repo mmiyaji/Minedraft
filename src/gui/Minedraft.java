@@ -527,7 +527,7 @@ public class Minedraft {
 //        if (moveSlower && !moveFaster) {
 //            walkingSpeed /= 10f;
 //        }
-        if(keyRight){
+        if(keyRight && !flyDown){
             if (rotation.y + rotateSpan >= 360) {
                 rotation.y = rotation.y + rotateSpan - 360;
             } else if (rotation.y + rotateSpan < 0) {
@@ -536,7 +536,7 @@ public class Minedraft {
                 rotation.y += rotateSpan;
             }
         }
-        if(keyLeft){
+        if(keyLeft && !flyDown){
         	float rotateSpan = -1f;
             if (rotation.y + rotateSpan >= 360) {
                 rotation.y = rotation.y + rotateSpan - 360;
@@ -546,7 +546,7 @@ public class Minedraft {
                 rotation.y += rotateSpan;
             }
         }
-        if(keyUp){
+        if(keyUp && !flyDown){
         	float rotateSpan = 1f;
             if (rotation.x - rotateSpan >= maxLookDown && rotation.x - rotateSpan <= maxLookUp) {
                 rotation.x += -rotateSpan;
@@ -556,7 +556,7 @@ public class Minedraft {
                 rotation.x = maxLookUp;
             }
         }
-        if(keyDown){
+        if(keyDown && !flyDown){
         	float rotateSpan = -1f;
             if (rotation.x - rotateSpan >= maxLookDown && rotation.x - rotateSpan <= maxLookUp) {
                 rotation.x += -rotateSpan;
@@ -655,13 +655,39 @@ public class Minedraft {
 //            position.z = newPosition.z;
 //            position.x = newPosition.x;
 //        }
-        if (flyUp && !flyDown) {
+        if (flyDown && keyUp) {
             double newPositionY = (walkingSpeed * 0.0002) * delta;
             position.y -= newPositionY;
         }
-        if (flyDown && !flyUp) {
+        if (flyDown && keyDown) {
             double newPositionY = (walkingSpeed * 0.0002) * delta;
             position.y += newPositionY;
+        }
+        if (flyDown && keyRight) {
+          float angle = rotation.y + 90;
+          Vector3f newPosition = new Vector3f(position);
+          float schuine = (walkingSpeed * 0.0002f) * delta;
+          float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
+          float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
+          newPosition.z += aanliggende;
+          newPosition.x -= overstaande;
+          position.z = newPosition.z;
+          position.x = newPosition.x;
+      	System.out.println("x:"+position.x);
+      	System.out.println("z:"+position.z);
+        }
+        if (flyDown && keyLeft) {
+          float angle = rotation.y - 90;
+          Vector3f newPosition = new Vector3f(position);
+          float schuine = (walkingSpeed * 0.0002f) * delta;
+          float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
+          float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
+          newPosition.z += aanliggende;
+          newPosition.x -= overstaande;
+          position.z = newPosition.z;
+          position.x = newPosition.x;
+        	System.out.println("x:"+position.x);
+          	System.out.println("z:"+position.z);
         }
 //        if (moveFaster && !moveSlower) {
 //            walkingSpeed /= 4f;

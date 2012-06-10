@@ -9,6 +9,8 @@ Java製対戦ゲームっぽい何かです．
 ** 課題内容
 AI部分の作成を行ってもらいます．
 
+org-modeだとgithubでうまく画像表示できないね．
+今後はmarkdownの方を更新しようと思います．
 [[file:https://github.com/mmiyaji/Minedraft/raw/master/images/screenshot1.png]]
 
 * License
