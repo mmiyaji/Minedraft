@@ -328,246 +328,7 @@ public class Minedraft {
             glRotatef(rotation.z, 0, 0, 1);
             glTranslatef(position.x, position.y, position.z);
 
-            if (Mouse.isGrabbed()) {
-                float mouseDX = Mouse.getDX() * mouseSpeed * 0.16f;
-                float mouseDY = Mouse.getDY() * mouseSpeed * 0.16f;
-                if (rotation.y + mouseDX >= 360) {
-                    rotation.y = rotation.y + mouseDX - 360;
-                } else if (rotation.y + mouseDX < 0) {
-                    rotation.y = 360 - rotation.y + mouseDX;
-                } else {
-                    rotation.y += mouseDX;
-                }
-                if (rotation.x - mouseDY >= maxLookDown && rotation.x - mouseDY <= maxLookUp) {
-                    rotation.x += -mouseDY;
-                } else if (rotation.x - mouseDY < maxLookDown) {
-                    rotation.x = maxLookDown;
-                } else if (rotation.x - mouseDY > maxLookUp) {
-                    rotation.x = maxLookUp;
-                }
-            }
-
-            boolean keyUp = Keyboard.isKeyDown(Keyboard.KEY_UP) || Keyboard.isKeyDown(Keyboard.KEY_W);
-            boolean keyDown = Keyboard.isKeyDown(Keyboard.KEY_DOWN) || Keyboard.isKeyDown(Keyboard.KEY_S);
-            boolean keyLeft = Keyboard.isKeyDown(Keyboard.KEY_LEFT) || Keyboard.isKeyDown(Keyboard.KEY_A);
-            boolean keyRight = Keyboard.isKeyDown(Keyboard.KEY_RIGHT) || Keyboard.isKeyDown(Keyboard.KEY_D);
-            boolean flyUp = Keyboard.isKeyDown(Keyboard.KEY_SPACE);
-            boolean flyDown = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
-            boolean moveFaster = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
-            boolean moveSlower = Keyboard.isKeyDown(Keyboard.KEY_TAB);
-
-//            if (moveFaster && !moveSlower) {
-//                walkingSpeed *= 4f;
-//            }
-//            if (moveSlower && !moveFaster) {
-//                walkingSpeed /= 10f;
-//            }
-            if(keyRight){
-                if (rotation.y + rotateSpan >= 360) {
-                    rotation.y = rotation.y + rotateSpan - 360;
-                } else if (rotation.y + rotateSpan < 0) {
-                    rotation.y = 360 - rotation.y + rotateSpan;
-                } else {
-                    rotation.y += rotateSpan;
-                }
-            }
-            if(keyLeft){
-            	float rotateSpan = -1f;
-                if (rotation.y + rotateSpan >= 360) {
-                    rotation.y = rotation.y + rotateSpan - 360;
-                } else if (rotation.y + rotateSpan < 0) {
-                    rotation.y = 360 - rotation.y + rotateSpan;
-                } else {
-                    rotation.y += rotateSpan;
-                }
-            }
-            if(keyUp){
-            	float rotateSpan = 1f;
-                if (rotation.x - rotateSpan >= maxLookDown && rotation.x - rotateSpan <= maxLookUp) {
-                    rotation.x += -rotateSpan;
-                } else if (rotation.x - rotateSpan < maxLookDown) {
-                    rotation.x = maxLookDown;
-                } else if (rotation.x - rotateSpan > maxLookUp) {
-                    rotation.x = maxLookUp;
-                }
-            }
-            if(keyDown){
-            	float rotateSpan = -1f;
-                if (rotation.x - rotateSpan >= maxLookDown && rotation.x - rotateSpan <= maxLookUp) {
-                    rotation.x += -rotateSpan;
-                } else if (rotation.x - rotateSpan < maxLookDown) {
-                    rotation.x = maxLookDown;
-                } else if (rotation.x - rotateSpan > maxLookUp) {
-                    rotation.x = maxLookUp;
-                }
-            }
-
-//            if (keyUp && keyRight && !keyLeft && !keyDown) {
-//                float angle = rotation.y + 45;
-//                Vector3f newPosition = new Vector3f(position);
-//                float schuine = (walkingSpeed * 0.0002f) * delta;
-//                float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//                float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//                newPosition.z += aanliggende;
-//                newPosition.x -= overstaande;
-//                position.z = newPosition.z;
-//                position.x = newPosition.x;
-//            }
-//            if (keyUp && keyLeft && !keyRight && !keyDown) {
-//                float angle = rotation.y - 45;
-//                Vector3f newPosition = new Vector3f(position);
-//                float schuine = (walkingSpeed * 0.0002f) * delta;
-//                float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//                float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//                newPosition.z += aanliggende;
-//                newPosition.x -= overstaande;
-//                position.z = newPosition.z;
-//                position.x = newPosition.x;
-//            }
-//            if (keyUp && !keyLeft && !keyRight && !keyDown) {
-//                float angle = rotation.y;
-//                Vector3f newPosition = new Vector3f(position);
-//                float schuine = (walkingSpeed * 0.0002f) * delta;
-//                float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//                float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//                newPosition.z += aanliggende;
-//                newPosition.x -= overstaande;
-//                position.z = newPosition.z;
-//                position.x = newPosition.x;
-//            }
-//            if (keyDown && keyLeft && !keyRight && !keyUp) {
-//                float angle = rotation.y - 135;
-//                Vector3f newPosition = new Vector3f(position);
-//                float schuine = (walkingSpeed * 0.0002f) * delta;
-//                float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//                float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//                newPosition.z += aanliggende;
-//                newPosition.x -= overstaande;
-//                position.z = newPosition.z;
-//                position.x = newPosition.x;
-//            }
-//            if (keyDown && keyRight && !keyLeft && !keyUp) {
-//                float angle = rotation.y + 135;
-//                Vector3f newPosition = new Vector3f(position);
-//                float schuine = (walkingSpeed * 0.0002f) * delta;
-//                float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//                float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//                newPosition.z += aanliggende;
-//                newPosition.x -= overstaande;
-//                position.z = newPosition.z;
-//                position.x = newPosition.x;
-//            }
-//            if (keyDown && !keyUp && !keyLeft && !keyRight) {
-//                float angle = rotation.y;
-//                Vector3f newPosition = new Vector3f(position);
-//                float schuine = -(walkingSpeed * 0.0002f) * delta;
-//                float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//                float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//                newPosition.z += aanliggende;
-//                newPosition.x -= overstaande;
-//                position.z = newPosition.z;
-//                position.x = newPosition.x;
-//            }
-//            if (keyLeft && !keyRight && !keyUp && !keyDown) {
-//                float angle = rotation.y - 90;
-//                Vector3f newPosition = new Vector3f(position);
-//                float schuine = (walkingSpeed * 0.0002f) * delta;
-//                float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//                float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//                newPosition.z += aanliggende;
-//                newPosition.x -= overstaande;
-//                position.z = newPosition.z;
-//                position.x = newPosition.x;
-//            }
-//            if (keyRight && !keyLeft && !keyUp && !keyDown) {
-//                float angle = rotation.y + 90;
-//                Vector3f newPosition = new Vector3f(position);
-//                float schuine = (walkingSpeed * 0.0002f) * delta;
-//                float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//                float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//                newPosition.z += aanliggende;
-//                newPosition.x -= overstaande;
-//                position.z = newPosition.z;
-//                position.x = newPosition.x;
-//            }
-//            if (flyUp && !flyDown) {
-//                double newPositionY = (walkingSpeed * 0.0002) * delta;
-//                position.y -= newPositionY;
-//            }
-//            if (flyDown && !flyUp) {
-//                double newPositionY = (walkingSpeed * 0.0002) * delta;
-//                position.y += newPositionY;
-//            }
-//            if (moveFaster && !moveSlower) {
-//                walkingSpeed /= 4f;
-//            }
-//            if (moveSlower && !moveFaster) {
-//                walkingSpeed *= 10f;
-//            }
-//            while (Mouse.next()) {
-//                if (Mouse.isButtonDown(0)) {
-//                    Mouse.setGrabbed(true);
-//                }
-//                if (Mouse.isButtonDown(1)) {
-//                    Mouse.setGrabbed(false);
-//                }
-//
-//            }
-            while (Keyboard.next()) {
-                if (Keyboard.isKeyDown(Keyboard.KEY_C)) {
-                    position = new Vector3f(0, 0, 0);
-                    rotation = new Vector3f(0, 0, 0);
-                }
-                if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
-                    mouseSpeed += 1;
-                    System.out.println("Mouse speed changed to " + mouseSpeed + ".");
-                }
-                if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-                    if (mouseSpeed - 1 > 0) {
-                        mouseSpeed -= 1;
-                        System.out.println("Mouse speed changed to " + mouseSpeed + ".");
-                    }
-                }
-                if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-                    System.out.println("Walking speed changed to " + walkingSpeed + ".");
-                    walkingSpeed += 1;
-                }
-                if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
-                    System.out.println("Walking speed changed to " + walkingSpeed + ".");
-                    walkingSpeed -= 1;
-                }
-                if (Keyboard.isKeyDown(Keyboard.KEY_F11)) {
-                    try {
-                        Display.setFullscreen(!Display.isFullscreen());
-                        if (!Display.isFullscreen()) {
-                            Display.setResizable(resizable);
-                            Display.setDisplayMode(new DisplayMode(800, 600));
-                            glViewport(0, 0, Display.getWidth(), Display.getHeight());
-                            glMatrixMode(GL_PROJECTION);
-                            glLoadIdentity();
-                            gluPerspective(fov, (float) Display.getWidth() / (float) Display.getHeight(), zNear, zFar);
-                            glMatrixMode(GL_MODELVIEW);
-                            glLoadIdentity();
-                        } else {
-                            glViewport(0, 0, Display.getWidth(), Display.getHeight());
-                            glMatrixMode(GL_PROJECTION);
-                            glLoadIdentity();
-                            gluPerspective(fov, (float) Display.getWidth() / (float) Display.getHeight(), zNear, zFar);
-                            glMatrixMode(GL_MODELVIEW);
-                            glLoadIdentity();
-                        }
-                    } catch (LWJGLException ex) {
-                        Logger.getLogger(Minedraft.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-                    if (!Mouse.isGrabbed() || Display.isFullscreen()) {
-                        running = false;
-                    } else {
-                        Mouse.setGrabbed(false);
-                    }
-                }
-            }
+            inputScanner();
             if (resizable) {
                 if (Display.wasResized()) {
                     glViewport(0, 0, Display.getWidth(), Display.getHeight());
@@ -600,7 +361,7 @@ public class Minedraft {
     public static void main(String[] args) {
     	new Minedraft();
     }
-    public static int setWall(int meta){
+    public int setWall(int meta){
         int wallDisplayList = glGenLists(meta);
         glNewList(wallDisplayList, GL_COMPILE);
 
@@ -655,7 +416,7 @@ public class Minedraft {
         glEndList();
         return wallDisplayList;
     }
-    public static int setFloor(int meta){
+    public int setFloor(int meta){
         int floorDisplayList = glGenLists(meta);
         glNewList(floorDisplayList, GL_COMPILE);
         glBegin(GL_QUADS);
@@ -670,5 +431,247 @@ public class Minedraft {
         glEnd();
         glEndList();
         return floorDisplayList;
+    }
+    public void inputScanner(){
+        if (Mouse.isGrabbed()) {
+            float mouseDX = Mouse.getDX() * mouseSpeed * 0.16f;
+            float mouseDY = Mouse.getDY() * mouseSpeed * 0.16f;
+            if (rotation.y + mouseDX >= 360) {
+                rotation.y = rotation.y + mouseDX - 360;
+            } else if (rotation.y + mouseDX < 0) {
+                rotation.y = 360 - rotation.y + mouseDX;
+            } else {
+                rotation.y += mouseDX;
+            }
+            if (rotation.x - mouseDY >= maxLookDown && rotation.x - mouseDY <= maxLookUp) {
+                rotation.x += -mouseDY;
+            } else if (rotation.x - mouseDY < maxLookDown) {
+                rotation.x = maxLookDown;
+            } else if (rotation.x - mouseDY > maxLookUp) {
+                rotation.x = maxLookUp;
+            }
+        }
+
+        boolean keyUp = Keyboard.isKeyDown(Keyboard.KEY_UP) || Keyboard.isKeyDown(Keyboard.KEY_W);
+        boolean keyDown = Keyboard.isKeyDown(Keyboard.KEY_DOWN) || Keyboard.isKeyDown(Keyboard.KEY_S);
+        boolean keyLeft = Keyboard.isKeyDown(Keyboard.KEY_LEFT) || Keyboard.isKeyDown(Keyboard.KEY_A);
+        boolean keyRight = Keyboard.isKeyDown(Keyboard.KEY_RIGHT) || Keyboard.isKeyDown(Keyboard.KEY_D);
+        boolean flyUp = Keyboard.isKeyDown(Keyboard.KEY_SPACE);
+        boolean flyDown = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
+        boolean moveFaster = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
+        boolean moveSlower = Keyboard.isKeyDown(Keyboard.KEY_TAB);
+
+//        if (moveFaster && !moveSlower) {
+//            walkingSpeed *= 4f;
+//        }
+//        if (moveSlower && !moveFaster) {
+//            walkingSpeed /= 10f;
+//        }
+        if(keyRight){
+            if (rotation.y + rotateSpan >= 360) {
+                rotation.y = rotation.y + rotateSpan - 360;
+            } else if (rotation.y + rotateSpan < 0) {
+                rotation.y = 360 - rotation.y + rotateSpan;
+            } else {
+                rotation.y += rotateSpan;
+            }
+        }
+        if(keyLeft){
+        	float rotateSpan = -1f;
+            if (rotation.y + rotateSpan >= 360) {
+                rotation.y = rotation.y + rotateSpan - 360;
+            } else if (rotation.y + rotateSpan < 0) {
+                rotation.y = 360 - rotation.y + rotateSpan;
+            } else {
+                rotation.y += rotateSpan;
+            }
+        }
+        if(keyUp){
+        	float rotateSpan = 1f;
+            if (rotation.x - rotateSpan >= maxLookDown && rotation.x - rotateSpan <= maxLookUp) {
+                rotation.x += -rotateSpan;
+            } else if (rotation.x - rotateSpan < maxLookDown) {
+                rotation.x = maxLookDown;
+            } else if (rotation.x - rotateSpan > maxLookUp) {
+                rotation.x = maxLookUp;
+            }
+        }
+        if(keyDown){
+        	float rotateSpan = -1f;
+            if (rotation.x - rotateSpan >= maxLookDown && rotation.x - rotateSpan <= maxLookUp) {
+                rotation.x += -rotateSpan;
+            } else if (rotation.x - rotateSpan < maxLookDown) {
+                rotation.x = maxLookDown;
+            } else if (rotation.x - rotateSpan > maxLookUp) {
+                rotation.x = maxLookUp;
+            }
+        }
+
+//        if (keyUp && keyRight && !keyLeft && !keyDown) {
+//            float angle = rotation.y + 45;
+//            Vector3f newPosition = new Vector3f(position);
+//            float schuine = (walkingSpeed * 0.0002f) * delta;
+//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
+//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
+//            newPosition.z += aanliggende;
+//            newPosition.x -= overstaande;
+//            position.z = newPosition.z;
+//            position.x = newPosition.x;
+//        }
+//        if (keyUp && keyLeft && !keyRight && !keyDown) {
+//            float angle = rotation.y - 45;
+//            Vector3f newPosition = new Vector3f(position);
+//            float schuine = (walkingSpeed * 0.0002f) * delta;
+//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
+//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
+//            newPosition.z += aanliggende;
+//            newPosition.x -= overstaande;
+//            position.z = newPosition.z;
+//            position.x = newPosition.x;
+//        }
+//        if (keyUp && !keyLeft && !keyRight && !keyDown) {
+//            float angle = rotation.y;
+//            Vector3f newPosition = new Vector3f(position);
+//            float schuine = (walkingSpeed * 0.0002f) * delta;
+//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
+//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
+//            newPosition.z += aanliggende;
+//            newPosition.x -= overstaande;
+//            position.z = newPosition.z;
+//            position.x = newPosition.x;
+//        }
+//        if (keyDown && keyLeft && !keyRight && !keyUp) {
+//            float angle = rotation.y - 135;
+//            Vector3f newPosition = new Vector3f(position);
+//            float schuine = (walkingSpeed * 0.0002f) * delta;
+//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
+//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
+//            newPosition.z += aanliggende;
+//            newPosition.x -= overstaande;
+//            position.z = newPosition.z;
+//            position.x = newPosition.x;
+//        }
+//        if (keyDown && keyRight && !keyLeft && !keyUp) {
+//            float angle = rotation.y + 135;
+//            Vector3f newPosition = new Vector3f(position);
+//            float schuine = (walkingSpeed * 0.0002f) * delta;
+//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
+//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
+//            newPosition.z += aanliggende;
+//            newPosition.x -= overstaande;
+//            position.z = newPosition.z;
+//            position.x = newPosition.x;
+//        }
+//        if (keyDown && !keyUp && !keyLeft && !keyRight) {
+//            float angle = rotation.y;
+//            Vector3f newPosition = new Vector3f(position);
+//            float schuine = -(walkingSpeed * 0.0002f) * delta;
+//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
+//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
+//            newPosition.z += aanliggende;
+//            newPosition.x -= overstaande;
+//            position.z = newPosition.z;
+//            position.x = newPosition.x;
+//        }
+//        if (keyLeft && !keyRight && !keyUp && !keyDown) {
+//            float angle = rotation.y - 90;
+//            Vector3f newPosition = new Vector3f(position);
+//            float schuine = (walkingSpeed * 0.0002f) * delta;
+//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
+//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
+//            newPosition.z += aanliggende;
+//            newPosition.x -= overstaande;
+//            position.z = newPosition.z;
+//            position.x = newPosition.x;
+//        }
+//        if (keyRight && !keyLeft && !keyUp && !keyDown) {
+//            float angle = rotation.y + 90;
+//            Vector3f newPosition = new Vector3f(position);
+//            float schuine = (walkingSpeed * 0.0002f) * delta;
+//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
+//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
+//            newPosition.z += aanliggende;
+//            newPosition.x -= overstaande;
+//            position.z = newPosition.z;
+//            position.x = newPosition.x;
+//        }
+//        if (flyUp && !flyDown) {
+//            double newPositionY = (walkingSpeed * 0.0002) * delta;
+//            position.y -= newPositionY;
+//        }
+//        if (flyDown && !flyUp) {
+//            double newPositionY = (walkingSpeed * 0.0002) * delta;
+//            position.y += newPositionY;
+//        }
+//        if (moveFaster && !moveSlower) {
+//            walkingSpeed /= 4f;
+//        }
+//        if (moveSlower && !moveFaster) {
+//            walkingSpeed *= 10f;
+//        }
+//        while (Mouse.next()) {
+//            if (Mouse.isButtonDown(0)) {
+//                Mouse.setGrabbed(true);
+//            }
+//            if (Mouse.isButtonDown(1)) {
+//                Mouse.setGrabbed(false);
+//            }
+//
+//        }
+        while (Keyboard.next()) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_C)) {
+                position = new Vector3f(0, 0, 0);
+                rotation = new Vector3f(0, 0, 0);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
+                mouseSpeed += 1;
+                System.out.println("Mouse speed changed to " + mouseSpeed + ".");
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
+                if (mouseSpeed - 1 > 0) {
+                    mouseSpeed -= 1;
+                    System.out.println("Mouse speed changed to " + mouseSpeed + ".");
+                }
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
+                System.out.println("Walking speed changed to " + walkingSpeed + ".");
+                walkingSpeed += 1;
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
+                System.out.println("Walking speed changed to " + walkingSpeed + ".");
+                walkingSpeed -= 1;
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_F11)) {
+                try {
+                    Display.setFullscreen(!Display.isFullscreen());
+                    if (!Display.isFullscreen()) {
+                        Display.setResizable(resizable);
+                        Display.setDisplayMode(new DisplayMode(800, 600));
+                        glViewport(0, 0, Display.getWidth(), Display.getHeight());
+                        glMatrixMode(GL_PROJECTION);
+                        glLoadIdentity();
+                        gluPerspective(fov, (float) Display.getWidth() / (float) Display.getHeight(), zNear, zFar);
+                        glMatrixMode(GL_MODELVIEW);
+                        glLoadIdentity();
+                    } else {
+                        glViewport(0, 0, Display.getWidth(), Display.getHeight());
+                        glMatrixMode(GL_PROJECTION);
+                        glLoadIdentity();
+                        gluPerspective(fov, (float) Display.getWidth() / (float) Display.getHeight(), zNear, zFar);
+                        glMatrixMode(GL_MODELVIEW);
+                        glLoadIdentity();
+                    }
+                } catch (LWJGLException ex) {
+                    Logger.getLogger(Minedraft.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+                if (!Mouse.isGrabbed() || Display.isFullscreen()) {
+                    running = false;
+                } else {
+                    Mouse.setGrabbed(false);
+                }
+            }
+        }
     }
 }
