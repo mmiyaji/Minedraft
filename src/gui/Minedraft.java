@@ -81,6 +81,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
+import org.lwjgl.util.glu.Cylinder;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Sphere;
 import org.lwjgl.util.vector.Vector3f;
@@ -137,7 +138,8 @@ public class Minedraft {
 * The size of tiles, where 0.5 is the standard size. Increasing the size by
 * results in smaller tiles, and vice versa.
 */
-    public static final float tileSize = 0.25f;
+    public static final float tileSize = 0.21f;
+    public static final float tileSpep = gridSize/(tileSize*100);
     /**
 * The maximal distance from the camera where objects are rendered.
 */
@@ -280,42 +282,18 @@ public class Minedraft {
         }
 
         int floorTexture = glGenTextures();
-        {
-            InputStream in = null;
-            try {
-                in = new FileInputStream("res/grass1.png");
-                PNGDecoder decoder = new PNGDecoder(in);
-                ByteBuffer buffer = BufferUtils.createByteBuffer(4 * decoder.getWidth() * decoder.getHeight());
-                decoder.decode(buffer, decoder.getWidth() * 4, Format.RGBA);
-                buffer.flip();
-                in.close();
-                glBindTexture(GL_TEXTURE_2D, floorTexture);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, decoder.getWidth(), decoder.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-                glBindTexture(GL_TEXTURE_2D, 0);
-            } catch (FileNotFoundException ex) {
-                System.err.println("Failed to find the texture files.");
-                Display.destroy();
-                System.exit(1);
-            } catch (IOException ex) {
-                System.err.println("Failed to load the texture files.");
-                Display.destroy();
-                System.exit(1);
-            }
-        }
-
+        setTexture("res/grass1.png", floorTexture);
+        int skyTexture = glGenTextures();
+        setTexture("res/sky3.png", skyTexture);
+        int woodTexture = glGenTextures();
+        setTexture("res/wood.png", woodTexture);
         int ceilingDisplayList = glGenLists(1);
         glNewList(ceilingDisplayList, GL_COMPILE);
         glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-        glVertex3f(-gridSize, ceilingHeight, -gridSize);
-        glTexCoord2f(gridSize * 10 * tileSize, 0);
-        glVertex3f(gridSize, ceilingHeight, -gridSize);
-        glTexCoord2f(gridSize * 10 * tileSize, gridSize * 10 * tileSize);
-        glVertex3f(gridSize, ceilingHeight, gridSize);
-        glTexCoord2f(0, gridSize * 10 * tileSize);
-        glVertex3f(-gridSize, ceilingHeight, gridSize);
+        	glTexCoord2f(0, 0); glVertex3f(-gridSize, ceilingHeight, -gridSize);
+        	glTexCoord2f(gridSize * 10 * tileSize, 0); glVertex3f(gridSize, ceilingHeight, -gridSize);
+        	glTexCoord2f(gridSize * 10 * tileSize, gridSize * 10 * tileSize); glVertex3f(gridSize, ceilingHeight, gridSize);
+        	glTexCoord2f(0, gridSize * 10 * tileSize); glVertex3f(-gridSize, ceilingHeight, gridSize);
         glEnd();
         glEndList();
 
@@ -323,6 +301,7 @@ public class Minedraft {
         int floorDisplayList = setFloor(1);
 //        int objectDisplayList = setTarget(1);
         int objectDisplayList = setSphere(1);
+        int objectCylinderList = setCylinder(2);
 
         getDelta();
         lastFPS = getTime();
@@ -331,15 +310,18 @@ public class Minedraft {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             glBindTexture(GL_TEXTURE_2D, floorTexture);
-
             glEnable(GL_CULL_FACE);
             glDisable(GL_DEPTH_TEST);
-            glCallList(floorDisplayList);
+            glBindTexture(GL_TEXTURE_2D, skyTexture);
             glCallList(ceilingDisplayList);
+            glBindTexture(GL_TEXTURE_2D, floorTexture);
+            glCallList(floorDisplayList);
             glCallList(wallDisplayList);
             glEnable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);
-            glBindTexture(GL_TEXTURE_2D, 0);
+            glBindTexture(GL_TEXTURE_2D, woodTexture);
+            glCallList(objectCylinderList);
+//            glCallList(objectCylinderList);
             glCallList(objectDisplayList);
 
             glLoadIdentity();
@@ -376,10 +358,12 @@ public class Minedraft {
             }
         }
         glDeleteTextures(floorTexture);
+        glDeleteTextures(skyTexture);
         glDeleteLists(floorDisplayList, 1);
         glDeleteLists(ceilingDisplayList, 1);
         glDeleteLists(wallDisplayList, 1);
         glDeleteLists(objectDisplayList, 1);
+        glDeleteLists(objectCylinderList, 1);
         Display.destroy();
         System.exit(0);
     }
@@ -502,14 +486,64 @@ public class Minedraft {
         glNewList(objectDisplayList, GL_COMPILE);
         {
         	Sphere sphere = new Sphere(); 
-        	sphere.setDrawStyle(GLU.GLU_LINE);
+//        	sphere.setDrawStyle(GLU.GLU_FILL);
         	GL11.glPushMatrix();
-        		GL11.glTranslatef(0.0f, 0.0f, -2.0f);
-        		sphere.draw(0.5f, 16, 16);
+        		GL11.glRotatef(-90, 1, 0, 0);
+//        		GL11.glMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_DIFFUSE, null);
+        		GL11.glTranslatef(0.0f, tileSpep*10, 0.0f);
+        		System.out.println(tileSpep*10);
+        		sphere.draw(tileSpep, 16, 16);
         	GL11.glPopMatrix();
         }
         glEndList();
         return objectDisplayList;
+    }
+    public int setCylinder(int meta){
+        int objectDisplayList = glGenLists(meta);
+        glNewList(objectDisplayList, GL_COMPILE);
+        {
+        	Cylinder cylinder = new Cylinder(); 
+        	cylinder.setDrawStyle(GLU.GLU_FILL);
+        	GL11.glPushMatrix();
+        		GL11.glRotatef(-90, 1, 0, 0);
+        		GL11.glTranslatef(tileSpep*10, tileSpep*10, -1.0f);
+        		cylinder.draw(tileSpep, tileSpep, gridSize+1.0f, 25, 16);
+        	GL11.glPopMatrix();
+        	Cylinder cylinder2 = new Cylinder(); 
+        	cylinder.setDrawStyle(GLU.GLU_FILL);
+        	GL11.glPushMatrix();
+        		GL11.glRotatef(-90, 1, 0, 0);
+        		GL11.glTranslatef(tileSpep*10, -tileSpep*10, -1.0f);
+        		cylinder2.draw(tileSpep, tileSpep, gridSize+1.0f, 25, 16);
+        	GL11.glPopMatrix();
+        }
+        glEndList();
+        return objectDisplayList;
+    }
+
+    public void setTexture(String path, int textureid){
+        InputStream in = null;
+        try {
+            in = new FileInputStream(path);
+            PNGDecoder decoder = new PNGDecoder(in);
+            ByteBuffer buffer = BufferUtils.createByteBuffer(4 * decoder.getWidth() * decoder.getHeight());
+            decoder.decode(buffer, decoder.getWidth() * 4, Format.RGBA);
+            buffer.flip();
+            in.close();
+            glBindTexture(GL_TEXTURE_2D, textureid);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, decoder.getWidth(), decoder.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        } catch (FileNotFoundException ex) {
+            System.err.println("Failed to find the texture files.");
+            Display.destroy();
+            System.exit(1);
+        } catch (IOException ex) {
+            System.err.println("Failed to load the texture files.");
+            Display.destroy();
+            System.exit(1);
+        }
     }
     public void inputScanner(){
         int delta = getDelta();
@@ -566,95 +600,6 @@ public class Minedraft {
                 rotation.x = maxLookUp;
             }
         }
-
-//        if (keyUp && keyRight && !keyLeft && !keyDown) {
-//            float angle = rotation.y + 45;
-//            Vector3f newPosition = new Vector3f(position);
-//            float schuine = (walkingSpeed * 0.0002f) * delta;
-//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//            newPosition.z += aanliggende;
-//            newPosition.x -= overstaande;
-//            position.z = newPosition.z;
-//            position.x = newPosition.x;
-//        }
-//        if (keyUp && keyLeft && !keyRight && !keyDown) {
-//            float angle = rotation.y - 45;
-//            Vector3f newPosition = new Vector3f(position);
-//            float schuine = (walkingSpeed * 0.0002f) * delta;
-//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//            newPosition.z += aanliggende;
-//            newPosition.x -= overstaande;
-//            position.z = newPosition.z;
-//            position.x = newPosition.x;
-//        }
-//        if (keyUp && !keyLeft && !keyRight && !keyDown) {
-//            float angle = rotation.y;
-//            Vector3f newPosition = new Vector3f(position);
-//            float schuine = (walkingSpeed * 0.0002f) * delta;
-//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//            newPosition.z += aanliggende;
-//            newPosition.x -= overstaande;
-//            position.z = newPosition.z;
-//            position.x = newPosition.x;
-//        }
-//        if (keyDown && keyLeft && !keyRight && !keyUp) {
-//            float angle = rotation.y - 135;
-//            Vector3f newPosition = new Vector3f(position);
-//            float schuine = (walkingSpeed * 0.0002f) * delta;
-//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//            newPosition.z += aanliggende;
-//            newPosition.x -= overstaande;
-//            position.z = newPosition.z;
-//            position.x = newPosition.x;
-//        }
-//        if (keyDown && keyRight && !keyLeft && !keyUp) {
-//            float angle = rotation.y + 135;
-//            Vector3f newPosition = new Vector3f(position);
-//            float schuine = (walkingSpeed * 0.0002f) * delta;
-//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//            newPosition.z += aanliggende;
-//            newPosition.x -= overstaande;
-//            position.z = newPosition.z;
-//            position.x = newPosition.x;
-//        }
-//        if (keyDown && !keyUp && !keyLeft && !keyRight) {
-//            float angle = rotation.y;
-//            Vector3f newPosition = new Vector3f(position);
-//            float schuine = -(walkingSpeed * 0.0002f) * delta;
-//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//            newPosition.z += aanliggende;
-//            newPosition.x -= overstaande;
-//            position.z = newPosition.z;
-//            position.x = newPosition.x;
-//        }
-//        if (keyLeft && !keyRight && !keyUp && !keyDown) {
-//            float angle = rotation.y - 90;
-//            Vector3f newPosition = new Vector3f(position);
-//            float schuine = (walkingSpeed * 0.0002f) * delta;
-//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//            newPosition.z += aanliggende;
-//            newPosition.x -= overstaande;
-//            position.z = newPosition.z;
-//            position.x = newPosition.x;
-//        }
-//        if (keyRight && !keyLeft && !keyUp && !keyDown) {
-//            float angle = rotation.y + 90;
-//            Vector3f newPosition = new Vector3f(position);
-//            float schuine = (walkingSpeed * 0.0002f) * delta;
-//            float aanliggende = schuine * (float) Math.cos(Math.toRadians(angle));
-//            float overstaande = (float) (Math.sin(Math.toRadians(angle)) * schuine);
-//            newPosition.z += aanliggende;
-//            newPosition.x -= overstaande;
-//            position.z = newPosition.z;
-//            position.x = newPosition.x;
-//        }
         if (flyDown && keyUp) {
             double newPositionY = (walkingSpeed * 0.0002) * delta;
             position.y -= newPositionY;
@@ -686,18 +631,22 @@ public class Minedraft {
           position.x = newPosition.x;
         }
         if (flyUp && keyUp) {
-            position.z += tileSize;
+            position.z += tileSpep;
          }
         if (flyUp && keyDown) {
-            position.z -= tileSize;
+            position.z -= tileSpep;
           }
         if (flyUp && keyRight) {
-            position.x -= tileSize;
+            position.x -= tileSpep;
           }
         if (flyUp && keyLeft) {
-            position.x += tileSize;
+            position.x += tileSpep;
           }
-
+        if(position.x <= -gridSize){position.x = -gridSize;}
+        if(position.x >= gridSize){position.x = gridSize;}
+        if(position.y > 0){position.y = 0;}
+        if(position.z <= -gridSize){position.z = -gridSize;}
+        if(position.z >= gridSize){position.z = gridSize;}
 //        if (moveFaster && !moveSlower) {
 //            walkingSpeed /= 4f;
 //        }
