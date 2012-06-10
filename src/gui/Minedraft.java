@@ -692,10 +692,10 @@ public class Minedraft {
             position.z -= tileSize;
           }
         if (flyUp && keyRight) {
-            position.x += tileSize;
+            position.x -= tileSize;
           }
         if (flyUp && keyLeft) {
-            position.x -= tileSize;
+            position.x += tileSize;
           }
 
 //        if (moveFaster && !moveSlower) {
