@@ -1,5 +1,6 @@
 package game;
 import gui.Window;
+import gui.Minedraft;
 
 //import java.util.Random;
 import java.util.Vector;
@@ -136,31 +137,63 @@ class AIPlayer implements Player
 	@Override
 	public String getName(){return this.name;}
 };
-public class Main{
+public class Main implements Runnable{
 	final static int ENEMY_NUM = 12;
-	public static void main(String[] args) {
+	int current_turn = 0;
+	Vector<Player> players;
+	Board board;
+	Window window;
+	Minedraft minedraft;
+	Thread mainThread;
+	final Boolean is_window = true;
+	long start, stop, diff;
+	public Main(){
 		System.out.print("Program start");
-		Vector<Player> players = new Vector<Player>();
-		int current_turn = 0;
+		players = new Vector<Player>();
 		players.add(new AIPlayer(0));
 		for(int i=1;i<=ENEMY_NUM;i++){
 			players.add(new AIEnemy("Enemy"+i, i));
 		}
-		Board board = new Board(ENEMY_NUM, players);
-		Window window = null;
-		final Boolean is_window = true;
+		board = new Board(ENEMY_NUM, players);
+		window = null;
+		minedraft = null;
+
 		if(is_window){
-			window = new Window(true, board);
+//			window = new Window(true, board);
+			minedraft = new Minedraft(board);
+//			mainThread = new Thread(minedraft);
+//			minedraft.run();
+//			mainThread.start()
 		}
-		long start, stop, diff;
 		start = System.currentTimeMillis();
+	}
+	public static void main(String[] args) {
+		System.out.println("Start");
+		Main main = new Main();
+		main.run();
+	}
+	Boolean isWindow(String[] args){
+		String arg_tmp = "";
+		Boolean flag = false;
+		for(int i=0; i<args.length; i++){
+			arg_tmp = args[i];
+			System.out.println(arg_tmp+";"+arg_tmp.charAt(0));
+			if(arg_tmp.equals("nw") || arg_tmp.equals("nowindow")){
+				flag = true;
+			}
+		}
+		return flag;
+	}
+	@Override
+	public void run() {
 		while(true){
 			try{
 				System.out.println(current_turn);
 				((Player) players.get(current_turn)).onTurn(board);
 				if(is_window){
-					window.repaint();
-					window.setBoard(board);
+					minedraft.action(board);
+//					window.repaint();
+//					window.setBoard(board);
 				}else{
 					board.showBoard();
 				}
@@ -188,17 +221,5 @@ public class Main{
 //			ターン交代
 			current_turn = ++current_turn % players.size();
 		}
-	}
-	Boolean isWindow(String[] args){
-		String arg_tmp = "";
-		Boolean flag = false;
-		for(int i=0; i<args.length; i++){
-			arg_tmp = args[i];
-			System.out.println(arg_tmp+";"+arg_tmp.charAt(0));
-			if(arg_tmp.equals("nw") || arg_tmp.equals("nowindow")){
-				flag = true;
-			}
-		}
-		return flag;
 	}
 }

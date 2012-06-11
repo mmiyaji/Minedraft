@@ -4,8 +4,8 @@ import java.util.Random;
 import java.util.Vector;
 
 public class Board{
-	public static final int WIDTH = 1000;
-	public static final int HEIGHT = 200;
+	public static final int WIDTH = 11;
+	public static final int HEIGHT = 11;
 	public static final int MAX_TURNS  = 60;
 	private int[][] board = new int[WIDTH+2][HEIGHT+2];
 	private Vector<Point> PlayersPos = new Vector<Point>();
@@ -118,6 +118,17 @@ public class Board{
 	public void setPoint(int x, int y, int object){
 		this.board[x][y] = object;
 	}
+	public Vector<Point> getHazard(){
+		Vector<Point> p = new Vector<Point>();
+		for(int i=1;i<WIDTH;i++){
+			for(int j=1;j<HEIGHT;j++){
+				if(this.getPoint(i, j)==Piece.WALL){
+					p.add(new Point(i, j));
+				}
+			}
+		}
+		return p;
+	}
 	public void showBoard(){
 		for(int i=0; i<=Board.WIDTH; i++){
 			for(int j=0; j<=Board.HEIGHT; j++){
@@ -148,9 +159,9 @@ public class Board{
 	}
 	public Vector<Point> getMovablePos()
 	{
-		for(int i=0;i<=turns;i++){
-			System.out.print(MovablePos[i]+" ,");
-		}
+//		for(int i=0;i<=turns;i++){
+//			System.out.print(MovablePos[i]+" ,");
+//		}
 		return MovablePos[turns];
 	}
 	public boolean move(Point point)

@@ -1,6 +1,6 @@
 package game;
 
-class Point
+public class Point
 {
 	public Point()
 	{

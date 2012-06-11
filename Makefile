@@ -1,15 +1,16 @@
-TARGET=Main
+TARGET=Minedraft
 JC=javac
 EXEC=java
 OUTFILE=${TARGET}
 OUTDIR=bin
-OUTPACKAGE=game
+OUTPACKAGE=gui
 NATIVE=native
 all:build
-	cd ${OUTDIR}; ${EXEC} -Djava.library.path=${NATIVE} ${OUTPACKAGE}.${OUTFILE} -classpath ${OUTDIR}/${OUTPACKAGE}; cd ../
+	export LD_LIBRARY_PATH="native"; cd ${OUTDIR}; ${EXEC} -Djava.library.path=../native:${NATIVE} ${OUTPACKAGE}.${OUTFILE} -classpath ${OUTDIR}/${OUTPACKAGE}:bin/:lib/lwjgl.jar:lib/lwjgl_util.jar:lib/slick.jar:lib/PNGDecoder.jar; cd ../
+	#${EXEC} -Djava.library.path=${NATIVE} ${OUTPACKAGE}.${OUTFILE} -classpath ./:${OUTDIR}/${OUTPACKAGE}:bin/:lib/lwjgl.jar:lib/lwjgl_util.jar:lib/slick.jar:lib/PNGDecoder.jar
 build:
 	mkdir -p ${OUTDIR}
-	${JC} src/game/*.java src/gui/*.java -d ${OUTDIR} -classpath bin/
+	${JC} src/game/*.java src/gui/*.java -d ${OUTDIR} -classpath bin/:lib/lwjgl.jar:lib/lwjgl_util.jar:lib/slick.jar:lib/PNGDecoder.jar
 
 clean:
 	rm -rf ${OUTDIR}/${OUTPACKAGE}/$(TARGET).{log,class}

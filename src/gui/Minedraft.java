@@ -1,13 +1,14 @@
 package gui;
-
 import static org.lwjgl.opengl.GL11.GL_ALPHA_TEST;
 import static org.lwjgl.opengl.GL11.GL_BACK;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_COLOR_MATERIAL;
 import static org.lwjgl.opengl.GL11.GL_COMPILE;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_DIFFUSE;
 import static org.lwjgl.opengl.GL11.GL_FOG;
 import static org.lwjgl.opengl.GL11.GL_FOG_COLOR;
 import static org.lwjgl.opengl.GL11.GL_FOG_DENSITY;
@@ -15,15 +16,21 @@ import static org.lwjgl.opengl.GL11.GL_FOG_END;
 import static org.lwjgl.opengl.GL11.GL_FOG_HINT;
 import static org.lwjgl.opengl.GL11.GL_FOG_MODE;
 import static org.lwjgl.opengl.GL11.GL_FOG_START;
+import static org.lwjgl.opengl.GL11.GL_FRONT;
+import static org.lwjgl.opengl.GL11.GL_LIGHT0;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static org.lwjgl.opengl.GL11.GL_LIGHT_MODEL_AMBIENT;
 import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_NICEST;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_PERSPECTIVE_CORRECTION_HINT;
+import static org.lwjgl.opengl.GL11.GL_POSITION;
 import static org.lwjgl.opengl.GL11.GL_PROJECTION;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_SMOOTH;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
@@ -37,6 +44,7 @@ import static org.lwjgl.opengl.GL11.glCallList;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glColorMaterial;
 import static org.lwjgl.opengl.GL11.glCullFace;
 import static org.lwjgl.opengl.GL11.glDeleteLists;
 import static org.lwjgl.opengl.GL11.glDeleteTextures;
@@ -50,10 +58,14 @@ import static org.lwjgl.opengl.GL11.glFogi;
 import static org.lwjgl.opengl.GL11.glGenLists;
 import static org.lwjgl.opengl.GL11.glGenTextures;
 import static org.lwjgl.opengl.GL11.glHint;
+import static org.lwjgl.opengl.GL11.glLight;
+import static org.lwjgl.opengl.GL11.glLightModel;
 import static org.lwjgl.opengl.GL11.glLoadIdentity;
 import static org.lwjgl.opengl.GL11.glMatrixMode;
 import static org.lwjgl.opengl.GL11.glNewList;
+import static org.lwjgl.opengl.GL11.glNormal3f;
 import static org.lwjgl.opengl.GL11.glRotatef;
+import static org.lwjgl.opengl.GL11.glShadeModel;
 import static org.lwjgl.opengl.GL11.glTexCoord2f;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
@@ -62,13 +74,17 @@ import static org.lwjgl.opengl.GL11.glVertex3d;
 import static org.lwjgl.opengl.GL11.glVertex3f;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.util.glu.GLU.gluPerspective;
+import game.Board;
 
+import java.awt.Point;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -87,6 +103,9 @@ import org.lwjgl.util.glu.Sphere;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.Color;
 
+import utility.Face;
+import utility.Model;
+import utility.OBJLoader;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 
@@ -99,7 +118,7 @@ import de.matthiasmann.twl.utils.PNGDecoder.Format;
 *
 * @author Oskar Veerhoek, Yan Chernikov
 */
-public class Minedraft {
+public class Minedraft implements Runnable{
 
     /**
 * Defines if the application is resizable.
@@ -138,8 +157,8 @@ public class Minedraft {
 * The size of tiles, where 0.5 is the standard size. Increasing the size by
 * results in smaller tiles, and vice versa.
 */
-    public static final float tileSize = 0.21f;
-    public static final float tileSpep = gridSize/(tileSize*100);
+    public static float tileSize = 0.21f;
+    public static float tileStep = gridSize/(tileSize*100);
     /**
 * The maximal distance from the camera where objects are rendered.
 */
@@ -200,9 +219,60 @@ public class Minedraft {
  
     public static int fov = 68;
     private static int fps;
+    private static int sizeX;
+    private static int sizeY;
     private static long lastFPS;
     private static long lastFrame;
-
+	public static final String MODEL_LOCATION = "res/bunny.obj";
+	private static int  floorTexture;
+    private static int  skyTexture;
+    private static int  woodTexture;
+    private static int  ceilingDisplayList;
+    private static int  wallDisplayList;
+    private static int  floorDisplayList;
+    private static int  objectDisplayList;
+    private static int  cylinderDisplayList;
+    private static int  blockDisplayList;
+	private static int bunnyDisplayList;
+	private static float[] lightPosition = { -2.19f, 1.36f, 11.45f, 1f };
+	private Board board;
+	private static void setUpDisplayLists() {
+		bunnyDisplayList = glGenLists(1);
+		glNewList(bunnyDisplayList, GL_COMPILE);
+		{
+			Model m = null;
+			try {
+				m = OBJLoader.loadModel(new File(MODEL_LOCATION));
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				Display.destroy();
+				System.exit(1);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Display.destroy();
+				System.exit(1);
+			}
+            glTranslatef(-tileStep*5, -1.0f, -tileStep*5);
+			GL11.glScalef(0.1f, 0.1f, 0.1f);
+			glBegin(GL_TRIANGLES);
+			for (Face face : m.faces) {
+				Vector3f n1 = m.normals.get((int) face.normal.x - 1);
+				glNormal3f(n1.x, n1.y, n1.z);
+				Vector3f v1 = m.vertices.get((int) face.vertex.x - 1);
+				glVertex3f(v1.x, v1.y, v1.z);
+				Vector3f n2 = m.normals.get((int) face.normal.y - 1);
+				glNormal3f(n2.x, n2.y, n2.z);
+				Vector3f v2 = m.vertices.get((int) face.vertex.y - 1);
+				glVertex3f(v2.x, v2.y, v2.z);
+				Vector3f n3 = m.normals.get((int) face.normal.z - 1);
+				glNormal3f(n3.x, n3.y, n3.z);
+				Vector3f v3 = m.vertices.get((int) face.vertex.z - 1);
+				glVertex3f(v3.x, v3.y, v3.z);
+			}
+			glEnd();
+		}
+		glEndList();
+	}
     private static long getTime() {
         return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
@@ -224,7 +294,26 @@ public class Minedraft {
         }
         fps++;
     }
-    Minedraft(){
+    public Minedraft(){
+    	board = new Board();
+    	sizeX = board.WIDTH;
+    	sizeY = board.HEIGHT;
+    	tileSize = board.WIDTH/100.0f;
+    	tileStep = gridSize/(tileSize*100);
+    	init();
+    }
+    public Minedraft(Board board){
+    	this.board = board;
+    	sizeX = board.WIDTH;
+    	sizeY = board.HEIGHT;
+    	tileSize = board.WIDTH/100.0f;
+    	tileStep = gridSize/(tileSize*100);
+    	init();
+    }
+    public Vector3f convertPosition(int x , int y){
+    	return new Vector3f();
+    }
+    public void init(){
         try {
             if (fullscreen) {
                 Display.setDisplayModeAndFullscreen(Display.getDesktopDisplayMode());
@@ -251,13 +340,14 @@ public class Minedraft {
             Display.destroy();
             System.exit(1);
         }
+		glLight(GL_LIGHT0, GL_POSITION, asFloatBuffer(lightPosition));
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         gluPerspective(fov, (float) Display.getWidth() / (float) Display.getHeight(), zNear, zFar);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-
+//        setUpLighting();
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
@@ -281,13 +371,13 @@ public class Minedraft {
             glFogf(GL_FOG_DENSITY, 0.005f);
         }
 
-        int floorTexture = glGenTextures();
+        floorTexture = glGenTextures();
         setTexture("res/grass1.png", floorTexture);
-        int skyTexture = glGenTextures();
+        skyTexture = glGenTextures();
         setTexture("res/sky3.png", skyTexture);
-        int woodTexture = glGenTextures();
-        setTexture("res/wood.png", woodTexture);
-        int ceilingDisplayList = glGenLists(1);
+        woodTexture = glGenTextures();
+        setTexture("res/wood_32x32.png", woodTexture);
+        ceilingDisplayList = glGenLists(1);
         glNewList(ceilingDisplayList, GL_COMPILE);
         glBegin(GL_QUADS);
         	glTexCoord2f(0, 0); glVertex3f(-gridSize, ceilingHeight, -gridSize);
@@ -297,83 +387,106 @@ public class Minedraft {
         glEnd();
         glEndList();
 
-        int wallDisplayList = setWall(1);
-        int floorDisplayList = setFloor(1);
+        wallDisplayList = setWall(1);
+        floorDisplayList = setFloor(1);
 //        int objectDisplayList = setTarget(1);
-        int objectDisplayList = setSphere(1);
-        int objectCylinderList = setCylinder(2);
+        objectDisplayList = setSphere(1);
+        cylinderDisplayList = setCylinder(2);
+		setUpDisplayLists();
+//		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glCallList(bunnyDisplayList);
 
         getDelta();
         lastFPS = getTime();
-
-        while (running) {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-            glBindTexture(GL_TEXTURE_2D, floorTexture);
-            glEnable(GL_CULL_FACE);
-            glDisable(GL_DEPTH_TEST);
-            glBindTexture(GL_TEXTURE_2D, skyTexture);
-            glCallList(ceilingDisplayList);
-            glBindTexture(GL_TEXTURE_2D, floorTexture);
-            glCallList(floorDisplayList);
-            glCallList(wallDisplayList);
-            glEnable(GL_DEPTH_TEST);
-            glDisable(GL_CULL_FACE);
-            glBindTexture(GL_TEXTURE_2D, woodTexture);
-            glCallList(objectCylinderList);
-//            glCallList(objectCylinderList);
-            glCallList(objectDisplayList);
-
-            glLoadIdentity();
-            glRotatef(rotation.x, 1, 0, 0);
-            glRotatef(rotation.y, 0, 1, 0);
-            glRotatef(rotation.z, 0, 0, 1);
-            glTranslatef(position.x, position.y, position.z);
-
-            inputScanner();
-//            GL11.glPushMatrix();
-//            	tposition.x +=0.01;
-//            	glTranslatef(tposition.x, tposition.y, tposition.z);
-//            	glCallList(objectDisplayList);
-//            GL11.glPopMatrix();
-            if (resizable) {
-                if (Display.wasResized()) {
-                    glViewport(0, 0, Display.getWidth(), Display.getHeight());
-                    glMatrixMode(GL_PROJECTION);
-                    glLoadIdentity();
-                    gluPerspective(fov, (float) Display.getWidth() / (float) Display.getHeight(), zNear, zFar);
-                    glMatrixMode(GL_MODELVIEW);
-                    glLoadIdentity();
-                }
-            }
-            if (printFPS) {
-                updateFPS();
-            }
-            Display.update();
-            if (vsync) {
-                Display.sync(60);
-            }
-            if (Display.isCloseRequested()) {
-                running = false;
-            }
-        }
+    }
+    public static void main(String[] args) {
+    	Minedraft minedraft = new Minedraft();
+    	minedraft.run();
+    }
+    public void end(){
         glDeleteTextures(floorTexture);
         glDeleteTextures(skyTexture);
         glDeleteLists(floorDisplayList, 1);
         glDeleteLists(ceilingDisplayList, 1);
         glDeleteLists(wallDisplayList, 1);
         glDeleteLists(objectDisplayList, 1);
-        glDeleteLists(objectCylinderList, 1);
+        glDeleteLists(cylinderDisplayList, 1);
         Display.destroy();
         System.exit(0);
     }
-    public static void main(String[] args) {
-    	new Minedraft();
+    public void action(Board board){
+    	System.out.println("Action");
+    	for(int i=0;i<10;i++){
+    		viewUpdate();
+    	}
+    }
+    private void viewUpdate(){
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glBindTexture(GL_TEXTURE_2D, floorTexture);
+        glEnable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
+        glBindTexture(GL_TEXTURE_2D, skyTexture);
+        glCallList(ceilingDisplayList);
+        glBindTexture(GL_TEXTURE_2D, floorTexture);
+        glCallList(floorDisplayList);
+        glCallList(wallDisplayList);
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glBindTexture(GL_TEXTURE_2D, woodTexture);
+//        glCallList(blockDisplayList);
+        glCallList(cylinderDisplayList);
+//        glCallList(cylinderDisplayList);
+        glCallList(objectDisplayList);
+		glCallList(bunnyDisplayList);
+
+        glLoadIdentity();
+        glRotatef(rotation.x, 1, 0, 0);
+        glRotatef(rotation.y, 0, 1, 0);
+        glRotatef(rotation.z, 0, 0, 1);
+        glTranslatef(position.x, position.y, position.z);
+
+        inputScanner();
+//        GL11.glPushMatrix();
+//        	tposition.x +=0.01;
+//        	glTranslatef(tposition.x, tposition.y, tposition.z);
+//        	glCallList(objectDisplayList);
+//        GL11.glPopMatrix();
+        if (resizable) {
+            if (Display.wasResized()) {
+                glViewport(0, 0, Display.getWidth(), Display.getHeight());
+                glMatrixMode(GL_PROJECTION);
+                glLoadIdentity();
+                gluPerspective(fov, (float) Display.getWidth() / (float) Display.getHeight(), zNear, zFar);
+                glMatrixMode(GL_MODELVIEW);
+                glLoadIdentity();
+            }
+        }
+        if (printFPS) {
+            updateFPS();
+        }
+        Display.update();
+        if (vsync) {
+            Display.sync(60);
+        }
+        if (Display.isCloseRequested()) {
+            running = false;
+            end();
+        }
+    }
+    public void start(){
+    	System.out.println("Start");
+    }
+    public void run(){
+    	System.out.println("Run");
+        while (running) {
+        	viewUpdate();
+        }
+        end();
     }
     public int setWall(int meta){
         int wallDisplayList = glGenLists(meta);
         glNewList(wallDisplayList, GL_COMPILE);
-
         glBegin(GL_QUADS);
 
         // North wall
@@ -490,9 +603,9 @@ public class Minedraft {
         	GL11.glPushMatrix();
         		GL11.glRotatef(-90, 1, 0, 0);
 //        		GL11.glMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_DIFFUSE, null);
-        		GL11.glTranslatef(0.0f, tileSpep*10, 0.0f);
-        		System.out.println(tileSpep*10);
-        		sphere.draw(tileSpep, 16, 16);
+        		GL11.glTranslatef(0.0f, tileStep*10, 0.0f);
+        		System.out.println(tileStep*10);
+        		sphere.draw(tileStep, 16, 16);
         	GL11.glPopMatrix();
         }
         glEndList();
@@ -500,26 +613,49 @@ public class Minedraft {
     }
     public int setCylinder(int meta){
         int objectDisplayList = glGenLists(meta);
+        Vector<game.Point> p = board.getHazard();
         glNewList(objectDisplayList, GL_COMPILE);
         {
+        for(int i=0;i<p.size();i++){
+        	System.out.println(tileStep*(p.get(i).x)+":"+tileStep*(p.get(i).y));
         	Cylinder cylinder = new Cylinder(); 
         	cylinder.setDrawStyle(GLU.GLU_FILL);
         	GL11.glPushMatrix();
         		GL11.glRotatef(-90, 1, 0, 0);
-        		GL11.glTranslatef(tileSpep*10, tileSpep*10, -1.0f);
-        		cylinder.draw(tileSpep, tileSpep, gridSize+1.0f, 25, 16);
+        		GL11.glTranslatef(tileStep*(p.get(i).x), tileStep*p.get(i).y, -1.0f);
+        		cylinder.draw(tileStep, tileStep, gridSize+1.0f, 25, 16);
         	GL11.glPopMatrix();
-        	Cylinder cylinder2 = new Cylinder(); 
-        	cylinder.setDrawStyle(GLU.GLU_FILL);
-        	GL11.glPushMatrix();
-        		GL11.glRotatef(-90, 1, 0, 0);
-        		GL11.glTranslatef(tileSpep*10, -tileSpep*10, -1.0f);
-        		cylinder2.draw(tileSpep, tileSpep, gridSize+1.0f, 25, 16);
-        	GL11.glPopMatrix();
+        }
         }
         glEndList();
         return objectDisplayList;
     }
+    public int setBlock(int meta){
+        int blockDisplayList = glGenLists(meta);
+        glNewList(blockDisplayList, GL_COMPILE);
+
+        return blockDisplayList;
+    }
+    private static void setUpLighting() {
+		glShadeModel(GL_SMOOTH);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHT0);
+		glLightModel(GL_LIGHT_MODEL_AMBIENT, asFloatBuffer(new float[] { 0.05f,
+				0.05f, 0.05f, 1f }));
+		glLight(GL_LIGHT0, GL_POSITION,
+				asFloatBuffer(new float[] { 0, 0, 0, 1 }));
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glEnable(GL_COLOR_MATERIAL);
+		glColorMaterial(GL_FRONT, GL_DIFFUSE);
+	}
+	private static FloatBuffer asFloatBuffer(float... values) {
+		FloatBuffer buffer = BufferUtils.createFloatBuffer(values.length);
+		buffer.put(values);
+		buffer.flip();
+		return buffer;
+	}
 
     public void setTexture(String path, int textureid){
         InputStream in = null;
@@ -631,20 +767,20 @@ public class Minedraft {
           position.x = newPosition.x;
         }
         if (flyUp && keyUp) {
-            position.z += tileSpep;
+            position.z += tileStep;
          }
         if (flyUp && keyDown) {
-            position.z -= tileSpep;
+            position.z -= tileStep;
           }
         if (flyUp && keyRight) {
-            position.x -= tileSpep;
+            position.x -= tileStep;
           }
         if (flyUp && keyLeft) {
-            position.x += tileSpep;
+            position.x += tileStep;
           }
         if(position.x <= -gridSize){position.x = -gridSize;}
         if(position.x >= gridSize){position.x = gridSize;}
-        if(position.y > 0){position.y = 0;}
+//        if(position.y > 0){position.y = 0;}
         if(position.z <= -gridSize){position.z = -gridSize;}
         if(position.z >= gridSize){position.z = gridSize;}
 //        if (moveFaster && !moveSlower) {
