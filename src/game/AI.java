@@ -39,21 +39,19 @@ class AiAlgorithm extends AI
 			eval = e;
 		}
 	};	
-	public void action(Board board){
-		
-	}
 	public void move(Board board)
 	{
+		// 移動可能位置の取得
 		Vector<Point> movables = board.getMovablePos();
 		// これ以降を工夫してAIを作る．
 		Point p = null;
 		Random rand = new Random();
-		p = (Point) movables.get((int)(rand.nextDouble()*movables.size()));
-		// 実際に手を進める
+		// 適当に移動
+		p = (Point)movables.get((int)(rand.nextDouble()*movables.size()));
 		board.move(p);
+		// 適当に向き変える
 		board.angle(rand.nextFloat()*360);
+		// 適当に物投げる
 		board.throwing(rand.nextFloat()*360);
-		System.out.print("\n"+p);
-		
 	}
 }

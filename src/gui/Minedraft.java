@@ -457,7 +457,7 @@ public class Minedraft implements Runnable{
         glRotatef(rotation.z, 0, 0, 1);
         glTranslatef(position.x, position.y, position.z);
         inputScanner();
-        Vector<game.Point> p = board.getEnemy();
+        Vector<game.Point> p = board.getEnemies();
         for(int i=0;i<p.size();i++){
         	Vector3f pp = convertPosition(p.get(i).x, p.get(i).y);
         	Sphere sphere = new Sphere(); 
@@ -621,7 +621,7 @@ public class Minedraft implements Runnable{
         int objectDisplayList = glGenLists(meta);
         glNewList(objectDisplayList, GL_COMPILE);
         {
-        Vector<game.Point> p = board.getEnemy();
+        Vector<game.Point> p = board.getEnemies();
         for(int i=0;i<p.size();i++){
         	Vector3f pp = convertPosition(p.get(i).x, p.get(i).y);
         	Sphere sphere = new Sphere(); 

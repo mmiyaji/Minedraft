@@ -197,10 +197,7 @@ public class Main implements Runnable{
 		System.out.println("Start");
     	main = new Main();
     	mainThread = new Thread(main);
-//    	minedraft = new Minedraft(main.getBoard());
     	window = new Window(true, main.getBoard());
-    	System.out.println("Minedraft start1");
-//    	minedraft.run();
     	main.mainLoop();
 	}
 	Boolean isWindow(String[] args){
@@ -208,7 +205,6 @@ public class Main implements Runnable{
 		Boolean flag = false;
 		for(int i=0; i<args.length; i++){
 			arg_tmp = args[i];
-			System.out.println(arg_tmp+";"+arg_tmp.charAt(0));
 			if(arg_tmp.equals("nw") || arg_tmp.equals("nowindow")){
 				flag = true;
 			}
@@ -231,10 +227,8 @@ public class Main implements Runnable{
 			System.out.println(current_turn);
 			((Player) players.get(current_turn)).onTurn(board);
 			if(is_window){
-//				minedraft.action(board);
 				window.repaint();
 				window.setBoard(board);
-//				board.showBoard();
 			}else{
 				board.showBoard();
 			}
@@ -248,6 +242,7 @@ public class Main implements Runnable{
 			stop = System.currentTimeMillis();
 			diff = stop - start;
 			System.out.println("ゲーム時間 : "+diff/1000.0+"秒");
+			
 			return 2;
 		}
 		catch(Exception e)
@@ -257,11 +252,10 @@ public class Main implements Runnable{
 			return 3;
 		}
 		try{
-			Thread.sleep(1000);
+			Thread.sleep(100);
 		}catch(InterruptedException e){}
 //		ターン交代
 		current_turn = ++current_turn % players.size();
-		System.out.println("C:"+current_turn);
 		return 0;
 	}
 }

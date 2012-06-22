@@ -79,7 +79,7 @@ public class Field extends JPanel{
 		g2.drawString("Turns: "+(board.getTurn())+" / "+ board.MAX_TURNS, 5, 20);
 		Vector d = board.getPlayersDamage();
 		for(int i=0;i<d.size();i++){
-			g2.drawString("Player"+i+": "+d.get(i), 150+100*i, 20);
+			g2.drawString("Player"+i+" damage: "+d.get(i), 150+200*i, 20);
 		}
 	}
 }

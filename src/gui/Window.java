@@ -32,7 +32,7 @@ public class Window extends JFrame{
 		field.repaint();
 	}
 	private void init(Board board) {
-		setTitle("Dreadnought");	// ウィンドウのタイトル
+		setTitle("Minedraft");	// ウィンドウのタイトル
 		initBounds();		// ウィンドウの位置の初期化
 		initLookFeel();		// ウィンドウの外観の初期化
 		setResizable(true);	// ウィンドウサイズを可変にする
