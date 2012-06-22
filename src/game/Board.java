@@ -1,5 +1,6 @@
 package game;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Vector;
 
@@ -36,7 +37,10 @@ public class Board{
 		Random rand = new Random(seed);
 		turns = 0;
 		current_player_id = 0;
+		int x = 0;
+		int y = 0;
 //		全マスを空にする
+//		Arrays.fill(board, Piece.EMPTY);
 		for(int i=0; i<WIDTH+2; i++){
 			for(int j=0; j<HEIGHT+2; j++){
 				board[i][j] = Piece.EMPTY;
@@ -51,30 +55,28 @@ public class Board{
 			board[0][j] = Piece.WALL;
 			board[WIDTH+1][j] = Piece.WALL;
 		}
+		// player配置
+		for(int i=0;i<players.size();i++){
+			Point point = players.get(i).getPosition();
+//			if(board[point.x][point.y] == Piece.EMPTY){
+//				break;
+//			}
+			PlayersPos.add(point);
+			board[point.x][point.y] = players.get(i).getType();
+		}
 //		ランダムに障害物（壁）配置
 		for(int i=1; i<=WIDTH; i++){
-			board[i][(int)(rand.nextDouble()*HEIGHT)+1] = Piece.WALL;
-		}
-		int x = 0;
-		int y = 0;
-		for(int i=0;i<ENEMY_NUM;i++){
-			while(true){
-				x = (int)(rand.nextDouble()*WIDTH)+1;
-				y = (int)(rand.nextDouble()*HEIGHT)+1;
-				if(board[x][y] == Piece.EMPTY){
-					break;
+			y = i;
+			for(int j=0;j<2;j++){
+				while(true){
+					x = (int)(rand.nextDouble()*WIDTH)+1;
+//					y = (int)(rand.nextDouble()*HEIGHT)+1;
+					if(board[x][y] == Piece.EMPTY || checkLabeling(x,y)){
+						break;
+					}
 				}
+				board[x][y] = Piece.WALL;
 			}
-			PlayersPos.add(new Point(x, y));
-////			無理やり型判定
-//			if(players.get(i) instanceof AIEnemy){
-////				board[x][y] = (int)((AIEnemy)players.get(i)).getType();
-//				board[x][y] = players.get(i).getType();
-//			}else if(players.get(i) instanceof AIPlayer){
-////				board[x][y] = (int)((AIPlayer)players.get(i)).TYPE;
-//				board[x][y] = players.get(i).getType();
-//			}
-			board[x][y] = players.get(i).getType();
 		}
 		initMovable();
 	}
@@ -98,6 +100,24 @@ public class Board{
 				}
 			}
 		}
+	}
+	public boolean checkLabeling(int x, int y){
+//		int[][] label = new int[Board.WIDTH][Board.HEIGHT];
+////		Arrays.fill(label, 0);
+//		for(int i=0; i<WIDTH; i++){
+//			for(int j=0; j<HEIGHT; j++){
+//				label[i][j] = 0;
+//			}
+//		}
+//		for(int i=1;i<=Board.WIDTH;i++){
+//			for(int j=0;j<=Board.HEIGHT;j++){
+//				if(label[x][y] == 0){}
+//			}
+//		}
+		return false;
+	}
+	public int getTurn(){
+		return this.turns;
 	}
 	public Point getPosition(int id){
 		Point point = new Point();

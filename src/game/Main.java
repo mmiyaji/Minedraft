@@ -10,6 +10,8 @@ interface Player{
 	public int getType();
 	public int getID();
 	public int getHP();
+	public Point getPosition();
+	public float getAngle();
 	public String getName();
 	public int getEnergy();
 	public void onTurn(Board board) throws Exception;
@@ -22,6 +24,8 @@ class HumanPlayer implements Player{
 	private int hp;
 	private int energy;
 	public String name = "Human";
+	private Point position = new Point(0, 0);
+	private float angle = 0.0f;
 	private int type = Piece.ME; 
 
 	public void onTurn(Board board) throws Exception
@@ -60,6 +64,10 @@ class HumanPlayer implements Player{
 	public int getEnergy(){return this.energy;}
 	@Override
 	public String getName(){return this.name;}
+	@Override
+	public Point getPosition() {return this.position;}
+	@Override
+	public float getAngle() {return this.angle;}
 }
 class AIEnemy implements Player
 {
@@ -68,6 +76,8 @@ class AIEnemy implements Player
 	private int hp;
 	private int energy;
 	public String name = "Enemy";
+	private Point position = new Point(5, 6);
+	private float angle = 0.0f;
 	private int type = Piece.ENEMY; 
 	public AIEnemy(String name, int id)
 	{
@@ -95,6 +105,10 @@ class AIEnemy implements Player
 	public int getEnergy(){return this.energy;}
 	@Override
 	public String getName(){return this.name;}
+	@Override
+	public Point getPosition() {return this.position;}
+	@Override
+	public float getAngle() {return this.angle;}
 };
 class AIPlayer implements Player
 {
@@ -103,6 +117,8 @@ class AIPlayer implements Player
 	private int hp;
 	private int energy;
 	private String name = "AI";
+	private Point position = new Point(1, 2);
+	private float angle = 0.0f;
 	private int type = Piece.ME; 
 	public AIPlayer(int id){
 		this.id = id;
@@ -136,18 +152,23 @@ class AIPlayer implements Player
 	public int getEnergy(){return this.energy;}
 	@Override
 	public String getName(){return this.name;}
+	@Override
+	public Point getPosition() {return this.position;}
+	@Override
+	public float getAngle() {return this.angle;}
 };
 public class Main implements Runnable{
-	final static int ENEMY_NUM = 12;
+	final static int ENEMY_NUM = 1;
 	int current_turn = 0;
 	Vector<Player> players;
-	private static Board board;
+	private Board board;
 	final Boolean is_window = true;
 	long start, stop, diff;
 	private static Main main;
 	private static Window window;
 	private static Minedraft minedraft;
 	private static Thread mainThread;
+    public static volatile boolean running = true;
 
 	public Main(){
 		System.out.print("Program start");
@@ -159,14 +180,6 @@ public class Main implements Runnable{
 		board = new Board(ENEMY_NUM, players);
 		window = null;
 		minedraft = null;
-
-//		if(is_window){
-////			window = new Window(true, board);
-//			minedraft = new Minedraft(board);
-////			mainThread = new Thread(minedraft);
-//			minedraft.run();
-////			mainThread.start()
-//		}
 		start = System.currentTimeMillis();
 	}
 	public Board getBoard(){
@@ -178,13 +191,10 @@ public class Main implements Runnable{
     	main = new Main();
     	mainThread = new Thread(main);
 //    	minedraft = new Minedraft(main.getBoard());
-    	window = new Window(true, board);
+    	window = new Window(true, main.getBoard());
     	System.out.println("Minedraft start1");
 //    	minedraft.run();
-
-//    	mainThread.start();
-//		Main main = new Main();
-//		main.run();
+    	main.mainLoop();
 	}
 	Boolean isWindow(String[] args){
 		String arg_tmp = "";
@@ -198,44 +208,53 @@ public class Main implements Runnable{
 		}
 		return flag;
 	}
+	private void mainLoop(){
+		int execFlag = 0;
+		while (running) {
+			execFlag = main.coreExec();
+			if(execFlag != 0){running = false;}
+		}
+	}
 	@Override
 	public void run() {
-//		while(true){
-			try{
-				System.out.println(current_turn);
-				((Player) players.get(current_turn)).onTurn(board);
-				if(is_window){
-//					minedraft.action(board);
-//					window.repaint();
-//					window.setBoard(board);
-					board.showBoard();
-				}else{
-					board.showBoard();
-				}
+		coreExec();
+	}
+	public int coreExec(){
+		try{
+			System.out.println(current_turn);
+			((Player) players.get(current_turn)).onTurn(board);
+			if(is_window){
+//				minedraft.action(board);
+				window.repaint();
+				window.setBoard(board);
+//				board.showBoard();
+			}else{
+				board.showBoard();
 			}
-			catch(ExitException e)
-			{
-				return;
-			}
-			catch(GameOverException e)
-			{
-				stop = System.currentTimeMillis();
-				diff = stop - start;
-				System.out.println("ゲーム時間 : "+diff/1000.0+"秒");
-				return;
-			}
-			catch(Exception e)
-			{
-				// 予期しない例外
-				System.out.println("Unexpected exception: " + e);
-				return;
-			}
-			try{
-				Thread.sleep(100);
-			}catch(InterruptedException e){}
-//			ターン交代
-			current_turn = ++current_turn % players.size();
-			System.out.println("C:"+current_turn);
-//		}
+		}
+		catch(ExitException e)
+		{
+			return 1;
+		}
+		catch(GameOverException e)
+		{
+			stop = System.currentTimeMillis();
+			diff = stop - start;
+			System.out.println("ゲーム時間 : "+diff/1000.0+"秒");
+			return 2;
+		}
+		catch(Exception e)
+		{
+			// 予期しない例外
+			System.out.println("Unexpected exception: " + e);
+			return 3;
+		}
+		try{
+			Thread.sleep(100);
+		}catch(InterruptedException e){}
+//		ターン交代
+		current_turn = ++current_turn % players.size();
+		System.out.println("C:"+current_turn);
+		return 0;
 	}
 }

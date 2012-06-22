@@ -51,5 +51,7 @@ public class Field extends JPanel{
 				}
 			}
 		}
+		g.setColor(Color.white);
+		g2.drawString("Turns: "+(board.getTurn()+1), 5, 15);
 	}
 }
