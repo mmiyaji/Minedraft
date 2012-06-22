@@ -9,8 +9,10 @@ import java.io.*;
 interface Player{
 	public int getType();
 	public int getID();
-	public int getHP();
+	public int getDamage();
+	public int damage();
 	public float getAngle();
+	public float setAngle(float angle);
 	public String getName();
 	public int getEnergy();
 	public void onTurn(Board board) throws Exception;
@@ -57,13 +59,15 @@ class HumanPlayer implements Player{
 	@Override
 	public int getType(){return this.type;}
 	@Override
-	public int getHP(){return this.hp;}
+	public int getDamage(){return this.hp;}
 	@Override
 	public int getEnergy(){return this.energy;}
 	@Override
 	public String getName(){return this.name;}
 	@Override
 	public float getAngle() {return this.angle;}
+	@Override
+	public float setAngle(float angle) {return this.angle = angle;}
 }
 class AIEnemy implements Player
 {
@@ -88,6 +92,7 @@ class AIEnemy implements Player
 		System.out.println(name+"が思考中...");
 		long start = System.currentTimeMillis();
 		enemy.move(board);
+		board.turnEnd();
 		System.out.println(" 完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
 		if(board.isGameOver()) throw new GameOverException();
 	}
@@ -96,13 +101,15 @@ class AIEnemy implements Player
 	@Override
 	public int getType(){return this.type;}
 	@Override
-	public int getHP(){return this.hp;}
+	public int getDamage(){return this.hp;}
 	@Override
 	public int getEnergy(){return this.energy;}
 	@Override
 	public String getName(){return this.name;}
 	@Override
 	public float getAngle() {return this.angle;}
+	@Override
+	public float setAngle(float angle) {return this.angle = angle;}
 };
 class AIPlayer implements Player
 {
@@ -132,6 +139,7 @@ class AIPlayer implements Player
 		System.out.println(name+"が思考中...");
 		long start = System.currentTimeMillis();
 		Ai.move(board);
+		board.turnEnd();
 		System.out.println(" 完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
 		if(board.isGameOver()) throw new GameOverException();
 	}
@@ -140,13 +148,15 @@ class AIPlayer implements Player
 	@Override
 	public int getType(){return this.type;}
 	@Override
-	public int getHP(){return this.hp;}
+	public int getDamage(){return this.hp;}
 	@Override
 	public int getEnergy(){return this.energy;}
 	@Override
 	public String getName(){return this.name;}
 	@Override
 	public float getAngle() {return this.angle;}
+	@Override
+	public float setAngle(float angle) {return this.angle = angle;}
 };
 public class Main implements Runnable{
 	final static int ENEMY_NUM = 1;
@@ -156,7 +166,7 @@ public class Main implements Runnable{
 	final Boolean is_window = true;
 	long start, stop, diff;
 	private static Main main;
-	private static Window window;
+	public static Window window;
 	private static Minedraft minedraft;
 	private static Thread mainThread;
     public static volatile boolean running = true;
@@ -168,7 +178,7 @@ public class Main implements Runnable{
 		for(int i=1;i<=ENEMY_NUM;i++){
 			players.add(new AIEnemy("Enemy"+i, i));
 		}
-		board = new Board(ENEMY_NUM, players);
+		board = new Board(ENEMY_NUM, players, this);
 		window = null;
 		minedraft = null;
 		start = System.currentTimeMillis();
@@ -241,7 +251,7 @@ public class Main implements Runnable{
 			return 3;
 		}
 		try{
-			Thread.sleep(100);
+			Thread.sleep(1000);
 		}catch(InterruptedException e){}
 //		ターン交代
 		current_turn = ++current_turn % players.size();

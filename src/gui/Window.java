@@ -1,10 +1,11 @@
 package gui;
 
-import game.*;
+import game.Board;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -68,4 +69,8 @@ public class Window extends JFrame{
 	public void setBoard(Board board){
 		field.setBoard(board);
 	}
+	public void paintArrow(Vector arrows){
+		field.paintArrow(arrows);
+	}
+
 }

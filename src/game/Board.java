@@ -1,5 +1,7 @@
 package game;
 
+import gui.Window;
+
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Vector;
@@ -7,11 +9,16 @@ import java.util.Vector;
 public class Board{
 	public static final int WIDTH = 11;
 	public static final int HEIGHT = 11;
+    private static int gridSizeX = WIDTH;
+    private static int gridSizeY = HEIGHT;
+    private static float tileSize = 1.0f;
 	public static final int MAX_TURNS  = 60;
 	private int[][] board = new int[WIDTH+2][HEIGHT+2];
 	private Vector<Point> PlayersPos = new Vector<Point>();
 	private Vector<Point> MovablePos[] = new Vector[MAX_TURNS+1];
 	private Vector<Player> Players;
+	private Vector Arrows;
+	private static Main main;
 	private int turns; // 手数(0からはじまる)
 	private int current_player_id;
 	private int ENEMY_NUM = 1;
@@ -24,9 +31,10 @@ public class Board{
 		
 //		initBoard(10);
 	}
-	public Board(int num, Vector<Player> players){
+	public Board(int num, Vector<Player> players, Main main){
 		ENEMY_NUM = players.size();
 		Players = players;
+		this.main = main;
 		// Vectorの配列を初期化
 		for(int i=0; i<=MAX_TURNS; i++){
 			MovablePos[i] = new Vector<Point>();
@@ -35,6 +43,7 @@ public class Board{
 	}
 	public void initBoard(long seed, Vector<Player> players){
 		Random rand = new Random(seed);
+		Arrows = new Vector();
 		turns = 0;
 		current_player_id = 0;
 		int x = 0;
@@ -57,7 +66,6 @@ public class Board{
 		}
 		// player配置
 		for(int i=0;i<players.size();i++){
-//			Point point = players.get(i).getPosition();
 			while(true){
 				x = (int)(rand.nextDouble()*WIDTH)+1;
 				y = (int)(rand.nextDouble()*HEIGHT)+1;
@@ -71,10 +79,9 @@ public class Board{
 //		ランダムに障害物（壁）配置
 		for(int i=1; i<=WIDTH; i++){
 			y = i;
-			for(int j=0;j<2;j++){
+			for(int j=0;j<1;j++){
 				while(true){
 					x = (int)(rand.nextDouble()*WIDTH)+1;
-//					y = (int)(rand.nextDouble()*HEIGHT)+1;
 					if(board[x][y] == Piece.EMPTY || checkLabeling(x,y)){
 						break;
 					}
@@ -138,8 +145,21 @@ public class Board{
 		}
 		return point;
 	}
+	public Vector getArrow(){
+		return this.Arrows;
+	}
 	public int getPoint(int x, int y){
 		return this.board[x][y];
+	}
+	public float getPointPlayerAngle(int x, int y){
+		int tmp = 0;
+		for(int i=0;i<PlayersPos.size();i++){
+			if(PlayersPos.get(i).x == x && PlayersPos.get(i).y == y){
+				tmp = i;
+				break;
+			}
+		}
+		return Players.get(tmp).getAngle();
 	}
 	public void setPoint(int x, int y, int object){
 		this.board[x][y] = object;
@@ -223,13 +243,51 @@ public class Board{
 			board[point.x][point.y] = tmp;
 			PlayersPos.set(current_player_id, point);
 		}
-		turns++;
-		current_player_id = ++current_player_id % (ENEMY_NUM);
-//		CurrentColor = -CurrentColor;
-		System.out.println(turns+"@"+ current_player_id);
-		initMovable();
 
 		return true;
+	}
+	public boolean angle(float angle){
+		System.out.println("angle " + angle);
+		Player player = Players.get(current_player_id);
+		player.setAngle(angle);
+		return true;
+	}
+	public boolean throwing(float angle){
+		System.out.println("throwing "+angle);
+		Player player = Players.get(current_player_id);
+		float arrow[] = {PlayersPos.get(player.getID()).x*tileSize+tileSize/2, PlayersPos.get(player.getID()).y*tileSize+tileSize/2};
+		Arrows.add(arrow);
+		while(true){
+			arrow[0] += Math.cos(angle)*Piece.DYNAMICS;
+			arrow[1] += Math.sin(angle)*Piece.DYNAMICS;
+			Point bpoint = convertRealToBoard(arrow[0], arrow[1]);
+			if(getPoint(bpoint.x, bpoint.y) != Piece.EMPTY && getPoint(bpoint.x, bpoint.y) != player.getType()){
+				break;
+			}
+			if(arrow[0]>WIDTH*tileSize || arrow[0]<0 ||
+					arrow[1]>HEIGHT*tileSize || arrow[1]<0 ){
+				break;
+			}
+			main.window.paintArrow(Arrows);
+			main.window.repaint();
+			try{
+				  Thread.sleep(10);
+				}catch (InterruptedException e){
+				}
+		}
+		Arrows.clear();
+		return true;
+	}
+	public Point convertRealToBoard(float x, float y){
+		int bx = (int)(x/tileSize);
+		int by = (int)(y/tileSize);
+		return new Point(bx, by);
+	}
+	public void turnEnd(){
+		turns++;
+		current_player_id = ++current_player_id % (ENEMY_NUM);
+		System.out.println(turns+"@"+ current_player_id);
+		initMovable();
 	}
 	public boolean pass()
 	{
@@ -237,9 +295,6 @@ public class Board{
 		if(MovablePos[turns].size() != 0) return false;
 		// ゲームが終了しているなら、パスできない
 		if(isGameOver()) return false;
-//
-//		CurrentColor = -CurrentColor;
-//		
 //		UpdateLog.add(new Vector());
 		turns++;
 		current_player_id = ++current_player_id % (ENEMY_NUM);

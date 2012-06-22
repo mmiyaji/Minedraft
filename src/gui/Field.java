@@ -1,9 +1,12 @@
 package gui;
 
+import game.Board;
+import game.Piece;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import game.*;
+import java.util.Vector;
 
 import javax.swing.JPanel;
 
@@ -14,6 +17,7 @@ public class Field extends JPanel{
 	 * メインバトルフィールドを描画するクラス
 	 */
 	private static final long serialVersionUID = 1L;
+	volatile Vector arrows;
 	public static void main(String[] args) {
 		Window window = new Window(true);
 	}
@@ -22,11 +26,16 @@ public class Field extends JPanel{
 		setBoard(new Board());
 	}
 	public Field(Board board){
+		arrows = new Vector();
 		setBoard(board);
 	}
 	public void setBoard(Board board){
 		this.board = board;
 	}
+	public void paintArrow(Vector arrows){
+		this.arrows = arrows;
+	}
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -49,9 +58,25 @@ public class Field extends JPanel{
 					g.setColor(Piece.COLORS[board.getPoint(i, j)]);
 					g2.fillRect((int)((float)(w*(i))/(Board.WIDTH+2)), (int)((float)(h*(j))/(Board.HEIGHT+2)), w/(Board.WIDTH+2)+1, h/(Board.HEIGHT+2)+1);
 				}
+				if(board.getPoint(i, j) == Piece.ME || board.getPoint(i, j) == Piece.ENEMY){
+					g.setColor(Piece.COLORS[4]);
+					float angle = board.getPointPlayerAngle(i, j);
+					float angleS = angle-50;
+					g2.fillArc((int)((float)(w*(i))/(Board.WIDTH+2)), (int)((float)(h*(j))/(Board.HEIGHT+2)), 
+							w/(Board.WIDTH+2)+1, h/(Board.HEIGHT+2)+1, 
+							(int)angleS, 100);
+				}
 			}
 		}
+		for(int i=0;i<this.arrows.size();i++){
+			g.setColor(Piece.COLORS[5]);
+			float arrow[] = (float[])arrows.get(i);
+			g2.fillArc((int)((float)(w*(arrow[0]))/(Board.WIDTH+2)), (int)((float)(h*(arrow[1]))/(Board.HEIGHT+2)), 
+					15, 15,
+					0, 360);
+		}
+
 		g.setColor(Color.white);
-		g2.drawString("Turns: "+(board.getTurn()+1), 5, 15);
+		g2.drawString("Turns: "+(board.getTurn()), 5, 15);
 	}
 }
