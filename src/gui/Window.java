@@ -22,10 +22,6 @@ public class Window extends JFrame{
 		this.init(board);
 		this.setVisible(isVisible);
 	}
-	
-	public static void main(String[] args) {
-		Window window = new Window(true);
-	}
 	@Override
 	public void repaint(){
 		super.repaint();
@@ -69,7 +65,7 @@ public class Window extends JFrame{
 	public void setBoard(Board board){
 		field.setBoard(board);
 	}
-	public void paintArrow(Vector arrows){
+	public void paintArrow(Vector<float[]> arrows){
 		field.paintArrow(arrows);
 	}
 

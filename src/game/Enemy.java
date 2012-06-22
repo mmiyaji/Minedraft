@@ -53,31 +53,19 @@ class EnemyAlgorithm extends Enemy
 		board.angle(rand.nextFloat()*360);
 		// 適当に物投げる
 		// 敵の位置取得
-		Vector<Point> players = board.getPlayers();
-		Point playerPosition = players.get(0);
-		Player player = board.getPointPlayer(playerPosition.x, playerPosition.y);
+//		Vector<Point> players = board.getPlayers();
+//		Point playerPosition = players.get(0);
+//		Player player = board.getPointPlayer(playerPosition.x, playerPosition.y);
 		
 		// 自分の位置取得
-		Player me = (Player)board.getME();
-		Point currentPosition = board.getPosition(me.getID());
+//		Player me = (Player)board.getME();
+//		Point currentPosition = board.getPosition(me.getID());
 		
-		// 敵のいる方向計算
-		float targetAngle = 0.0f;
-		targetAngle=(float)kakudo((playerPosition.x-currentPosition.x), (playerPosition.y-currentPosition.y));
-		System.out.println(targetAngle+" "+playerPosition.x+"/"+currentPosition.x);
-		board.throwing(targetAngle);
-	}
-	public int kakudo(double x,double y) { /*ベクトルの角度を計算*/
-		  double s;
-		  int deg;
-		  s=Math.acos(x/Math.sqrt(x*x+y*y)); /*角度θを求める*/
-		  s=(s/Math.PI)*180.0; /* ラジアンを度に変換 */
-		  if (y<0) /* θ＞πの時 */
-		      s=360-s;
-		  deg=(int)Math.floor(s);
-		  if ((s-deg)>=0.5) /*小数点を四捨五入*/
-		      deg++;
-		  return deg; /*角度θを返す*/
+		// 適当に向き変える
+		float angle = rand.nextFloat()*360;
+		board.angle(angle);
+		// 適当に物投げる
+		board.throwing(angle);
 	}
 }
 

@@ -1,23 +1,19 @@
 package game;
 
-import gui.Window;
-
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Vector;
 
 public class Board{
-	public static final int WIDTH = 11;
-	public static final int HEIGHT = 11;
-    private static int gridSizeX = WIDTH;
-    private static int gridSizeY = HEIGHT;
+	public static final int WIDTH = 9;
+	public static final int HEIGHT = 9;
     private static float tileSize = 1.0f;
-	public static final int MAX_TURNS  = 60;
+	public static final int MAX_TURNS  = 20;
 	private int[][] board = new int[WIDTH+2][HEIGHT+2];
 	private Vector<Point> PlayersPos = new Vector<Point>();
+	@SuppressWarnings("unchecked")
 	private Vector<Point> MovablePos[] = new Vector[MAX_TURNS+1];
 	private Vector<Player> Players;
-	private Vector Arrows;
+	private Vector<float[]> Arrows;
 	private static Main main;
 	private int turns; // 手数(0からはじまる)
 	private int current_player_id;
@@ -107,6 +103,7 @@ public class Board{
 		player.setAngle(angle);
 		return true;
 	}
+	@SuppressWarnings("static-access")
 	public boolean throwing(float angle){
 		System.out.println("throwing "+angle);
 		Player player = Players.get(current_player_id);
@@ -123,8 +120,8 @@ public class Board{
 				}
 				break;
 			}
-			if(arrow[0]>WIDTH*tileSize || arrow[0]<0 ||
-					arrow[1]>HEIGHT*tileSize || arrow[1]<0 ){
+			if(arrow[0]>(WIDTH+2)*tileSize || arrow[0]<0 ||
+					arrow[1]>(HEIGHT+2)*tileSize || arrow[1]<0 ){
 				break;
 			}
 			main.window.paintArrow(Arrows);
@@ -142,8 +139,8 @@ public class Board{
 		int by = (int)(y/tileSize);
 		return new Point(bx, by);
 	}
-	public Vector getPlayersDamage(){
-		Vector d = new Vector();
+	public Vector<Object> getPlayersDamage(){
+		Vector<Object> d = new Vector<Object>();
 		for(int i=0;i<Players.size();i++){
 			d.add(Players.get(i).getDamage());
 		}
@@ -167,7 +164,7 @@ public class Board{
 	public Board(int num, Vector<Player> players, Main main){
 		ENEMY_NUM = players.size();
 		Players = players;
-		this.main = main;
+		Board.main = main;
 		// Vectorの配列を初期化
 		for(int i=0; i<=MAX_TURNS; i++){
 			MovablePos[i] = new Vector<Point>();
@@ -176,7 +173,7 @@ public class Board{
 	}
 	public void initBoard(long seed, Vector<Player> players){
 		Random rand = new Random(seed);
-		Arrows = new Vector();
+		Arrows = new Vector<float[]>();
 		turns = 0;
 		current_player_id = 0;
 		int x = 0;
@@ -239,7 +236,7 @@ public class Board{
 		return false;
 	}
 
-	public Vector getArrow(){
+	public Vector<float[]> getArrow(){
 		return this.Arrows;
 	}
 	public float getPointPlayerAngle(int x, int y){
@@ -252,9 +249,9 @@ public class Board{
 		}
 		return Players.get(tmp).getAngle();
 	}
-	private void setPoint(int x, int y, int object){
-		this.board[x][y] = object;
-	}
+//	private void setPoint(int x, int y, int object){
+//		this.board[x][y] = object;
+//	}
 	public Vector<Point> getHazard(){
 		Vector<Point> p = new Vector<Point>();
 		for(int i=1;i<=WIDTH;i++){
@@ -268,7 +265,7 @@ public class Board{
 	}
 
 	public boolean isGameOver(){
-		// 60手に達していたらゲーム終了
+		// 規定ターンに達していたらゲーム終了
 		if(turns == MAX_TURNS) return true;
 		return false;
 	}
@@ -278,10 +275,8 @@ public class Board{
 	}
 	public boolean move(Point point)
 	{
-		System.out.println("move");
 		if(point.x <= 0 || point.x > WIDTH) return false;
 		if(point.y <= 0 || point.y > HEIGHT) return false;
-		Player player = Players.get(current_player_id);
 		Point pos = PlayersPos.get(current_player_id);
 		int tmp = 0;
 		if(board[point.x][point.y] == Piece.EMPTY){
@@ -305,5 +300,4 @@ public class Board{
 		initMovable();
 		return true;
 	}
-
 }

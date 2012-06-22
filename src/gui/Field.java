@@ -17,22 +17,19 @@ public class Field extends JPanel{
 	 * メインバトルフィールドを描画するクラス
 	 */
 	private static final long serialVersionUID = 1L;
-	volatile Vector arrows;
-	public static void main(String[] args) {
-		Window window = new Window(true);
-	}
+	volatile Vector<float[]> arrows;
 	private Board board;
 	public Field(){
 		setBoard(new Board());
 	}
 	public Field(Board board){
-		arrows = new Vector();
+		arrows = new Vector<float[]>();
 		setBoard(board);
 	}
 	public void setBoard(Board board){
 		this.board = board;
 	}
-	public void paintArrow(Vector arrows){
+	public void paintArrow(Vector<float[]> arrows){
 		this.arrows = arrows;
 	}
 	
@@ -76,9 +73,10 @@ public class Field extends JPanel{
 					0, 360);
 		}
 		g.setColor(Color.white);
-		g2.drawString("Turns: "+(board.getTurn())+" / "+ board.MAX_TURNS, 5, 20);
-		Vector d = board.getPlayersDamage();
+		g2.drawString("Turns: "+(board.getTurn())+" / "+ Board.MAX_TURNS, 5, 20);
+		Vector<Object> d = board.getPlayersDamage();
 		for(int i=0;i<d.size();i++){
+//			g.setColor(Piece.COLORS[3-i]);
 			g2.drawString("Player"+i+" damage: "+d.get(i), 150+200*i, 20);
 		}
 	}

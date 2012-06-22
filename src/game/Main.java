@@ -1,10 +1,6 @@
 package game;
 import gui.Window;
-import gui.Minedraft;
-
-//import java.util.Random;
 import java.util.Vector;
-import java.io.*;
 
 interface Player{
 	public int getType();
@@ -20,57 +16,6 @@ interface Player{
 class UndoException extends Exception{private static final long serialVersionUID = 1L;}
 class ExitException extends Exception{private static final long serialVersionUID = 1L;}
 class GameOverException extends Exception{private static final long serialVersionUID = 1L;}
-class HumanPlayer implements Player{
-	private int id;
-	private int damage;
-	private int energy;
-	public String name = "Human";
-	private float angle = 0.0f;
-	private int type = Piece.ME; 
-
-	public void onTurn(Board board) throws Exception
-	{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		while(true){
-			System.out.print("手を\"f5\"のように入力、もしくは(U:取消/X:終了)を入力してください:");
-			String in = br.readLine();
-			if(in.equalsIgnoreCase("U")) throw new UndoException();
-			if(in.equalsIgnoreCase("X")) throw new ExitException();
-			Point p;
-			try{
-				p = new Point(in);
-			}
-			catch(IllegalArgumentException e)
-			{
-				System.out.println("正しい形式で入力してください！");
-				continue;
-			}
-			if(!board.move(p))
-			{
-				System.out.println("そこには置けません！");
-				continue;
-			}
-			if(board.isGameOver()) throw new GameOverException();
-			break;
-		}
-	}
-	@Override
-	public int getID(){return this.id;}
-	@Override
-	public int getType(){return this.type;}
-	@Override
-	public int getDamage(){return this.damage;}
-	@Override
-	public int damage(){this.damage++; return this.damage;}
-	@Override
-	public int getEnergy(){return this.energy;}
-	@Override
-	public String getName(){return this.name;}
-	@Override
-	public float getAngle() {return this.angle;}
-	@Override
-	public float setAngle(float angle) {return this.angle = angle;}
-}
 class AIEnemy implements Player
 {
 	private Enemy enemy = null;
@@ -78,7 +23,6 @@ class AIEnemy implements Player
 	private int damage;
 	private int energy;
 	public String name = "Enemy";
-	private Point position = new Point(5, 6);
 	private float angle = 0.0f;
 	private int type = Piece.ENEMY; 
 	public AIEnemy(String name, int id)
@@ -173,8 +117,6 @@ public class Main implements Runnable{
 	long start, stop, diff;
 	private static Main main;
 	public static Window window;
-	private static Minedraft minedraft;
-	private static Thread mainThread;
     public static volatile boolean running = true;
 
 	public Main(){
@@ -186,7 +128,6 @@ public class Main implements Runnable{
 		}
 		board = new Board(ENEMY_NUM, players, this);
 		window = null;
-		minedraft = null;
 		start = System.currentTimeMillis();
 	}
 	public Board getBoard(){
@@ -196,7 +137,6 @@ public class Main implements Runnable{
 	public static void main(String[] args) {
 		System.out.println("Start");
     	main = new Main();
-    	mainThread = new Thread(main);
     	window = new Window(true, main.getBoard());
     	main.mainLoop();
 	}
