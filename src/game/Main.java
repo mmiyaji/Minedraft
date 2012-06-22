@@ -10,7 +10,6 @@ interface Player{
 	public int getType();
 	public int getID();
 	public int getHP();
-	public Point getPosition();
 	public float getAngle();
 	public String getName();
 	public int getEnergy();
@@ -24,7 +23,6 @@ class HumanPlayer implements Player{
 	private int hp;
 	private int energy;
 	public String name = "Human";
-	private Point position = new Point(0, 0);
 	private float angle = 0.0f;
 	private int type = Piece.ME; 
 
@@ -65,8 +63,6 @@ class HumanPlayer implements Player{
 	@Override
 	public String getName(){return this.name;}
 	@Override
-	public Point getPosition() {return this.position;}
-	@Override
 	public float getAngle() {return this.angle;}
 }
 class AIEnemy implements Player
@@ -106,8 +102,6 @@ class AIEnemy implements Player
 	@Override
 	public String getName(){return this.name;}
 	@Override
-	public Point getPosition() {return this.position;}
-	@Override
 	public float getAngle() {return this.angle;}
 };
 class AIPlayer implements Player
@@ -117,7 +111,6 @@ class AIPlayer implements Player
 	private int hp;
 	private int energy;
 	private String name = "AI";
-	private Point position = new Point(1, 2);
 	private float angle = 0.0f;
 	private int type = Piece.ME; 
 	public AIPlayer(int id){
@@ -152,8 +145,6 @@ class AIPlayer implements Player
 	public int getEnergy(){return this.energy;}
 	@Override
 	public String getName(){return this.name;}
-	@Override
-	public Point getPosition() {return this.position;}
 	@Override
 	public float getAngle() {return this.angle;}
 };

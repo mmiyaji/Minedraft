@@ -57,12 +57,16 @@ public class Board{
 		}
 		// player配置
 		for(int i=0;i<players.size();i++){
-			Point point = players.get(i).getPosition();
-//			if(board[point.x][point.y] == Piece.EMPTY){
-//				break;
-//			}
-			PlayersPos.add(point);
-			board[point.x][point.y] = players.get(i).getType();
+//			Point point = players.get(i).getPosition();
+			while(true){
+				x = (int)(rand.nextDouble()*WIDTH)+1;
+				y = (int)(rand.nextDouble()*HEIGHT)+1;
+				if(board[x][y] == Piece.EMPTY){
+					break;
+				}
+			}
+			PlayersPos.add(new Point(x, y));
+			board[x][y] = players.get(i).getType();
 		}
 //		ランダムに障害物（壁）配置
 		for(int i=1; i<=WIDTH; i++){
@@ -83,16 +87,18 @@ public class Board{
 	private void initMovable(){
 		MovablePos[turns].clear();
 		Player player = Players.get(current_player_id);
-		Boolean me = true;
-		Point pos;
-		if(player instanceof AIEnemy){
-			me = false;
-			pos = PlayersPos.get((int)((AIEnemy)player).getID());
-			System.out.println(((AIEnemy)player).name+":"+current_player_id);
-		}else{
-			pos = PlayersPos.get((int)((AIPlayer)player).getID());
-			System.out.println(player.getName()+":"+current_player_id);
-		}
+		Point pos = PlayersPos.get(player.getID());
+		System.out.println(pos.x+ "/" + pos.y);
+
+//		if(player instanceof AIEnemy){
+//			me = false;
+//			pos = PlayersPos.get((int)((AIEnemy)player).getID());
+//			System.out.println(((AIEnemy)player).name+":"+current_player_id);
+//		}else{
+//			pos = PlayersPos.get((int)((AIPlayer)player).getID());
+//			System.out.println(player.getName()+":"+current_player_id);
+//		}
+		
 		for(int i=0;i<3;i++){
 			for(int j=0;j<3;j++){
 				if(board[pos.x-1+i][pos.y-1+j] == Piece.EMPTY){
