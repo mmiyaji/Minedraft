@@ -141,12 +141,14 @@ public class Main implements Runnable{
 	final static int ENEMY_NUM = 12;
 	int current_turn = 0;
 	Vector<Player> players;
-	Board board;
-	Window window;
-	Minedraft minedraft;
-	Thread mainThread;
+	private static Board board;
 	final Boolean is_window = true;
 	long start, stop, diff;
+	private static Main main;
+	private static Window window;
+	private static Minedraft minedraft;
+	private static Thread mainThread;
+
 	public Main(){
 		System.out.print("Program start");
 		players = new Vector<Player>();
@@ -158,19 +160,31 @@ public class Main implements Runnable{
 		window = null;
 		minedraft = null;
 
-		if(is_window){
-//			window = new Window(true, board);
-			minedraft = new Minedraft(board);
-//			mainThread = new Thread(minedraft);
+//		if(is_window){
+////			window = new Window(true, board);
+//			minedraft = new Minedraft(board);
+////			mainThread = new Thread(minedraft);
 //			minedraft.run();
-//			mainThread.start()
-		}
+////			mainThread.start()
+//		}
 		start = System.currentTimeMillis();
 	}
+	public Board getBoard(){
+		return this.board;
+	}
+ 
 	public static void main(String[] args) {
 		System.out.println("Start");
-		Main main = new Main();
-		main.run();
+    	main = new Main();
+    	mainThread = new Thread(main);
+//    	minedraft = new Minedraft(main.getBoard());
+    	window = new Window(true, board);
+    	System.out.println("Minedraft start1");
+//    	minedraft.run();
+
+//    	mainThread.start();
+//		Main main = new Main();
+//		main.run();
 	}
 	Boolean isWindow(String[] args){
 		String arg_tmp = "";
@@ -186,14 +200,15 @@ public class Main implements Runnable{
 	}
 	@Override
 	public void run() {
-		while(true){
+//		while(true){
 			try{
 				System.out.println(current_turn);
 				((Player) players.get(current_turn)).onTurn(board);
 				if(is_window){
-					minedraft.action(board);
+//					minedraft.action(board);
 //					window.repaint();
 //					window.setBoard(board);
+					board.showBoard();
 				}else{
 					board.showBoard();
 				}
@@ -220,6 +235,7 @@ public class Main implements Runnable{
 			}catch(InterruptedException e){}
 //			ターン交代
 			current_turn = ++current_turn % players.size();
-		}
+			System.out.println("C:"+current_turn);
+//		}
 	}
 }

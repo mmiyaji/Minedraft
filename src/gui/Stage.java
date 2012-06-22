@@ -119,7 +119,7 @@ import de.matthiasmann.twl.utils.PNGDecoder.Format;
 *
 * @author Oskar Veerhoek, Yan Chernikov
 */
-public class Minedraft implements Runnable{
+public class Stage implements Runnable{
 
     /**
 * Defines if the application is resizable.
@@ -153,14 +153,13 @@ public class Minedraft implements Runnable{
 * The width and length of the floor and ceiling. Don't put anything above
 * 1000, or OpenGL will start to freak out, though.
 */
-    private static int gridSizeX = 10;
-    private static int gridSizeY = 10;
-    private static int gridSizeZ = 10;
+    public static final int gridSize = 10;
     /**
 * The size of tiles, where 0.5 is the standard size. Increasing the size by
 * results in smaller tiles, and vice versa.
 */
-    private static float tileSize = 1.0f;
+    public static float tileSize = 0.21f;
+    public static float tileStep = gridSize/(tileSize*100);
     /**
 * The maximal distance from the camera where objects are rendered.
 */
@@ -254,8 +253,7 @@ public class Minedraft implements Runnable{
 				Display.destroy();
 				System.exit(1);
 			}
-//            glTranslatef(-tileStep*5, -1.0f, -tileStep*5);
-			glTranslatef(1.0f, -1.0f, 1.0f);
+            glTranslatef(-tileStep*5, -1.0f, -tileStep*5);
 			GL11.glScalef(0.1f, 0.1f, 0.1f);
 			glBegin(GL_TRIANGLES);
 			for (Face face : m.faces) {
@@ -297,25 +295,24 @@ public class Minedraft implements Runnable{
         }
         fps++;
     }
-    public Minedraft(){
+    public Stage(){
     	board = new Board();
     	sizeX = board.WIDTH;
     	sizeY = board.HEIGHT;
-    	gridSizeX = board.WIDTH;
-    	gridSizeY = board.HEIGHT;
+    	tileSize = board.WIDTH/100.0f;
+    	tileStep = gridSize/(tileSize*100);
     	init();
     }
-    public Minedraft(Board board){
+    public Stage(Board board){
     	this.board = board;
     	sizeX = board.WIDTH;
     	sizeY = board.HEIGHT;
-    	gridSizeX = board.WIDTH;
-    	gridSizeY = board.HEIGHT;
+    	tileSize = board.WIDTH/100.0f;
+    	tileStep = gridSize/(tileSize*100);
     	init();
     }
     public Vector3f convertPosition(int x , int y){
-//    	0, 0, 0 -> (gridSizeX*tileSize/2)*(x-gridSizeX/2)
-    	return new Vector3f(tileSize*(x-1-gridSizeX/2), tileSize*(y-1-gridSizeY/2), 0.0f);
+    	return new Vector3f(tileStep*(x-sizeX), tileStep*(y-sizeY), 0.0f);
     }
     public void init(){
         try {
@@ -384,10 +381,10 @@ public class Minedraft implements Runnable{
         ceilingDisplayList = glGenLists(1);
         glNewList(ceilingDisplayList, GL_COMPILE);
         glBegin(GL_QUADS);
-        	glTexCoord2f(0, 0); glVertex3f(-gridSizeX*tileSize/2, ceilingHeight, -gridSizeY*tileSize/2);
-        	glTexCoord2f(gridSizeX, 0); glVertex3f(gridSizeX*tileSize/2, ceilingHeight, -gridSizeY*tileSize/2);
-        	glTexCoord2f(gridSizeX, gridSizeY); glVertex3f(gridSizeX*tileSize/2, ceilingHeight, gridSizeY*tileSize/2);
-        	glTexCoord2f(0, gridSizeY); glVertex3f(-gridSizeX*tileSize/2, ceilingHeight, gridSizeY*tileSize/2);
+        	glTexCoord2f(0, 0); glVertex3f(-gridSize, ceilingHeight, -gridSize);
+        	glTexCoord2f(gridSize * 10 * tileSize, 0); glVertex3f(gridSize, ceilingHeight, -gridSize);
+        	glTexCoord2f(gridSize * 10 * tileSize, gridSize * 10 * tileSize); glVertex3f(gridSize, ceilingHeight, gridSize);
+        	glTexCoord2f(0, gridSize * 10 * tileSize); glVertex3f(-gridSize, ceilingHeight, gridSize);
         glEnd();
         glEndList();
 
@@ -403,13 +400,13 @@ public class Minedraft implements Runnable{
         getDelta();
         lastFPS = getTime();
     }
-    private static Minedraft minedraft;
+    private static Stage minedraft;
     private static Thread mainThread;
     private static Main main;
     public static void main(String[] args) {
     	main = new Main();
     	mainThread = new Thread(main);
-    	minedraft = new Minedraft(main.getBoard());
+    	minedraft = new Stage(main.getBoard());
     	System.out.println("Minedraft start1");
     	minedraft.run();
 //    	mainThread.start();
@@ -456,20 +453,8 @@ public class Minedraft implements Runnable{
         glRotatef(rotation.y, 0, 1, 0);
         glRotatef(rotation.z, 0, 0, 1);
         glTranslatef(position.x, position.y, position.z);
-        inputScanner();
-        Vector<game.Point> p = board.getEnemy();
-        for(int i=0;i<p.size();i++){
-        	Vector3f pp = convertPosition(p.get(i).x, p.get(i).y);
-        	Sphere sphere = new Sphere(); 
-//        	sphere.setDrawStyle(GLU.GLU_FILL);
-        	GL11.glPushMatrix();
-        		GL11.glRotatef(-90, 1, 0, 0);
-//        		GL11.glMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_DIFFUSE, null);
-        		GL11.glTranslatef(pp.x, pp.y, tileSize/2);
-        		sphere.draw(tileSize/2, 16, 16);
-        	GL11.glPopMatrix();
-        }
 
+        inputScanner();
 //        GL11.glPushMatrix();
 //        	tposition.x +=0.01;
 //        	glTranslatef(tposition.x, tposition.y, tposition.z);
@@ -515,46 +500,46 @@ public class Minedraft implements Runnable{
         // North wall
 
         glTexCoord2f(0, 0);
-        glVertex3f(-gridSizeX*tileSize/2, floorHeight, -gridSizeY*tileSize/2);
-        glTexCoord2f(0, gridSizeY);
-        glVertex3f(gridSizeX*tileSize/2, floorHeight, -gridSizeY*tileSize/2);
-        glTexCoord2f(gridSizeX, gridSizeY);
-        glVertex3f(gridSizeX*tileSize/2, ceilingHeight, -gridSizeY*tileSize/2);
-        glTexCoord2f(gridSizeX, 0);
-        glVertex3f(-gridSizeX*tileSize/2, ceilingHeight, -gridSizeY*tileSize/2);
+        glVertex3f(-gridSize, floorHeight, -gridSize);
+        glTexCoord2f(0, gridSize * 10 * tileSize);
+        glVertex3f(gridSize, floorHeight, -gridSize);
+        glTexCoord2f(gridSize * 10 * tileSize, gridSize * 10 * tileSize);
+        glVertex3f(gridSize, ceilingHeight, -gridSize);
+        glTexCoord2f(gridSize * 10 * tileSize, 0);
+        glVertex3f(-gridSize, ceilingHeight, -gridSize);
 
         // West wall
 
         glTexCoord2f(0, 0);
-        glVertex3f(-gridSizeX*tileSize/2, floorHeight, -gridSizeY*tileSize/2);
-        glTexCoord2f(gridSizeX, 0);
-        glVertex3f(-gridSizeX*tileSize/2, ceilingHeight, -gridSizeY*tileSize/2);
-        glTexCoord2f(gridSizeX, gridSizeY);
-        glVertex3f(-gridSizeX*tileSize/2, ceilingHeight, +gridSizeY*tileSize/2);
-        glTexCoord2f(0, gridSizeY);
-        glVertex3f(-gridSizeX*tileSize/2, floorHeight, +gridSizeY*tileSize/2);
+        glVertex3f(-gridSize, floorHeight, -gridSize);
+        glTexCoord2f(gridSize * 10 * tileSize, 0);
+        glVertex3f(-gridSize, ceilingHeight, -gridSize);
+        glTexCoord2f(gridSize * 10 * tileSize, gridSize * 10 * tileSize);
+        glVertex3f(-gridSize, ceilingHeight, +gridSize);
+        glTexCoord2f(0, gridSize * 10 * tileSize);
+        glVertex3f(-gridSize, floorHeight, +gridSize);
 
         // East wall
 
         glTexCoord2f(0, 0);
-        glVertex3f(+gridSizeX*tileSize/2, floorHeight, -gridSizeY*tileSize/2);
-        glTexCoord2f(gridSizeX, 0);
-        glVertex3f(+gridSizeX*tileSize/2, floorHeight, +gridSizeY*tileSize/2);
-        glTexCoord2f(gridSizeX, gridSizeY);
-        glVertex3f(+gridSizeX*tileSize/2, ceilingHeight, +gridSizeY*tileSize/2);
-        glTexCoord2f(0, gridSizeY);
-        glVertex3f(+gridSizeX*tileSize/2, ceilingHeight, -gridSizeY*tileSize/2);
+        glVertex3f(+gridSize, floorHeight, -gridSize);
+        glTexCoord2f(gridSize * 10 * tileSize, 0);
+        glVertex3f(+gridSize, floorHeight, +gridSize);
+        glTexCoord2f(gridSize * 10 * tileSize, gridSize * 10 * tileSize);
+        glVertex3f(+gridSize, ceilingHeight, +gridSize);
+        glTexCoord2f(0, gridSize * 10 * tileSize);
+        glVertex3f(+gridSize, ceilingHeight, -gridSize);
 
         // South wall
 
         glTexCoord2f(0, 0);
-        glVertex3f(-gridSizeX*tileSize/2, floorHeight, +gridSizeY*tileSize/2);
-        glTexCoord2f(gridSizeX, 0);
-        glVertex3f(-gridSizeX*tileSize/2, ceilingHeight, +gridSizeY*tileSize/2);
-        glTexCoord2f(gridSizeX, gridSizeY);
-        glVertex3f(+gridSizeX*tileSize/2, ceilingHeight, +gridSizeY*tileSize/2);
-        glTexCoord2f(0, gridSizeY);
-        glVertex3f(+gridSizeX*tileSize/2, floorHeight, +gridSizeY*tileSize/2);
+        glVertex3f(-gridSize, floorHeight, +gridSize);
+        glTexCoord2f(gridSize * 10 * tileSize, 0);
+        glVertex3f(-gridSize, ceilingHeight, +gridSize);
+        glTexCoord2f(gridSize * 10 * tileSize, gridSize * 10 * tileSize);
+        glVertex3f(+gridSize, ceilingHeight, +gridSize);
+        glTexCoord2f(0, gridSize * 10 * tileSize);
+        glVertex3f(+gridSize, floorHeight, +gridSize);
 
         glEnd();
 
@@ -566,13 +551,13 @@ public class Minedraft implements Runnable{
         glNewList(floorDisplayList, GL_COMPILE);
         glBegin(GL_QUADS);
         glTexCoord2f(0, 0);
-        glVertex3f(-gridSizeX*tileSize/2, floorHeight, -gridSizeY*tileSize/2);
-        glTexCoord2f(0, gridSizeY);
-        glVertex3f(-gridSizeX*tileSize/2, floorHeight, gridSizeY*tileSize/2);
-        glTexCoord2f(gridSizeX, gridSizeY);
-        glVertex3f(gridSizeX*tileSize/2, floorHeight, gridSizeY*tileSize/2);
-        glTexCoord2f(gridSizeX, 0);
-        glVertex3f(gridSizeX*tileSize/2, floorHeight, -gridSizeY*tileSize/2);
+        glVertex3f(-gridSize, floorHeight, -gridSize);
+        glTexCoord2f(0, gridSize * 10 * tileSize);
+        glVertex3f(-gridSize, floorHeight, gridSize);
+        glTexCoord2f(gridSize * 10 * tileSize, gridSize * 10 * tileSize);
+        glVertex3f(gridSize, floorHeight, gridSize);
+        glTexCoord2f(gridSize * 10 * tileSize, 0);
+        glVertex3f(gridSize, floorHeight, -gridSize);
         glEnd();
         glEndList();
         return floorDisplayList;
@@ -621,18 +606,15 @@ public class Minedraft implements Runnable{
         int objectDisplayList = glGenLists(meta);
         glNewList(objectDisplayList, GL_COMPILE);
         {
-        Vector<game.Point> p = board.getEnemy();
-        for(int i=0;i<p.size();i++){
-        	Vector3f pp = convertPosition(p.get(i).x, p.get(i).y);
         	Sphere sphere = new Sphere(); 
 //        	sphere.setDrawStyle(GLU.GLU_FILL);
         	GL11.glPushMatrix();
         		GL11.glRotatef(-90, 1, 0, 0);
 //        		GL11.glMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_DIFFUSE, null);
-        		GL11.glTranslatef(pp.x, pp.y, tileSize/2);
-        		sphere.draw(tileSize/2, 16, 16);
+        		GL11.glTranslatef(0.0f, tileStep*10, 0.0f);
+        		System.out.println(tileStep*10);
+        		sphere.draw(tileStep, 16, 16);
         	GL11.glPopMatrix();
-        }
         }
         glEndList();
         return objectDisplayList;
@@ -644,13 +626,13 @@ public class Minedraft implements Runnable{
         {
         for(int i=0;i<p.size();i++){
         	Vector3f pp = convertPosition(p.get(i).x, p.get(i).y);
-        	System.out.println(p.get(i).x+"@"+pp.x+": "+p.get(i).y+"@"+pp.y);
+        	System.out.println(p.get(i).x+"@"+pp.x+":"+p.get(i).y+"@"+pp.y);
         	Cylinder cylinder = new Cylinder(); 
         	cylinder.setDrawStyle(GLU.GLU_FILL);
         	GL11.glPushMatrix();
         		GL11.glRotatef(-90, 1, 0, 0);
         		GL11.glTranslatef(pp.x, pp.y, -1.0f);
-        		cylinder.draw(tileSize/2, tileSize/2, gridSizeZ*tileSize+1.0f, 10, 4);
+        		cylinder.draw(tileStep, tileStep, gridSize+1.0f, 25, 16);
         	GL11.glPopMatrix();
         }
         }
@@ -794,25 +776,23 @@ public class Minedraft implements Runnable{
           position.x = newPosition.x;
         }
         if (flyUp && keyUp) {
-            position.z += tileSize;
+            position.z += tileStep;
          }
         if (flyUp && keyDown) {
-            position.z -= tileSize;
+            position.z -= tileStep;
           }
         if (flyUp && keyRight) {
-            position.x -= tileSize;
+            position.x -= tileStep;
           }
         if (flyUp && keyLeft) {
-            position.x += tileSize;
+            position.x += tileStep;
           }
-        if(position.x <= -gridSizeX*tileSize/2){position.x = -gridSizeX*tileSize/2;}
-        if(position.x >= gridSizeX*tileSize/2){position.x = gridSizeX*tileSize/2;}
+        if(position.x <= -gridSize){position.x = -gridSize;}
+        if(position.x >= gridSize){position.x = gridSize;}
 //        if(position.y > 0){position.y = 0;}
-        if(position.z <= -gridSizeY*tileSize/2){position.z = -gridSizeY*tileSize/2;}
-        if(position.z >= gridSizeY*tileSize/2){position.z = gridSizeY*tileSize/2;}
-
-        
-        //        if (moveFaster && !moveSlower) {
+        if(position.z <= -gridSize){position.z = -gridSize;}
+        if(position.z >= gridSize){position.z = gridSize;}
+//        if (moveFaster && !moveSlower) {
 //            walkingSpeed /= 4f;
 //        }
 //        if (moveSlower && !moveFaster) {
@@ -839,7 +819,6 @@ public class Minedraft implements Runnable{
                 	mainThread = new Thread(main);
                 }
             	mainThread.start();
-//                board.showBoard();
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
                 mouseSpeed += 1;

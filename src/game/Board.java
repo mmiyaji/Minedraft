@@ -120,8 +120,8 @@ public class Board{
 	}
 	public Vector<Point> getHazard(){
 		Vector<Point> p = new Vector<Point>();
-		for(int i=1;i<WIDTH;i++){
-			for(int j=1;j<HEIGHT;j++){
+		for(int i=1;i<=WIDTH;i++){
+			for(int j=1;j<=HEIGHT;j++){
 				if(this.getPoint(i, j)==Piece.WALL){
 					p.add(new Point(i, j));
 				}
@@ -129,9 +129,20 @@ public class Board{
 		}
 		return p;
 	}
+	public Vector<Point> getEnemy(){
+		Vector<Point> p = new Vector<Point>();
+		for(int i=1;i<=WIDTH;i++){
+			for(int j=1;j<=HEIGHT;j++){
+				if(this.getPoint(i, j)==Piece.ENEMY){
+					p.add(new Point(i, j));
+				}
+			}
+		}
+		return p;
+	}
 	public void showBoard(){
-		for(int i=0; i<=Board.WIDTH; i++){
-			for(int j=0; j<=Board.HEIGHT; j++){
+		for(int i=0; i<Board.WIDTH+2; i++){
+			for(int j=0; j<Board.HEIGHT+2; j++){
 				System.out.print(this.board[i][j]);
 			}
 			System.out.println("");
