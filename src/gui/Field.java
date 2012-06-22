@@ -75,8 +75,11 @@ public class Field extends JPanel{
 					15, 15,
 					0, 360);
 		}
-
 		g.setColor(Color.white);
-		g2.drawString("Turns: "+(board.getTurn()), 5, 15);
+		g2.drawString("Turns: "+(board.getTurn())+" / "+ board.MAX_TURNS, 5, 20);
+		Vector d = board.getPlayersDamage();
+		for(int i=0;i<d.size();i++){
+			g2.drawString("Player"+i+": "+d.get(i), 150+100*i, 20);
+		}
 	}
 }

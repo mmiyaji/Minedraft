@@ -41,7 +41,6 @@ class EnemyAlgorithm extends Enemy
 	};	
 	public void move(Board board)
 	{
-		this.start_time = System.currentTimeMillis();
 		Vector<Point> movables = board.getMovablePos();
 		// これ以降を工夫してAIを作る．
 		Point p = null;

@@ -22,7 +22,7 @@ class ExitException extends Exception{private static final long serialVersionUID
 class GameOverException extends Exception{private static final long serialVersionUID = 1L;}
 class HumanPlayer implements Player{
 	private int id;
-	private int hp;
+	private int damage;
 	private int energy;
 	public String name = "Human";
 	private float angle = 0.0f;
@@ -59,7 +59,9 @@ class HumanPlayer implements Player{
 	@Override
 	public int getType(){return this.type;}
 	@Override
-	public int getDamage(){return this.hp;}
+	public int getDamage(){return this.damage;}
+	@Override
+	public int damage(){this.damage++; return this.damage;}
 	@Override
 	public int getEnergy(){return this.energy;}
 	@Override
@@ -73,7 +75,7 @@ class AIEnemy implements Player
 {
 	private Enemy enemy = null;
 	private int id;
-	private int hp;
+	private int damage;
 	private int energy;
 	public String name = "Enemy";
 	private Point position = new Point(5, 6);
@@ -84,7 +86,7 @@ class AIEnemy implements Player
 		enemy = new EnemyAlgorithm();
 		this.name = name;
 		this.id = id;
-		this.hp = 100;
+		this.damage = 0;
 		this.energy = 1000;
 	}
 	public void onTurn(Board board) throws GameOverException
@@ -101,7 +103,9 @@ class AIEnemy implements Player
 	@Override
 	public int getType(){return this.type;}
 	@Override
-	public int getDamage(){return this.hp;}
+	public int getDamage(){return this.damage;}
+	@Override
+	public int damage(){this.damage++; return this.damage;}
 	@Override
 	public int getEnergy(){return this.energy;}
 	@Override
@@ -115,14 +119,14 @@ class AIPlayer implements Player
 {
 	private AI Ai = null;
 	private int id;
-	private int hp;
+	private int damage;
 	private int energy;
 	private String name = "AI";
 	private float angle = 0.0f;
 	private int type = Piece.ME; 
 	public AIPlayer(int id){
 		this.id = id;
-		this.hp = 100;
+		this.damage = 0;
 		this.energy = 1000;
 		Ai = new AiAlgorithm();
 	}
@@ -131,7 +135,7 @@ class AIPlayer implements Player
 		Ai = new AiAlgorithm();
 		this.name = name;
 		this.id = id;
-		this.hp = 100;
+		this.damage = 0;
 		this.energy = 1000;
 	}
 	public void onTurn(Board board) throws GameOverException
@@ -148,7 +152,9 @@ class AIPlayer implements Player
 	@Override
 	public int getType(){return this.type;}
 	@Override
-	public int getDamage(){return this.hp;}
+	public int getDamage(){return this.damage;}
+	@Override
+	public int damage(){this.damage++; return this.damage;}
 	@Override
 	public int getEnergy(){return this.energy;}
 	@Override

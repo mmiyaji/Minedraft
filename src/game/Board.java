@@ -95,17 +95,6 @@ public class Board{
 		MovablePos[turns].clear();
 		Player player = Players.get(current_player_id);
 		Point pos = PlayersPos.get(player.getID());
-		System.out.println(pos.x+ "/" + pos.y);
-
-//		if(player instanceof AIEnemy){
-//			me = false;
-//			pos = PlayersPos.get((int)((AIEnemy)player).getID());
-//			System.out.println(((AIEnemy)player).name+":"+current_player_id);
-//		}else{
-//			pos = PlayersPos.get((int)((AIPlayer)player).getID());
-//			System.out.println(player.getName()+":"+current_player_id);
-//		}
-		
 		for(int i=0;i<3;i++){
 			for(int j=0;j<3;j++){
 				if(board[pos.x-1+i][pos.y-1+j] == Piece.EMPTY){
@@ -151,6 +140,17 @@ public class Board{
 	public int getPoint(int x, int y){
 		return this.board[x][y];
 	}
+	public Player getPointPlayer(int x, int y){
+		int tmp = 0;
+		for(int i=0;i<PlayersPos.size();i++){
+			if(PlayersPos.get(i).x == x && PlayersPos.get(i).y == y){
+				tmp = i;
+				break;
+			}
+		}
+		return Players.get(tmp);
+	}
+
 	public float getPointPlayerAngle(int x, int y){
 		int tmp = 0;
 		for(int i=0;i<PlayersPos.size();i++){
@@ -262,6 +262,10 @@ public class Board{
 			arrow[1] += Math.sin(angle)*Piece.DYNAMICS;
 			Point bpoint = convertRealToBoard(arrow[0], arrow[1]);
 			if(getPoint(bpoint.x, bpoint.y) != Piece.EMPTY && getPoint(bpoint.x, bpoint.y) != player.getType()){
+				if(getPoint(bpoint.x, bpoint.y) != Piece.WALL){
+					Player p = getPointPlayer(bpoint.x, bpoint.y);
+					p.damage();
+				}
 				break;
 			}
 			if(arrow[0]>WIDTH*tileSize || arrow[0]<0 ||
@@ -282,6 +286,13 @@ public class Board{
 		int bx = (int)(x/tileSize);
 		int by = (int)(y/tileSize);
 		return new Point(bx, by);
+	}
+	public Vector getPlayersDamage(){
+		Vector d = new Vector();
+		for(int i=0;i<Players.size();i++){
+			d.add(Players.get(i).getDamage());
+		}
+		return d;
 	}
 	public void turnEnd(){
 		turns++;
