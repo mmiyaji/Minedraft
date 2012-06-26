@@ -133,12 +133,12 @@ public class Main implements Runnable{
 	public Board getBoard(){
 		return this.board;
 	}
- 
+
 	public static void main(String[] args) {
 		System.out.println("Start");
-    	main = new Main();
-    	window = new Window(true, main.getBoard());
-    	main.mainLoop();
+		main = new Main();
+		window = new Window(true, main.getBoard());
+		main.mainLoop();
 	}
 	Boolean isWindow(String[] args){
 		String arg_tmp = "";
@@ -181,6 +181,7 @@ public class Main implements Runnable{
 		{
 			stop = System.currentTimeMillis();
 			diff = stop - start;
+			System.out.println("ゲーム終了");
 			System.out.println("ゲーム時間 : "+diff/1000.0+"秒");
 			
 			return 2;
