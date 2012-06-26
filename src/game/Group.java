@@ -4,16 +4,21 @@ import java.util.Vector;
 
 public class Group {
 	private int id;
+	private String name;
 	Vector<Player> members;
-	public Group(int id){
-		this.setID(id);
+	public Group(String name, int id){
+		this.id = id;
+		this.name = name;
 		members = new Vector<Player>();
 	}
 	private void setID(int id) {
 		this.id = id;
 	}
 	public int getID() {
-		return id;
+		return this.id;
+	}
+	public String getName() {
+	    return this.name;
 	}
 	public boolean join(Player p){
 		for(int i=0;i<this.members.size();i++){

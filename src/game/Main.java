@@ -26,12 +26,13 @@ class AIEnemy implements Player
 	private int energy;
 	public String name = "Enemy";
 	private float angle = 0.0f;
-	private int type = Piece.ENEMY; 
+	private int type = Piece.ENEMY;
 	public AIEnemy(String name, int id)
 	{
 		enemy = new EnemyAlgorithm();
 		this.name = name;
 		this.id = id;
+		this.group_id = id;
 		this.damage = 0;
 		this.energy = 1000;
 	}
@@ -81,18 +82,20 @@ class AIPlayer implements Player
 	private int energy;
 	private String name = "AI";
 	private float angle = 0.0f;
-	private int type = Piece.ME; 
+	private int type = Piece.ME;
 	public AIPlayer(int id){
+		Ai = new AiAlgorithm();
 		this.id = id;
+		this.group_id = id;
 		this.damage = 0;
 		this.energy = 1000;
-		Ai = new AiAlgorithm();
 	}
 	public AIPlayer(String name, int id)
 	{
 		Ai = new AiAlgorithm();
 		this.name = name;
 		this.id = id;
+		this.group_id = id;
 		this.damage = 0;
 		this.energy = 1000;
 	}
@@ -135,6 +138,7 @@ class AIPlayer implements Player
 };
 public class Main implements Runnable{
 	final static int ENEMY_NUM = 1;
+    	final static int FRIEND_NUM = 1;
 	int current_turn = 0;
 	Vector<Player> players;
     	Vector<Group> groups;
@@ -149,8 +153,8 @@ public class Main implements Runnable{
 	public Main(){
 		System.out.println("Program start");
 		groups = new Vector<Group>();
-		for(int i=0;i<2;i++){
-			groups.add(new Group(i));
+		for(int i=0;i<=FRIEND_NUM;i++){
+		    groups.add(new Group("hoge", i));
 		}
 		players = new Vector<Player>();
 		players.add(new AIPlayer("AI", 0, 0));

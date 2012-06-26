@@ -277,7 +277,7 @@ public class Board{
 	}
 	public int judge(){
 		Player player;
-		int tmp_val = 9999999;
+		int tmp_val = Integer.MAX_VALUE;
 		int tmp_id = 0;
 		for(int i=0;i<Players.size();i++){
 			player = Players.get(i);
