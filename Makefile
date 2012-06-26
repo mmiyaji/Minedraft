@@ -1,9 +1,9 @@
-TARGET=Minedraft
+TARGET=Main
 JC=javac
 EXEC=java
 OUTFILE=${TARGET}
 OUTDIR=bin
-OUTPACKAGE=gui
+OUTPACKAGE=game
 NATIVE=native
 all:build
 	export LD_LIBRARY_PATH="native"; cd ${OUTDIR}; ${EXEC} -Djava.library.path=../native:${NATIVE} ${OUTPACKAGE}.${OUTFILE} -classpath ${OUTDIR}/${OUTPACKAGE}:bin/:lib/lwjgl.jar:lib/lwjgl_util.jar:lib/slick.jar:lib/PNGDecoder.jar; cd ../

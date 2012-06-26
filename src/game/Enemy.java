@@ -49,8 +49,6 @@ class EnemyAlgorithm extends Enemy
 		// 適当に移動
 		p = (Point)movables.get((int)(rand.nextDouble()*movables.size()));
 		board.move(p);
-		// 適当に向き変える
-		board.angle(rand.nextFloat()*360);
 		// 適当に物投げる
 		// 敵の位置取得
 //		Vector<Point> players = board.getPlayers();

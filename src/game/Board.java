@@ -6,8 +6,9 @@ import java.util.Vector;
 public class Board{
 	public static final int WIDTH = 9;
 	public static final int HEIGHT = 9;
-    private static float tileSize = 1.0f;
-	public static final int MAX_TURNS  = 20;
+	private static float tileSize = 1.0f;
+	public static final int MAX_TURNS  = 60;
+	private static int SLEEP_TIME  = 10;
 	private int[][] board = new int[WIDTH+2][HEIGHT+2];
 	private Vector<Point> PlayersPos = new Vector<Point>();
 	@SuppressWarnings("unchecked")
@@ -124,10 +125,12 @@ public class Board{
 					arrow[1]>(HEIGHT+2)*tileSize || arrow[1]<0 ){
 				break;
 			}
-			main.window.paintArrow(Arrows);
-			main.window.repaint();
+			if(main.window != null){
+				main.window.paintArrow(Arrows);
+				main.window.repaint();
+			}
 			try{
-				  Thread.sleep(10);
+				  Thread.sleep(SLEEP_TIME);
 				}catch (InterruptedException e){
 				}
 		}
@@ -165,6 +168,9 @@ public class Board{
 		ENEMY_NUM = players.size();
 		Players = players;
 		Board.main = main;
+		if(!Main.iswindow){
+			SLEEP_TIME = 0;
+		}
 		// Vectorの配列を初期化
 		for(int i=0; i<=MAX_TURNS; i++){
 			MovablePos[i] = new Vector<Point>();
@@ -268,6 +274,21 @@ public class Board{
 		// 規定ターンに達していたらゲーム終了
 		if(turns == MAX_TURNS) return true;
 		return false;
+	}
+	public int judge(){
+		Player player;
+		int tmp_val = 9999999;
+		int tmp_id = 0;
+		for(int i=0;i<Players.size();i++){
+			player = Players.get(i);
+			System.out.println(player.getName() + " :"+player.getDamage());
+			if(tmp_val <= player.getDamage()){
+				tmp_val = player.getDamage();
+				tmp_id = i;
+			}
+		}
+		System.out.println(Players.get(tmp_id).getName()+"の勝利");
+		return 0;
 	}
 	public Vector<Point> getMovablePos()
 	{
