@@ -153,7 +153,7 @@ public class Main implements Runnable{
 			groups.add(new Group(i));
 		}
 		players = new Vector<Player>();
-		players.add(new AIPlayer(0, 0));
+		players.add(new AIPlayer("AI", 0, 0));
 		groups.get(0).join(players.get(0));
 		for(int i=1;i<=ENEMY_NUM;i++){
 		    players.add(new AIEnemy("Enemy"+i, i, i));
