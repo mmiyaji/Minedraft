@@ -48,17 +48,18 @@ class EnemyAlgorithm extends Enemy
 		Random rand = new Random();
 		// 適当に移動
 		p = (Point)movables.get((int)(rand.nextDouble()*movables.size()));
-		board.move(p);
+		if (rand.nextDouble()*10 > 5) {
+		    board.move(p);
+		}
 		// 適当に物投げる
 		// 敵の位置取得
 //		Vector<Point> players = board.getPlayers();
 //		Point playerPosition = players.get(0);
 //		Player player = board.getPointPlayer(playerPosition.x, playerPosition.y);
-		Vector<Player> players = board.getEnemiesObject();
-		for (int i = 0; i < players.size(); i++) {
-		    System.out.println("#########/"+players.get(i).getName());
-		}
-		
+		// Vector<Player> players = board.getEnemiesObject();
+		// for (int i = 0; i < players.size(); i++) {
+		//     System.out.println("#########/"+players.get(i).getName());
+		// }
 		// 自分の位置取得
 //		Player me = (Player)board.getME();
 //		Point currentPosition = board.getPosition(me.getID());
@@ -67,7 +68,10 @@ class EnemyAlgorithm extends Enemy
 		float angle = rand.nextFloat()*360;
 		board.angle(angle);
 		// 適当に物投げる
-		board.throwing(angle);
+		if (rand.nextDouble()*10 > 5) {
+		    board.throwing();
+		}
+
 	}
 }
 

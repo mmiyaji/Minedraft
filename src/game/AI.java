@@ -48,25 +48,26 @@ class AiAlgorithm extends AI
 		Vector<Point> movables = board.getMovablePos();
 		// 適当に移動
 		p = (Point)movables.get((int)(rand.nextDouble()*movables.size()));
-		board.move(p);
+		if (rand.nextDouble()*10 > 5) {
+		    board.move(p);
+		}
 //		// 敵の位置取得
 		Vector<Player> players = board.getEnemiesObject();
-		for (int i = 0; i < players.size(); i++) {
-		    System.out.println("#########/"+players.get(i).getName());
-		}
-
-
+		// for (int i = 0; i < players.size(); i++) {
+		//     System.out.println("#########/"+players.get(i).getName());
+		// }
 //		Point playerPosition = players.get(0);
 //		Player player = board.getPointPlayer(playerPosition.x, playerPosition.y);
 //		
 //		// 自分の位置取得
 		Player me = (Player)board.getME();
-		me.damage();
 //		Point currentPosition = board.getPosition(me.getID());
 		// 適当に向き変える
 		float angle = rand.nextFloat()*360;
 		board.angle(angle);
 		// 適当に物投げる
-		board.throwing(angle);
+		if (rand.nextDouble()*10 > 5) {
+		    board.throwing();
+		}
 	}
 }

@@ -54,9 +54,13 @@ public class Field extends JPanel{
 					    g.setColor(Piece.COLORS[4]);
 					    float angle = board.getPointPlayerAngle(i, j);
 					    float angleS = angle-50;
-					    g2.fillArc((int)((float)(w*(i))/(Board.WIDTH+2)), (int)((float)(h*(j))/(Board.HEIGHT+2)), 
+					    g2.fillArc((int)((float)(w*(i))/(Board.WIDTH+2)),
+						       (int)((float)(h*(j))/(Board.HEIGHT+2)), 
 						       w/(Board.WIDTH+2)+1, h/(Board.HEIGHT+2)+1, 
 						       (int)angleS, 100);
+					    g2.drawString(board.getPointPlayerName(i, j),
+							  (int)((float)(w*(i))/(Board.WIDTH+2)),
+						       (int)((float)(h*(j))/(Board.HEIGHT+2)) );
 					}
 				}
 			}
@@ -64,7 +68,8 @@ public class Field extends JPanel{
 		for(int i=0;i<this.arrows.size();i++){
 			g.setColor(Piece.COLORS[5]);
 			float arrow[] = (float[])arrows.get(i);
-			g2.fillArc((int)((float)(w*(arrow[0]))/(Board.WIDTH+2)), (int)((float)(h*(arrow[1]))/(Board.HEIGHT+2)), 
+			g2.fillArc((int)((float)(w*(arrow[0]))/(Board.WIDTH+2)),
+				   (int)((float)(h*(arrow[1]))/(Board.HEIGHT+2)), 
 					15, 15,
 					0, 360);
 		}
@@ -74,7 +79,7 @@ public class Field extends JPanel{
 		Vector<Object> d = board.getPlayersDamage();
 		for(int i=0;i<d.size();i++){
 //			g.setColor(Piece.COLORS[3-i]);
-			g2.drawString("Player"+i+" damage: "+d.get(i), 150+200*i, 20);
+			g2.drawString("Player"+i+" damage: "+d.get(i), 150+150*i, 20);
 		}
 	}
 }

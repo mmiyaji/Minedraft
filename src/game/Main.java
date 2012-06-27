@@ -3,7 +3,10 @@ import gui.Window;
 import java.util.Vector;
 
 interface Player{
-	public static final int MAX_ENEGY = 1000;
+	public static final int MAX_ENERGY = 1000;
+	public static final int THROW_VAL = 300;
+	public static final int MOVE_VAL = 200;
+	public static final int REFRESH_VAL = 400;
 	public Object clone();
 	public int getType();
 	public int getID();
@@ -15,7 +18,7 @@ interface Player{
 	public int getEnergy();
 	public int damage();
 	public boolean refresh();
-	public boolean spendEnegy(int enegy);
+	public boolean spendEnergy(int energy);
 	public void onTurn(Board board) throws Exception;
 }
 class UndoException extends Exception{private static final long serialVersionUID = 1L;}
@@ -38,7 +41,7 @@ class AIEnemy implements Player, Cloneable
 		this.id = id;
 		this.group_id = id;
 		this.damage = 0;
-		this.energy = MAX_ENEGY;
+		this.energy = MAX_ENERGY;
 	}
 	public AIEnemy(String name, int id, int group_id)
 	{
@@ -47,16 +50,18 @@ class AIEnemy implements Player, Cloneable
 		this.id = id;
 		this.group_id = group_id;
 		this.damage = 0;
-		this.energy = MAX_ENEGY;
+		this.energy = MAX_ENERGY;
 	}
 	public void onTurn(Board board) throws GameOverException
 	{
 		System.out.println(name+"が思考中...");
-		// this.refresh();
+		this.refresh();
+		System.out.println("Energy1 "+this.getEnergy());
 		long start = System.currentTimeMillis();
 		enemy.move(board);
+		System.out.println("Energy2 "+this.getEnergy());
 		board.turnEnd();
-		System.out.println(" 完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
+		System.out.println("完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
 		if(board.isGameOver()) throw new GameOverException();
 	}
 	@Override
@@ -86,14 +91,22 @@ class AIEnemy implements Player, Cloneable
 	@Override
 	public int damage(){this.damage++; return this.damage;}
 	@Override
-	public boolean refresh(){this.energy = MAX_ENEGY; return true;}
+	public boolean refresh(){
+	    this.energy += REFRESH_VAL;
+	    if (this.energy > MAX_ENERGY) {
+		this.energy = MAX_ENERGY;
+		return true;
+	    }
+	    return false;
+	}
 	@Override
-	public boolean spendEnegy(int energy){
-	    this.energy -= energy;
-	    if (this.energy < 0) {
+	public boolean spendEnergy(int energy){
+	    if (this.energy - energy < 0) {
 		System.out.println("too tired!");
+		this.energy = 0;
 		return false;
 	    }
+	    this.energy -= energy;
 	    return true;
 	}
 };
@@ -112,7 +125,7 @@ class AIPlayer implements Player, Cloneable
 		this.id = id;
 		this.group_id = id;
 		this.damage = 0;
-		this.energy = MAX_ENEGY;
+		this.energy = MAX_ENERGY;
 	}
 	public AIPlayer(String name, int id)
 	{
@@ -121,7 +134,7 @@ class AIPlayer implements Player, Cloneable
 		this.id = id;
 		this.group_id = id;
 		this.damage = 0;
-		this.energy = MAX_ENEGY;
+		this.energy = MAX_ENERGY;
 	}
 	public AIPlayer(String name, int id, int group_id)
 	{
@@ -130,14 +143,16 @@ class AIPlayer implements Player, Cloneable
 		this.id = id;
 		this.group_id = group_id;
 		this.damage = 0;
-		this.energy = MAX_ENEGY;
+		this.energy = MAX_ENERGY;
 	}
 	public void onTurn(Board board) throws GameOverException
 	{
 		System.out.println(name+"が思考中...");
 		this.refresh();
+		System.out.println("Energy1 "+this.getEnergy());
 		long start = System.currentTimeMillis();
 		Ai.move(board);
+		System.out.println("Energy2 "+this.getEnergy());
 		board.turnEnd();
 		System.out.println(" 完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
 		if(board.isGameOver()) throw new GameOverException();
@@ -169,14 +184,22 @@ class AIPlayer implements Player, Cloneable
 	@Override
 	public int damage(){this.damage++; return this.damage;}
 	@Override
-	public boolean refresh(){this.energy = MAX_ENEGY; return true;}
+	public boolean refresh(){
+	    this.energy += REFRESH_VAL;
+	    if (this.energy > MAX_ENERGY) {
+		this.energy = MAX_ENERGY;
+		return true;
+	    }
+	    return false;
+	}
 	@Override
-	public boolean spendEnegy(int energy){
-	    this.energy -= energy;
-	    if (this.energy < 0) {
+	public boolean spendEnergy(int energy){
+	    if (this.energy - energy < 0) {
 		System.out.println("too tired!");
+		this.energy = 0;
 		return false;
 	    }
+	    this.energy -= energy;
 	    return true;
 	}
 };
