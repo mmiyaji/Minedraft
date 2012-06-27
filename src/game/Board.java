@@ -19,15 +19,49 @@ public class Board{
 	private int turns; // 手数(0からはじまる)
 	private int current_player_id;
 	private int ENEMY_NUM = 1;
-
-	
-/*#######################################################
- * 便利関数
-####################################################### */
-	/**
-	   敵(自分以外のグループに所属しているすべてのプレーヤー)の位置を返す
-	 * **/
+    /*#######################################################
+     * 便利関数
+     ####################################################### */
+    public Vector<Point> getPlayers(){
+	return  getPlayersPosition();
+    }
+	@SuppressWarnings("unchecked")
+	public Vector<Player> getPlayersObject(){
+	    /**
+	       すべてのプレーヤー インスタンスを返す
+	    **/
+	    return (Vector<Player>)Players.clone();
+	}
+	@SuppressWarnings("unchecked")
+	public Vector<Point> getPlayersPosition(){
+	    /**
+	       すべてのプレーヤーの位置を返す
+	    **/
+	    return (Vector<Point>)PlayersPos.clone();
+	}
 	public Vector<Point> getEnemies(){
+	    return this.getEnemiesPositon();
+	}
+	public Vector<Player> getEnemiesObject(){
+	    /**
+	       敵(自分以外のグループに所属しているすべてのプレーヤー)のインスタンスを返す
+	    **/
+		Vector<Player> p = new Vector<Player>();
+		int current_group_id = Players.get(current_player_id).getGroupID();
+		for(int i=1;i<=WIDTH;i++){
+			for(int j=1;j<=HEIGHT;j++){
+				if(this.getPoint(i, j) != current_group_id){
+				    // Player player = getPointPlayer(i, j);
+				    p.add(getPointPlayer(i, j));
+				}
+			}
+		}
+		return p;
+	}
+	public Vector<Point> getEnemiesPositon(){
+	    /**
+	       敵(自分以外のグループに所属しているすべてのプレーヤー)の位置を返す
+	    **/
 		Vector<Point> p = new Vector<Point>();
 		int current_group_id = Players.get(current_player_id).getGroupID();
 		for(int i=1;i<=WIDTH;i++){
@@ -39,14 +73,45 @@ public class Board{
 		}
 		return p;
 	}
-	/**
-	   自分(と同じグループに所属しているプレーヤー)の位置を返す
-	 * **/
-	public Vector<Point> getPlayers(){
+	public Vector<Point> getMembers(){
+	    /**
+	       自分(と同じグループに所属しているプレーヤー)の位置を返す
+	    **/
+		int current_group_id = Players.get(current_player_id).getGroupID();
 		Vector<Point> p = new Vector<Point>();
 		for(int i=1;i<=WIDTH;i++){
 			for(int j=1;j<=HEIGHT;j++){
-				if(this.getPoint(i, j)==Piece.ME){
+				if(this.getPoint(i, j)==current_group_id){
+					p.add(new Point(i, j));
+				}
+			}
+		}
+		return p;
+	}
+	public Vector<Player> getMembersObject(){
+	    /**
+	       自分(と同じグループに所属しているプレーヤー)の位置を返す
+	    **/
+		int current_group_id = Players.get(current_player_id).getGroupID();
+		Vector<Player> p = new Vector<Player>();
+		for(int i=1;i<=WIDTH;i++){
+			for(int j=1;j<=HEIGHT;j++){
+				if(this.getPoint(i, j)==current_group_id){
+				    p.add(getPointPlayer(i, j));
+				}
+			}
+		}
+		return p;
+	}
+	public Vector<Point> getMembersPositon(){
+	    /**
+	       自分(と同じグループに所属しているプレーヤー)の位置を返す
+	    **/
+		int current_group_id = Players.get(current_player_id).getGroupID();
+		Vector<Point> p = new Vector<Point>();
+		for(int i=1;i<=WIDTH;i++){
+			for(int j=1;j<=HEIGHT;j++){
+				if(this.getPoint(i, j)==current_group_id){
 					p.add(new Point(i, j));
 				}
 			}
@@ -56,8 +121,8 @@ public class Board{
 	public Player getME(){
 	    /**
 	       自分のプレーヤーインスタンスを返す
-	     **/
-		return Players.get(current_player_id);
+	    **/
+	    return (Player) Players.get(current_player_id).clone();
 	}
 	public void showBoard(){
 	    /**
@@ -70,6 +135,12 @@ public class Board{
 			System.out.println("");
 		}
 	}
+    public int[][] getBoard(){
+	/**
+	   フィールドを返す(コピーなのでこれを直接弄ってもゲームに影響はない)
+	 **/
+	return (int[][])this.board.clone();
+    }
 	public int getTurn(){
 	    /**
 	       今 何ターン目か返す
@@ -189,13 +260,11 @@ public class Board{
 		System.out.println(turns+"@"+ current_player_id);
 		initMovable();
 	}
-//#######################################################
 	public Board(){
 		// Vectorの配列を初期化
 		for(int i=0; i<=MAX_TURNS; i++){
 			MovablePos[i] = new Vector<Point>();
 		}
-		
 //		initBoard(10);
 	}
 	public Board(int num, Vector<Player> players, Main main){
@@ -212,6 +281,9 @@ public class Board{
 		initBoard(10, players);
 	}
 	public void initBoard(long seed, Vector<Player> players){
+	    /**
+	       初期化処理
+	     **/
 		Random rand = new Random(seed);
 		Arrows = new Vector<float[]>();
 		turns = 0;

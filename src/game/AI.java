@@ -55,7 +55,8 @@ class AiAlgorithm extends AI
 //		Player player = board.getPointPlayer(playerPosition.x, playerPosition.y);
 //		
 //		// 自分の位置取得
-//		Player me = (Player)board.getME();
+		Player me = (Player)board.getME();
+		me.damage();
 //		Point currentPosition = board.getPosition(me.getID());
 		// 適当に向き変える
 		float angle = rand.nextFloat()*360;

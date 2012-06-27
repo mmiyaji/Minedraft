@@ -3,9 +3,10 @@ import gui.Window;
 import java.util.Vector;
 
 interface Player{
+	public Object clone();
 	public int getType();
 	public int getID();
-    	public int getGroupID();
+	public int getGroupID();
 	public int getDamage();
 	public int damage();
 	public float getAngle();
@@ -17,7 +18,7 @@ interface Player{
 class UndoException extends Exception{private static final long serialVersionUID = 1L;}
 class ExitException extends Exception{private static final long serialVersionUID = 1L;}
 class GameOverException extends Exception{private static final long serialVersionUID = 1L;}
-class AIEnemy implements Player
+class AIEnemy implements Player, Cloneable
 {
 	private Enemy enemy = null;
 	private int id;
@@ -55,6 +56,14 @@ class AIEnemy implements Player
 		if(board.isGameOver()) throw new GameOverException();
 	}
 	@Override
+	public Object clone() {	//throwsを無くす
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new InternalError(e.toString());
+		}
+	}
+	@Override
 	public int getID(){return this.id;}
 	@Override
 	public int getGroupID(){return this.group_id;}
@@ -73,7 +82,7 @@ class AIEnemy implements Player
 	@Override
 	public float setAngle(float angle) {return this.angle = angle;}
 };
-class AIPlayer implements Player
+class AIPlayer implements Player, Cloneable
 {
 	private AI Ai = null;
 	private int id;
@@ -118,6 +127,14 @@ class AIPlayer implements Player
 		if(board.isGameOver()) throw new GameOverException();
 	}
 	@Override
+	public Object clone() {	//throwsを無くす
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new InternalError(e.toString());
+		}
+	}
+	@Override
 	public int getID(){return this.id;}
 	@Override
 	public int getGroupID(){return this.group_id;}
@@ -147,7 +164,7 @@ public class Main implements Runnable{
 	private static Main main;
 	public static Window window;
 	private static int SLEEP_TIME  = 100;
-	public static final boolean iswindow = true;
+	public static final boolean iswindow = false;
 	public static volatile boolean running = true;
 
 	public Main(){
