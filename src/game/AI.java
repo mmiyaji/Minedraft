@@ -24,7 +24,6 @@ class AiAlgorithm extends AI
 		// 秒->ミリ秒
 		this.limit_time = (long)limit_time*1000;
 	}	
-	
 	class Move extends Point
 	{
 		public int eval = 0;
