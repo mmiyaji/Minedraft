@@ -50,10 +50,12 @@ public class Board{
 		int current_group_id = Players.get(current_player_id).getGroupID();
 		for(int i=1;i<=WIDTH;i++){
 			for(int j=1;j<=HEIGHT;j++){
+			    if (this.getPoint(i, j) != Piece.EMPTY &&
+				this.getPoint(i, j) != Piece.WALL) {
 				if(this.getPoint(i, j) != current_group_id){
-				    // Player player = getPointPlayer(i, j);
 				    p.add(getPointPlayer(i, j));
 				}
+			    }
 			}
 		}
 		return p;
@@ -66,9 +68,12 @@ public class Board{
 		int current_group_id = Players.get(current_player_id).getGroupID();
 		for(int i=1;i<=WIDTH;i++){
 			for(int j=1;j<=HEIGHT;j++){
+			    if (this.getPoint(i, j) != Piece.EMPTY &&
+				this.getPoint(i, j) != Piece.WALL) {
 				if(this.getPoint(i, j) != current_group_id){
-					p.add(new Point(i, j));
+				    p.add(new Point(i, j));
 				}
+			    }
 			}
 		}
 		return p;
@@ -77,16 +82,7 @@ public class Board{
 	    /**
 	       自分(と同じグループに所属しているプレーヤー)の位置を返す
 	    **/
-		int current_group_id = Players.get(current_player_id).getGroupID();
-		Vector<Point> p = new Vector<Point>();
-		for(int i=1;i<=WIDTH;i++){
-			for(int j=1;j<=HEIGHT;j++){
-				if(this.getPoint(i, j)==current_group_id){
-					p.add(new Point(i, j));
-				}
-			}
-		}
-		return p;
+	    return (Vector<Point>)this.getMembersPositon();
 	}
 	public Vector<Player> getMembersObject(){
 	    /**
@@ -175,7 +171,8 @@ public class Board{
 	    **/
 		int tmp = 0;
 		for(int i=0;i<PlayersPos.size();i++){
-			if(PlayersPos.get(i).x == x && PlayersPos.get(i).y == y){
+			if(PlayersPos.get(i).x == x &&
+			   PlayersPos.get(i).y == y){
 				tmp = i;
 				break;
 			}
@@ -199,9 +196,15 @@ public class Board{
 	       物体の位置が同一マス上にある場合は当たりとする。
 	       なので、運良くかする形で当たらないことがあるかも。
 	     **/
-		System.out.println("throwing "+angle);
+	    System.out.println("throwing "+angle);
 		Player player = Players.get(current_player_id);
-		float arrow[] = {PlayersPos.get(player.getID()).x*tileSize+tileSize/2, PlayersPos.get(player.getID()).y*tileSize+tileSize/2};
+		if (player.spendEnegy(100)) {
+		    System.out.println("hoige");
+		}
+		float arrow[] = {
+		    PlayersPos.get(player.getID()).x*tileSize+tileSize/2,
+		    PlayersPos.get(player.getID()).y*tileSize+tileSize/2
+		};
 		// 玉(弓矢)オブジェクト生成、今は同時に飛ぶことがないからいらない
 		Arrows.add(arrow);
 		while(true){
@@ -250,7 +253,7 @@ public class Board{
 	public Vector<Object> getPlayersDamage(){
 		Vector<Object> d = new Vector<Object>();
 		for(int i=0;i<Players.size();i++){
-			d.add(Players.get(i).getDamage());
+			d.add(Players.get(i).getEnergy());
 		}
 		return d;
 	}
@@ -315,7 +318,7 @@ public class Board{
 				}
 			}
 			PlayersPos.add(new Point(x, y));
-			board[x][y] = players.get(i).getType();
+			board[x][y] = players.get(i).getGroupID();
 		}
 //		ランダムに障害物（壁）配置
 		for(int i=1; i<=WIDTH; i++){
@@ -354,7 +357,8 @@ public class Board{
 	public float getPointPlayerAngle(int x, int y){
 		int tmp = 0;
 		for(int i=0;i<PlayersPos.size();i++){
-			if(PlayersPos.get(i).x == x && PlayersPos.get(i).y == y){
+			if(PlayersPos.get(i).x == x &&
+			   PlayersPos.get(i).y == y){
 				tmp = i;
 				break;
 			}

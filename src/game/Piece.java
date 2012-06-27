@@ -3,8 +3,8 @@ package game;
 import java.awt.Color;
 
 public abstract class Piece {
-	public static final int EMPTY = 0;
-	public static final int WALL = -1;
+	public static final int EMPTY = -1;
+	public static final int WALL = -2;
 	public static final int ME = 1;
 	public static final int ENEMY = 2;
 	public static final float DYNAMICS = 0.05f;
@@ -19,7 +19,7 @@ public abstract class Piece {
 	};
 	public static Color COLORS(int id){
 	    if(id < 0){
-		return COLORS[-id];
+		return COLORS[-id-1];
 	    }
 	    else{
 		return COLORS[id % 2 + 2];

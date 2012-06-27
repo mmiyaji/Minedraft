@@ -54,6 +54,10 @@ class EnemyAlgorithm extends Enemy
 //		Vector<Point> players = board.getPlayers();
 //		Point playerPosition = players.get(0);
 //		Player player = board.getPointPlayer(playerPosition.x, playerPosition.y);
+		Vector<Player> players = board.getEnemiesObject();
+		for (int i = 0; i < players.size(); i++) {
+		    System.out.println("#########/"+players.get(i).getName());
+		}
 		
 		// 自分の位置取得
 //		Player me = (Player)board.getME();

@@ -38,7 +38,7 @@ class AiAlgorithm extends AI
 			super(x, y);
 			eval = e;
 		}
-	};	
+	};
 	public void move(Board board)
 	{
 		// これ以降を工夫してAIを作る．
@@ -50,7 +50,12 @@ class AiAlgorithm extends AI
 		p = (Point)movables.get((int)(rand.nextDouble()*movables.size()));
 		board.move(p);
 //		// 敵の位置取得
-//		Vector<Point> players = board.getEnemies();
+		Vector<Player> players = board.getEnemiesObject();
+		for (int i = 0; i < players.size(); i++) {
+		    System.out.println("#########/"+players.get(i).getName());
+		}
+
+
 //		Point playerPosition = players.get(0);
 //		Player player = board.getPointPlayer(playerPosition.x, playerPosition.y);
 //		

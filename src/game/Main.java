@@ -3,16 +3,19 @@ import gui.Window;
 import java.util.Vector;
 
 interface Player{
+	public static final int MAX_ENEGY = 1000;
 	public Object clone();
 	public int getType();
 	public int getID();
 	public int getGroupID();
 	public int getDamage();
-	public int damage();
 	public float getAngle();
 	public float setAngle(float angle);
 	public String getName();
 	public int getEnergy();
+	public int damage();
+	public boolean refresh();
+	public boolean spendEnegy(int enegy);
 	public void onTurn(Board board) throws Exception;
 }
 class UndoException extends Exception{private static final long serialVersionUID = 1L;}
@@ -35,7 +38,7 @@ class AIEnemy implements Player, Cloneable
 		this.id = id;
 		this.group_id = id;
 		this.damage = 0;
-		this.energy = 1000;
+		this.energy = MAX_ENEGY;
 	}
 	public AIEnemy(String name, int id, int group_id)
 	{
@@ -44,11 +47,12 @@ class AIEnemy implements Player, Cloneable
 		this.id = id;
 		this.group_id = group_id;
 		this.damage = 0;
-		this.energy = 1000;
+		this.energy = MAX_ENEGY;
 	}
 	public void onTurn(Board board) throws GameOverException
 	{
 		System.out.println(name+"が思考中...");
+		// this.refresh();
 		long start = System.currentTimeMillis();
 		enemy.move(board);
 		board.turnEnd();
@@ -72,8 +76,6 @@ class AIEnemy implements Player, Cloneable
 	@Override
 	public int getDamage(){return this.damage;}
 	@Override
-	public int damage(){this.damage++; return this.damage;}
-	@Override
 	public int getEnergy(){return this.energy;}
 	@Override
 	public String getName(){return this.name;}
@@ -81,6 +83,19 @@ class AIEnemy implements Player, Cloneable
 	public float getAngle() {return this.angle;}
 	@Override
 	public float setAngle(float angle) {return this.angle = angle;}
+	@Override
+	public int damage(){this.damage++; return this.damage;}
+	@Override
+	public boolean refresh(){this.energy = MAX_ENEGY; return true;}
+	@Override
+	public boolean spendEnegy(int energy){
+	    this.energy -= energy;
+	    if (this.energy < 0) {
+		System.out.println("too tired!");
+		return false;
+	    }
+	    return true;
+	}
 };
 class AIPlayer implements Player, Cloneable
 {
@@ -97,7 +112,7 @@ class AIPlayer implements Player, Cloneable
 		this.id = id;
 		this.group_id = id;
 		this.damage = 0;
-		this.energy = 1000;
+		this.energy = MAX_ENEGY;
 	}
 	public AIPlayer(String name, int id)
 	{
@@ -106,7 +121,7 @@ class AIPlayer implements Player, Cloneable
 		this.id = id;
 		this.group_id = id;
 		this.damage = 0;
-		this.energy = 1000;
+		this.energy = MAX_ENEGY;
 	}
 	public AIPlayer(String name, int id, int group_id)
 	{
@@ -115,11 +130,12 @@ class AIPlayer implements Player, Cloneable
 		this.id = id;
 		this.group_id = group_id;
 		this.damage = 0;
-		this.energy = 1000;
+		this.energy = MAX_ENEGY;
 	}
 	public void onTurn(Board board) throws GameOverException
 	{
 		System.out.println(name+"が思考中...");
+		this.refresh();
 		long start = System.currentTimeMillis();
 		Ai.move(board);
 		board.turnEnd();
@@ -143,8 +159,6 @@ class AIPlayer implements Player, Cloneable
 	@Override
 	public int getDamage(){return this.damage;}
 	@Override
-	public int damage(){this.damage++; return this.damage;}
-	@Override
 	public int getEnergy(){return this.energy;}
 	@Override
 	public String getName(){return this.name;}
@@ -152,10 +166,25 @@ class AIPlayer implements Player, Cloneable
 	public float getAngle() {return this.angle;}
 	@Override
 	public float setAngle(float angle) {return this.angle = angle;}
+	@Override
+	public int damage(){this.damage++; return this.damage;}
+	@Override
+	public boolean refresh(){this.energy = MAX_ENEGY; return true;}
+	@Override
+	public boolean spendEnegy(int energy){
+	    this.energy -= energy;
+	    if (this.energy < 0) {
+		System.out.println("too tired!");
+		return false;
+	    }
+	    return true;
+	}
 };
 public class Main implements Runnable{
-	final static int ENEMY_NUM = 1;
-    	final static int FRIEND_NUM = 1;
+	final static int ENEMY_NUM = 3;
+    	final static int FRIEND_NUM = 2;
+    	final static int INDENT_NUM = 0;
+    	final static int GROUP_NUM = 2;
 	int current_turn = 0;
 	Vector<Player> players;
     	Vector<Group> groups;
@@ -164,21 +193,26 @@ public class Main implements Runnable{
 	private static Main main;
 	public static Window window;
 	private static int SLEEP_TIME  = 100;
-	public static final boolean iswindow = false;
+	public static final boolean iswindow = true;
 	public static volatile boolean running = true;
 
 	public Main(){
 		System.out.println("Program start");
 		groups = new Vector<Group>();
-		for(int i=0;i<=FRIEND_NUM;i++){
+		for(int i=0;i<GROUP_NUM;i++){
+		    System.out.println("Create group "+i);
 		    groups.add(new Group("Group"+i, i));
 		}
 		players = new Vector<Player>();
-		players.add(new AIPlayer("AI", 0, 0));
-		groups.get(0).join(players.get(0));
-		for(int i=1;i<=ENEMY_NUM;i++){
-		    players.add(new AIEnemy("Enemy"+i, i, i));
-			groups.get(1).join(players.get(i));
+		for(int i=0; i<FRIEND_NUM; i++){
+		    System.out.println("join up AI"+i);
+		    players.add(new AIPlayer("AI"+i, i, 0));
+		    groups.get(0).join(players.get(i));
+		}
+		for(int i=FRIEND_NUM; i<ENEMY_NUM+FRIEND_NUM; i++){
+		    System.out.println("join up ENEMY"+i);
+		    players.add(new AIEnemy("Enemy"+i, i, 1));
+		    groups.get(1).join(players.get(i));
 		}
 		board = new Board(ENEMY_NUM, players, this);
 		window = null;

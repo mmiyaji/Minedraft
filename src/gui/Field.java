@@ -12,10 +12,6 @@ import javax.swing.JPanel;
 
 public class Field extends JPanel{
 
-	/**
-	 * Fieldクラス
-	 * メインバトルフィールドを描画するクラス
-	 */
 	private static final long serialVersionUID = 1L;
 	volatile Vector<float[]> arrows;
 	private Board board;
@@ -32,7 +28,6 @@ public class Field extends JPanel{
 	public void paintArrow(Vector<float[]> arrows){
 		this.arrows = arrows;
 	}
-	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -73,6 +68,7 @@ public class Field extends JPanel{
 					15, 15,
 					0, 360);
 		}
+		// テキスト描画 切り分けたい気持ちはある
 		g.setColor(Color.white);
 		g2.drawString("Turns: "+(board.getTurn())+" / "+ Board.MAX_TURNS, 5, 20);
 		Vector<Object> d = board.getPlayersDamage();
