@@ -30,7 +30,6 @@ public class Point
 		
 	return coord;
     }
-	
     public boolean equals(Point p)
     {
 	if(this.x != p.x) return false;

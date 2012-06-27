@@ -191,9 +191,12 @@ public class Board{
 	/**
 	   現在のプレーヤーの向きをセットし直す
 	**/
-	System.out.println("angle " + angle);
 	Player player = Players.get(current_player_id);
+	float now_angle = player.getAngle();
+	int cost = (int)Math.abs(now_angle - angle) % 180;
+	System.out.println("angle " + angle + " cost "+cost);
 	player.setAngle(angle);
+	player.spendEnergy(cost);
 	return true;
     }
     public boolean throwing(){
@@ -209,6 +212,7 @@ public class Board{
 	**/
 	System.out.println("throwing "+angle);
 	Player player = Players.get(current_player_id);
+	this.angle(angle);
 	System.out.println(player.getEnergy());
 	if (!player.spendEnergy(Player.THROW_VAL)) {
 	    return false;
