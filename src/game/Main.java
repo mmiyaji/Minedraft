@@ -147,14 +147,14 @@ public class Main implements Runnable{
 	private static Main main;
 	public static Window window;
 	private static int SLEEP_TIME  = 100;
-	public static final boolean iswindow = false;
+	public static final boolean iswindow = true;
 	public static volatile boolean running = true;
 
 	public Main(){
 		System.out.println("Program start");
 		groups = new Vector<Group>();
 		for(int i=0;i<=FRIEND_NUM;i++){
-		    groups.add(new Group("hoge", i));
+		    groups.add(new Group("Group"+i, i));
 		}
 		players = new Vector<Player>();
 		players.add(new AIPlayer("AI", 0, 0));

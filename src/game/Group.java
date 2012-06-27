@@ -30,7 +30,7 @@ public class Group {
 		this.members.add(p);
 		return true;
 	}
-	public boolean remove(Player p){
+	protected boolean remove(Player p){
 		for(int i=0;i<this.members.size();i++){
 			if(this.members.get(i).getID() == p.getID()){
 				this.members.remove(p.getID());

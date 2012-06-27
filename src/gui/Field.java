@@ -52,7 +52,7 @@ public class Field extends JPanel{
 		for(int i=0; i< Board.WIDTH+2; i++){
 			for(int j=0; j<Board.HEIGHT+2; j++){
 				if(board.getPoint(i, j) != Piece.EMPTY){
-					g.setColor(Piece.COLORS[board.getPoint(i, j)]);
+				    g.setColor(Piece.COLORS(board.getPoint(i, j)));
 					g2.fillRect((int)((float)(w*(i))/(Board.WIDTH+2)), (int)((float)(h*(j))/(Board.HEIGHT+2)), w/(Board.WIDTH+2)+1, h/(Board.HEIGHT+2)+1);
 				}
 				if(board.getPoint(i, j) == Piece.ME || board.getPoint(i, j) == Piece.ENEMY){

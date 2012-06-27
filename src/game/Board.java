@@ -24,20 +24,23 @@ public class Board{
 /*#######################################################
  * 便利関数
 ####################################################### */
-	/** 敵の位置を返す(vector型)
+	/**
+	   敵(自分以外のグループに所属しているすべてのプレーヤー)の位置を返す
 	 * **/
 	public Vector<Point> getEnemies(){
 		Vector<Point> p = new Vector<Point>();
+		int current_group_id = Players.get(current_player_id).getGroupID();
 		for(int i=1;i<=WIDTH;i++){
 			for(int j=1;j<=HEIGHT;j++){
-				if(this.getPoint(i, j)==Piece.ENEMY){
+				if(this.getPoint(i, j) != current_group_id){
 					p.add(new Point(i, j));
 				}
 			}
 		}
 		return p;
 	}
-	/** 自分の位置を返す(vector型)
+	/**
+	   自分(と同じグループに所属しているプレーヤー)の位置を返す
 	 * **/
 	public Vector<Point> getPlayers(){
 		Vector<Point> p = new Vector<Point>();
@@ -51,11 +54,15 @@ public class Board{
 		return p;
 	}
 	public Player getME(){
+	    /**
+	       自分のプレーヤーインスタンスを返す
+	     **/
 		return Players.get(current_player_id);
 	}
-	/** フィールド情報を出力
-	 * **/
 	public void showBoard(){
+	    /**
+	       フィールド情報を出力
+	    **/
 		for(int i=0; i<Board.WIDTH+2; i++){
 			for(int j=0; j<Board.HEIGHT+2; j++){
 				System.out.print(this.board[i][j]);
@@ -63,32 +70,38 @@ public class Board{
 			System.out.println("");
 		}
 	}
-	/** 今 何ターン目か返す
-	 * **/
 	public int getTurn(){
-		return this.turns;
+	    /**
+	       今 何ターン目か返す
+	    **/
+	    return this.turns;
 	}
-	/** 指定されたIDのオブジェクトがどこにいるのか返す
-	 * **/
 	public Point getPosition(int id){
-		Point point = new Point();
-		for(int i=1;i<WIDTH;i++){
-			for(int j=1;j<HEIGHT;j++){
-				if(board[i][j]==id){
-					point.x = i;
-					point.y = j;
-					break;
-				}
-			}
+	    /**
+	       指定されたIDのオブジェクトがどこにいるのか返す
+	    **/
+	    Point point = new Point();
+	    for(int i=1;i<WIDTH;i++){
+		for(int j=1;j<HEIGHT;j++){
+		    if(board[i][j]==id){
+			point.x = i;
+			point.y = j;
+			break;
+		    }
 		}
-		return point;
+	    }
+	    return point;
 	}
-	/** 指定したフィールド上に何がいるのか返す
-	 * **/
 	public int getPoint(int x, int y){
-		return this.board[x][y];
+	    /**
+	       指定したフィールド上に何がいるのか返す
+	    **/
+	    return this.board[x][y];
 	}
 	public Player getPointPlayer(int x, int y){
+	   /**
+	      指定した盤上の位置いるプレーヤーを返す
+	    **/
 		int tmp = 0;
 		for(int i=0;i<PlayersPos.size();i++){
 			if(PlayersPos.get(i).x == x && PlayersPos.get(i).y == y){
@@ -99,6 +112,9 @@ public class Board{
 		return Players.get(tmp);
 	}
 	public boolean angle(float angle){
+	    /**
+	       現在のプレーヤーの向きをセットし直す
+	     **/
 		System.out.println("angle " + angle);
 		Player player = Players.get(current_player_id);
 		player.setAngle(angle);
@@ -106,34 +122,52 @@ public class Board{
 	}
 	@SuppressWarnings("static-access")
 	public boolean throwing(float angle){
+	    /**
+	       現在位置から引数で与えられた方向へ向けて、玉を投げる。
+	       その際の当たり判定方法は、t秒 * Piece.DYNAMICS で得られる玉の位置と、
+	       物体の位置が同一マス上にある場合は当たりとする。
+	       なので、運良くかする形で当たらないことがあるかも。
+	     **/
 		System.out.println("throwing "+angle);
 		Player player = Players.get(current_player_id);
 		float arrow[] = {PlayersPos.get(player.getID()).x*tileSize+tileSize/2, PlayersPos.get(player.getID()).y*tileSize+tileSize/2};
+		// 玉(弓矢)オブジェクト生成、今は同時に飛ぶことがないからいらない
 		Arrows.add(arrow);
 		while(true){
 			arrow[0] += Math.cos(angle)*Piece.DYNAMICS;
 			arrow[1] += Math.sin(angle)*Piece.DYNAMICS;
+			// 盤上でのポイントに変換
 			Point bpoint = convertRealToBoard(arrow[0], arrow[1]);
-			if(getPoint(bpoint.x, bpoint.y) != Piece.EMPTY && getPoint(bpoint.x, bpoint.y) != player.getType()){
+			if(getPoint(bpoint.x, bpoint.y) != Piece.EMPTY){
+			    // getPoint(bpoint.x, bpoint.y) != player.getType()
+			    // 壁かどうか判定
 				if(getPoint(bpoint.x, bpoint.y) != Piece.WALL){
 					Player p = getPointPlayer(bpoint.x, bpoint.y);
-					p.damage();
+					// 玉を投げた人とあたった人が同一だった場合、無視
+					if(p.getID() != player.getID()){
+					    p.damage();
+					    break;
+					}
+				}else{
+				    break;
 				}
-				break;
 			}
+			// もしかしたらバグで外に出た場合終わらないはずなのでエラー処理
 			if(arrow[0]>(WIDTH+2)*tileSize || arrow[0]<0 ||
 					arrow[1]>(HEIGHT+2)*tileSize || arrow[1]<0 ){
 				break;
 			}
+			// GUIモードの場合、描画処理
 			if(main.window != null){
 				main.window.paintArrow(Arrows);
 				main.window.repaint();
+				// アニメーションっぽくするため、適度にスリープ挟む
+				try{
+				    Thread.sleep(SLEEP_TIME);
+				}catch (InterruptedException e){}
 			}
-			try{
-				  Thread.sleep(SLEEP_TIME);
-				}catch (InterruptedException e){
-				}
 		}
+		// 玉(弓矢)オブジェクト破棄
 		Arrows.clear();
 		return true;
 	}
