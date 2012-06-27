@@ -54,14 +54,15 @@ public class Field extends JPanel{
 				if(board.getPoint(i, j) != Piece.EMPTY){
 				    g.setColor(Piece.COLORS(board.getPoint(i, j)));
 					g2.fillRect((int)((float)(w*(i))/(Board.WIDTH+2)), (int)((float)(h*(j))/(Board.HEIGHT+2)), w/(Board.WIDTH+2)+1, h/(Board.HEIGHT+2)+1);
-				}
-				if(board.getPoint(i, j) == Piece.ME || board.getPoint(i, j) == Piece.ENEMY){
-					g.setColor(Piece.COLORS[4]);
-					float angle = board.getPointPlayerAngle(i, j);
-					float angleS = angle-50;
-					g2.fillArc((int)((float)(w*(i))/(Board.WIDTH+2)), (int)((float)(h*(j))/(Board.HEIGHT+2)), 
-							w/(Board.WIDTH+2)+1, h/(Board.HEIGHT+2)+1, 
-							(int)angleS, 100);
+					if(board.getPoint(i, j) != Piece.WALL){
+					    // if(board.getPoint(i, j) == Piece.ME || board.getPoint(i, j) == Piece.ENEMY){
+					    g.setColor(Piece.COLORS[4]);
+					    float angle = board.getPointPlayerAngle(i, j);
+					    float angleS = angle-50;
+					    g2.fillArc((int)((float)(w*(i))/(Board.WIDTH+2)), (int)((float)(h*(j))/(Board.HEIGHT+2)), 
+						       w/(Board.WIDTH+2)+1, h/(Board.HEIGHT+2)+1, 
+						       (int)angleS, 100);
+					}
 				}
 			}
 		}
