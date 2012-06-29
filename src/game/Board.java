@@ -4,11 +4,13 @@ import java.util.Random;
 import java.util.Vector;
 
 public class Board{
-    public static final int WIDTH = 9;
-    public static final int HEIGHT = 9;
+    public static final int WIDTH = 20;
+    public static final int HEIGHT = 20;
     private static float tileSize = 1.0f;
-    public static final int MAX_TURNS  = 60;
+    public static final int MAX_TURNS  = 5;
     private static int SLEEP_TIME  = 10;
+    private float WIND_DYNAMICS  = 0.002f;
+    private int WIND_DIRECTION  = 160;
     private int[][] board = new int[WIDTH+2][HEIGHT+2];
     private Vector<Point> PlayersPos = new Vector<Point>();
     @SuppressWarnings("unchecked")
@@ -145,6 +147,12 @@ public class Board{
 	**/
 	return this.turns;
     }
+    public int getMaxTurn(){
+	/**
+	   最大ターン数を返す
+	**/
+	return this.MAX_TURNS;
+    }
     public Point getPosition(int id){
 	/**
 	   指定されたIDのオブジェクトがどこにいるのか返す
@@ -194,16 +202,17 @@ public class Board{
 	Player player = Players.get(current_player_id);
 	float now_angle = player.getAngle();
 	int cost = (int)Math.abs(now_angle - angle) % 180;
-	System.out.println("angle " + angle + " cost "+cost);
+	// System.out.println("angle " + angle + " cost "+cost);
+	System.out.println("angle " + angle);
 	player.setAngle(angle);
-	player.spendEnergy(cost);
+	// player.spendEnergy(cost);
 	return true;
     }
-    public boolean throwing(){
+    public Point throwing(){
 	return throwing(Players.get(current_player_id).getAngle());
     }
     @SuppressWarnings("static-access")
-	public boolean throwing(float angle){
+    public Point throwing(float angle){
 	/**
 	   現在位置から引数で与えられた方向へ向けて、玉を投げる。
 	   その際の当たり判定方法は、t秒 * Piece.DYNAMICS で得られる玉の位置と、
@@ -211,11 +220,12 @@ public class Board{
 	   なので、運良くかする形で当たらないことがあるかも。
 	**/
 	System.out.println("throwing "+angle);
+	Point hit = new Point();
 	Player player = Players.get(current_player_id);
 	this.angle(angle);
 	System.out.println(player.getEnergy());
 	if (!player.spendEnergy(Player.THROW_VAL)) {
-	    return false;
+	    return null;
 	}
 	float arrow[] = {
 	    PlayersPos.get(player.getID()).x*tileSize+tileSize/2,
@@ -223,11 +233,20 @@ public class Board{
 	};
 	// 玉(弓矢)オブジェクト生成、今は同時に飛ぶことがないからいらない
 	Arrows.add(arrow);
+	int t = 1;
+	double dynamics = 0;
 	while(true){
-	    arrow[0] += Math.cos(angle)*Piece.DYNAMICS;
-	    arrow[1] += Math.sin(angle)*Piece.DYNAMICS;
+	    dynamics = (0.001)* t*t;
+	    if (dynamics > 1) {
+		dynamics = Math.log(t);
+	    }
+	    arrow[0] += Math.cos(Math.PI*(angle/180))*Piece.DYNAMICS
+		+ Math.cos(Math.PI*(WIND_DIRECTION/180))*WIND_DYNAMICS *dynamics;//Math.log(2*t);
+	    arrow[1] += -Math.sin(Math.PI*(angle/180))*Piece.DYNAMICS
+		-Math.sin(Math.PI*(WIND_DIRECTION/180))*WIND_DYNAMICS * dynamics;// Math.log(2*t);
 	    // 盤上でのポイントに変換
 	    Point bpoint = convertRealToBoard(arrow[0], arrow[1]);
+	    t++;
 	    if(getPoint(bpoint.x, bpoint.y) != Piece.EMPTY){
 		// getPoint(bpoint.x, bpoint.y) != player.getType()
 		// 壁かどうか判定
@@ -235,10 +254,15 @@ public class Board{
 		    Player p = getPointPlayerReal(bpoint.x, bpoint.y);
 		    // 玉を投げた人とあたった人が同一だった場合、無視
 		    if(p.getID() != player.getID()){
+			hit.x = bpoint.x;
+			hit.y = bpoint.y;
 			p.damage();
+			player.hit();
 			break;
 		    }
 		}else{
+		    hit.x = bpoint.x;
+		    hit.y = bpoint.y;
 		    break;
 		}
 	    }
@@ -259,7 +283,7 @@ public class Board{
 	}
 	// 玉(弓矢)オブジェクト破棄
 	Arrows.clear();
-	return true;
+	return hit;
     }
     public Point convertRealToBoard(float x, float y){
 	int bx = (int)(x/tileSize);
@@ -272,7 +296,7 @@ public class Board{
     public Vector<Object> getPlayersDamage(){
 	Vector<Object> d = new Vector<Object>();
 	for(int i=0;i<Players.size();i++){
-	    d.add(Players.get(i).getEnergy());
+	    d.add(Players.get(i).getDamage());
 	}
 	return d;
     }
@@ -308,6 +332,10 @@ public class Board{
 	Arrows = new Vector<float[]>();
 	turns = 0;
 	current_player_id = 0;
+	WIND_DIRECTION = (int)(rand.nextDouble()*360);
+	WIND_DYNAMICS = rand.nextFloat()*(Piece.DYNAMICS/5) + WIND_DYNAMICS/2;
+	System.out.println("WIND DYNAMICS " + WIND_DYNAMICS);
+	System.out.println("WIND DERECTION " + WIND_DIRECTION);
 	int x = 0;
 	int y = 0;
 	// 全マスを空にする
@@ -423,18 +451,6 @@ public class Board{
 	    board[point.x][point.y] = tmp;
 	    PlayersPos.set(current_player_id, point);
 	}
-	return true;
-    }
-    public boolean pass()
-    {
-	// 打つ手があればパスできない
-	if(MovablePos[turns].size() != 0) return false;
-	// ゲームが終了しているなら、パスできない
-	if(isGameOver()) return false;
-	//		UpdateLog.add(new Vector());
-	turns++;
-	current_player_id = ++current_player_id % (Players.size());
-	initMovable();
 	return true;
     }
 }

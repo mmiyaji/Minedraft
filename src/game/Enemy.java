@@ -1,30 +1,20 @@
 package game;
 import java.util.*;
 
-public abstract class Enemy
-{
-    abstract public void move(Board board);
-
-    // 一手思考にかける最大時間(ミリ秒)を設定．
-    public long limit_time = 1000;
-    public long start_time = 0;
-}
-
-class EnemyAlgorithm extends Enemy
+class EnemyAlgorithm extends AI
 {
     public EnemyAlgorithm()
     {
 	this.start_time = 0;
 	this.limit_time = Long.MAX_VALUE;
-    }	
+    }
     // 一手思考にかける最大時間(秒で受け取ってミリ秒に変換)
     public EnemyAlgorithm(int limit_time)
     {
 	this.start_time = 0;
 	// 秒->ミリ秒
 	this.limit_time = (long)limit_time*1000;
-    }	
-	
+    }
     class Move extends Point
     {
 	public int eval = 0;
@@ -68,9 +58,11 @@ class EnemyAlgorithm extends Enemy
 	float angle = rand.nextFloat()*360;
 	board.angle(angle);
 	// 適当に物投げる
-	if (rand.nextDouble()*10 > 5) {
-	    board.throwing();
-	}
+	Point hit = board.throwing();
+	System.out.println("Hit x:"+hit.x + ", y:"+ hit.y);
+	// if (rand.nextDouble()*10 > 5) {
+	//     board.throwing();
+	// }
 
     }
 }

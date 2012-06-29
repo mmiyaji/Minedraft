@@ -1,22 +1,26 @@
 package game;
-import gui.Window;
 import java.util.Vector;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 interface Player{
     public static final int MAX_ENERGY = 1000;
     public static final int THROW_VAL = 300;
     public static final int MOVE_VAL = 200;
-    public static final int REFRESH_VAL = 400;
+    public static final int REFRESH_VAL = 1000;
     public Object clone();
     public int getType();
     public int getID();
     public int getGroupID();
     public int getDamage();
+    public int getHitCount();
     public float getAngle();
     public float setAngle(float angle);
     public String getName();
     public int getEnergy();
     public int damage();
+    public int hit();
     public boolean refresh();
     public boolean spendEnergy(int energy);
     public void onTurn(Board board) throws Exception;
@@ -24,98 +28,13 @@ interface Player{
 class UndoException extends Exception{private static final long serialVersionUID = 1L;}
 class ExitException extends Exception{private static final long serialVersionUID = 1L;}
 class GameOverException extends Exception{private static final long serialVersionUID = 1L;}
-class AIEnemy implements Player, Cloneable
-{
-    private Enemy enemy = null;
-    private int id;
-    private int group_id;
-    private int damage;
-    private int energy;
-    public String name = "Enemy";
-    private float angle = 0.0f;
-    private int type = Piece.ENEMY;
-    public AIEnemy(String name, int id)
-    {
-	enemy = new EnemyAlgorithm();
-	this.name = name;
-	this.id = id;
-	this.group_id = id;
-	this.damage = 0;
-	this.energy = MAX_ENERGY;
-    }
-    public AIEnemy(String name, int id, int group_id)
-    {
-	enemy = new EnemyAlgorithm();
-	this.name = name;
-	this.id = id;
-	this.group_id = group_id;
-	this.damage = 0;
-	this.energy = MAX_ENERGY;
-    }
-    public void onTurn(Board board) throws GameOverException
-    {
-	System.out.println(name+"が思考中...");
-	this.refresh();
-	System.out.println("Energy1 "+this.getEnergy());
-	long start = System.currentTimeMillis();
-	enemy.move(board);
-	System.out.println("Energy2 "+this.getEnergy());
-	board.turnEnd();
-	System.out.println("完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
-	if(board.isGameOver()) throw new GameOverException();
-    }
-    @Override
-	public Object clone() {	//throwsを無くす
-	try {
-	    return super.clone();
-	} catch (CloneNotSupportedException e) {
-	    throw new InternalError(e.toString());
-	}
-    }
-    @Override
-	public int getID(){return this.id;}
-    @Override
-	public int getGroupID(){return this.group_id;}
-    @Override
-	public int getType(){return this.type;}
-    @Override
-	public int getDamage(){return this.damage;}
-    @Override
-	public int getEnergy(){return this.energy;}
-    @Override
-	public String getName(){return this.name;}
-    @Override
-	public float getAngle() {return this.angle;}
-    @Override
-	public float setAngle(float angle) {return this.angle = angle;}
-    @Override
-	public int damage(){this.damage++; return this.damage;}
-    @Override
-	public boolean refresh(){
-	this.energy += REFRESH_VAL;
-	if (this.energy > MAX_ENERGY) {
-	    this.energy = MAX_ENERGY;
-	    return true;
-	}
-	return false;
-    }
-    @Override
-	public boolean spendEnergy(int energy){
-	if (this.energy - energy < 0) {
-	    System.out.println("too tired!");
-	    this.energy = 0;
-	    return false;
-	}
-	this.energy -= energy;
-	return true;
-    }
-};
 class AIPlayer implements Player, Cloneable
 {
     private AI Ai = null;
     private int id;
     private int group_id;
     private int damage;
+    private int hitcount;
     private int energy;
     private String name = "AI";
     private float angle = 0.0f;
@@ -125,6 +44,7 @@ class AIPlayer implements Player, Cloneable
 	this.id = id;
 	this.group_id = id;
 	this.damage = 0;
+	this.hitcount = 0;
 	this.energy = MAX_ENERGY;
     }
     public AIPlayer(String name, int id)
@@ -134,6 +54,7 @@ class AIPlayer implements Player, Cloneable
 	this.id = id;
 	this.group_id = id;
 	this.damage = 0;
+	this.hitcount = 0;
 	this.energy = MAX_ENERGY;
     }
     public AIPlayer(String name, int id, int group_id)
@@ -143,6 +64,38 @@ class AIPlayer implements Player, Cloneable
 	this.id = id;
 	this.group_id = group_id;
 	this.damage = 0;
+	this.hitcount = 0;
+	this.energy = MAX_ENERGY;
+    }
+    public AIPlayer(AI Ai, int id){
+	// Ai = new AiAlgorithm();
+	this.Ai = Ai;
+	this.id = id;
+	this.group_id = id;
+	this.damage = 0;
+	this.hitcount = 0;
+	this.energy = MAX_ENERGY;
+    }
+    public AIPlayer(AI Ai, String name, int id)
+    {
+	// Ai = new AiAlgorithm();
+	this.Ai = Ai;
+	this.name = name;
+	this.id = id;
+	this.group_id = id;
+	this.damage = 0;
+	this.hitcount = 0;
+	this.energy = MAX_ENERGY;
+    }
+    public AIPlayer(AI Ai, String name, int id, int group_id)
+    {
+	// Ai = new AiAlgorithm();
+	this.Ai = Ai;
+	this.name = name;
+	this.id = id;
+	this.group_id = group_id;
+	this.damage = 0;
+	this.hitcount = 0;
 	this.energy = MAX_ENERGY;
     }
     public void onTurn(Board board) throws GameOverException
@@ -174,6 +127,8 @@ class AIPlayer implements Player, Cloneable
     @Override
 	public int getDamage(){return this.damage;}
     @Override
+	public int getHitCount(){return this.hitcount;}
+    @Override
 	public int getEnergy(){return this.energy;}
     @Override
 	public String getName(){return this.name;}
@@ -183,6 +138,8 @@ class AIPlayer implements Player, Cloneable
 	public float setAngle(float angle) {return this.angle = angle;}
     @Override
 	public int damage(){this.damage++; return this.damage;}
+    @Override
+	public int hit(){this.hitcount++; return this.hitcount;}
     @Override
 	public boolean refresh(){
 	this.energy += REFRESH_VAL;
@@ -204,8 +161,8 @@ class AIPlayer implements Player, Cloneable
     }
 };
 public class Main implements Runnable{
-    final static int ENEMY_NUM = 3;
-    final static int FRIEND_NUM = 2;
+    final static int ENEMY_NUM = 1;
+    final static int FRIEND_NUM = 1;
     final static int INDENT_NUM = 0;
     final static int GROUP_NUM = 2;
     int current_turn = 0;
@@ -229,12 +186,12 @@ public class Main implements Runnable{
 	players = new Vector<Player>();
 	for(int i=0; i<FRIEND_NUM; i++){
 	    System.out.println("join up AI"+i);
-	    players.add(new AIPlayer("AI"+i, i, 0));
+	    players.add(new AIPlayer(new AiAlgorithm(), "AI"+i, i, 0));
 	    groups.get(0).join(players.get(i));
 	}
 	for(int i=FRIEND_NUM; i<ENEMY_NUM+FRIEND_NUM; i++){
 	    System.out.println("join up ENEMY"+i);
-	    players.add(new AIEnemy("Enemy"+i, i, 1));
+	    players.add(new AIPlayer(new EnemyAlgorithm(), "Enemy"+i, i, 1));
 	    groups.get(1).join(players.get(i));
 	}
 	board = new Board(ENEMY_NUM, players, this);
@@ -300,7 +257,46 @@ public class Main implements Runnable{
 		System.out.println("ゲーム終了");
 		board.judge();
 		System.out.println("ゲーム時間 : "+diff/1000.0+"秒");
-			
+		if(iswindow){
+		    JFrame frame = new JFrame();
+		    String message = "Game set \n";
+		    Vector<Point> group_point = new Vector<Point>();
+		    for (int i = 0; i < groups.size(); i++) {
+			group_point.add(new Point(0,0));
+		    }
+		    for (int i = 0; i < players.size(); i++) {
+			Player p = players.get(i);
+			Point g = group_point.get(p.getGroupID());
+			g.x += p.getDamage();
+			g.y += p.getHitCount();
+		    }
+		    int tmp_id = 0;
+		    int tmp_val = 0;
+		    boolean draw_flag = false;
+		    for (int i = 0; i < groups.size(); i++) {
+			Point gp = group_point.get(i);
+			Group g = groups.get(i);
+			if(tmp_val == (gp.y - gp.x)){
+			    draw_flag = true;
+			}
+			if(tmp_val > (gp.y - gp.x)){
+			    tmp_val = gp.y - gp.x;
+			    tmp_id = i;
+			    draw_flag = false;
+			}
+		    }
+		    if(draw_flag){
+			message += "Draw game.\n\n";
+		    }else{
+			message += groups.get(tmp_id).getName()+" win.\n\n";
+		    }
+		    for (int i = 0; i < groups.size(); i++) {
+			Point gp = group_point.get(i);
+			Group g = groups.get(i);
+			message += g.getName()+" The number of hit:"+gp.x + " , damage:"+gp.y + "\n";
+		    }
+		    JOptionPane.showMessageDialog(frame, message);
+		}
 		return 2;
 	    }
 	catch(Exception e)

@@ -65,8 +65,7 @@ class AiAlgorithm extends AI
 	float angle = rand.nextFloat()*360;
 	board.angle(angle);
 	// 適当に物投げる
-	if (rand.nextDouble()*10 > 5) {
-	    board.throwing();
-	}
+	Point hit = board.throwing();
+	System.out.println("Hit x:"+hit.x + ", y:"+ hit.y);
     }
 }
