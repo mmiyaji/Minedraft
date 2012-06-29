@@ -41,12 +41,20 @@ public class Window extends JFrame{
 	 */
 	private void initBounds() {
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize(); //画面全体のサイズ
-		int nx = 800;
-		int ny = 600;
-		int x = (d.width - nx) / 2;
-		int y = (d.height - ny) / 2;
+		int w = d.width-50;
+		int h = d.height-50;
+		if(w > h){
+		    w = h;
+		}else{
+		    h = w;
+		}
+		if(h > 900){
+		    w = h = 900;
+		}
+		int x = (d.width - w) / 2;
+		int y = (d.height - h) / 2;
 		setLocation(x, y);
-		setSize(nx, ny);
+		setSize(w, h);
 	}
 	/**
 	 * 外観をOSのものに似せる

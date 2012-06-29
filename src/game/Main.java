@@ -161,8 +161,8 @@ class AIPlayer implements Player, Cloneable
     }
 };
 public class Main implements Runnable{
-    final static int ENEMY_NUM = 1;
-    final static int FRIEND_NUM = 1;
+    final static int ENEMY_NUM = 3;
+    final static int FRIEND_NUM = 3;
     final static int INDENT_NUM = 0;
     final static int GROUP_NUM = 2;
     int current_turn = 0;
@@ -242,6 +242,7 @@ public class Main implements Runnable{
 	    if(iswindow){
 		window.repaint();
 		window.setBoard(board);
+		board.showBoard();
 	    }else{
 		board.showBoard();
 	    }

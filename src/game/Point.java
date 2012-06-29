@@ -25,9 +25,11 @@ public class Point
     public String toString()
     {
 	String coord = new String();
-	coord += (char)('a' + x - 1);
-	coord += (char)('1' + y - 1);
-		
+	// coord += (char)('a' + x - 1);
+	// coord += (char)('1' + y - 1);
+	coord += "x:"+x;
+	coord += ", ";
+	coord += "y:"+y;
 	return coord;
     }
     public boolean equals(Point p)

@@ -7,8 +7,8 @@ public class Board{
     public static final int WIDTH = 20;
     public static final int HEIGHT = 20;
     private static float tileSize = 1.0f;
-    public static final int MAX_TURNS  = 5;
-    private static int SLEEP_TIME  = 10;
+    public static final int MAX_TURNS  = 100;
+    private static int SLEEP_TIME  = 1;
     private float WIND_DYNAMICS  = 0.002f;
     private int WIND_DIRECTION  = 160;
     private int[][] board = new int[WIDTH+2][HEIGHT+2];
@@ -128,9 +128,9 @@ public class Board{
 	/**
 	   フィールド情報を出力
 	**/
-	for(int i=0; i<Board.WIDTH+2; i++){
-	    for(int j=0; j<Board.HEIGHT+2; j++){
-		System.out.print(this.board[i][j]);
+	for(int i=0; i<Board.HEIGHT+2; i++){
+	    for(int j=0; j<Board.WIDTH+2; j++){
+		System.out.print(this.board[j][i]);
 	    }
 	    System.out.println("");
 	}
@@ -157,17 +157,25 @@ public class Board{
 	/**
 	   指定されたIDのオブジェクトがどこにいるのか返す
 	**/
-	Point point = new Point();
-	for(int i=1;i<WIDTH;i++){
-	    for(int j=1;j<HEIGHT;j++){
-		if(board[i][j]==id){
-		    point.x = i;
-		    point.y = j;
-		    break;
-		}
+	// 下記の以前バージョンでは同じグループIDを持つオブジェクトで最初に見つかった位置を返している
+	// グループメンバーが一人の場合だと動くけど、今後のことを考えて仕様変更
+	// Point point = new Point();
+	// for(int i=1;i<WIDTH;i++){
+	//     for(int j=1;j<HEIGHT;j++){
+	// 	if(board[i][j]==id){
+	// 	    point.x = i;
+	// 	    point.y = j;
+	// 	    break;
+	// 	}
+	//     }
+	// }
+	for (int i = 0; i < Players.size(); i++) {
+	    if (Players.get(i).getID() == id) {
+		return PlayersPos.get(i);
 	    }
 	}
-	return point;
+	// 見つからない場合はnullを返す
+	return null;
     }
     public int getPoint(int x, int y){
 	/**
@@ -183,7 +191,7 @@ public class Board{
     }
     private Player getPointPlayerReal(int x, int y){
 	/**
-	   指定した盤上の位置いるプレーヤーを返す
+	   指定した盤上の位置にいるプレーヤーを返す
 	**/
 	int tmp = 0;
 	for(int i=0;i<PlayersPos.size();i++){
@@ -199,30 +207,42 @@ public class Board{
 	/**
 	   現在のプレーヤーの向きをセットし直す
 	**/
+	System.out.println("angle0 " + angle);
 	Player player = Players.get(current_player_id);
 	float now_angle = player.getAngle();
 	int cost = (int)Math.abs(now_angle - angle) % 180;
 	// System.out.println("angle " + angle + " cost "+cost);
 	System.out.println("angle " + angle);
 	player.setAngle(angle);
+	System.out.println("angle2 " + player.getAngle());
 	// player.spendEnergy(cost);
 	return true;
     }
     public Point throwing(){
-	return throwing(Players.get(current_player_id).getAngle());
+	return this.throwing((int)Players.get(current_player_id).getAngle());
     }
-    @SuppressWarnings("static-access")
+    public Point throwing(int angle){
+	return this.throwing((float)(Math.PI*(angle/180.0)));
+    }
     public Point throwing(float angle){
 	/**
 	   現在位置から引数で与えられた方向へ向けて、玉を投げる。
 	   その際の当たり判定方法は、t秒 * Piece.DYNAMICS で得られる玉の位置と、
 	   物体の位置が同一マス上にある場合は当たりとする。
-	   なので、運良くかする形で当たらないことがあるかも。
+	   なので、運良くカスる形で当たらないことがあるかも。
+
+	   6/29追記
+	   風の概念追加
+
+	   6/30追記
+	   角度をGUIの見かけ上の方向に統一
+	   ex. 45度 を入力として与えると、右上に飛ぶようにしているが、
+	   実際のフィールド上での扱いは、右下にズレていってる(フィールドは左上原点だから)。
 	**/
+	this.angle((float)(angle*180f/Math.PI));
 	System.out.println("throwing "+angle);
 	Point hit = new Point();
 	Player player = Players.get(current_player_id);
-	this.angle(angle);
 	System.out.println(player.getEnergy());
 	if (!player.spendEnergy(Player.THROW_VAL)) {
 	    return null;
@@ -237,16 +257,18 @@ public class Board{
 	double dynamics = 0;
 	while(true){
 	    dynamics = (0.001)* t*t;
+	    t++;
 	    if (dynamics > 1) {
-		dynamics = Math.log(t);
+	    	// dynamics = 1;
+	    	dynamics = Math.log(t);
 	    }
-	    arrow[0] += Math.cos(Math.PI*(angle/180))*Piece.DYNAMICS
-		+ Math.cos(Math.PI*(WIND_DIRECTION/180))*WIND_DYNAMICS *dynamics;//Math.log(2*t);
-	    arrow[1] += -Math.sin(Math.PI*(angle/180))*Piece.DYNAMICS
-		-Math.sin(Math.PI*(WIND_DIRECTION/180))*WIND_DYNAMICS * dynamics;// Math.log(2*t);
+	    // GUIの見かけ上の方向に統一
+	    arrow[0] += Math.cos(angle)*Piece.DYNAMICS
+		+ Math.cos(Math.PI*((float)WIND_DIRECTION/180.0))*WIND_DYNAMICS *dynamics;
+	    arrow[1] -= Math.sin(angle)*Piece.DYNAMICS
+		- Math.sin(Math.PI*((float)WIND_DIRECTION/180.0))*WIND_DYNAMICS * dynamics;
 	    // 盤上でのポイントに変換
 	    Point bpoint = convertRealToBoard(arrow[0], arrow[1]);
-	    t++;
 	    if(getPoint(bpoint.x, bpoint.y) != Piece.EMPTY){
 		// getPoint(bpoint.x, bpoint.y) != player.getType()
 		// 壁かどうか判定
@@ -332,8 +354,9 @@ public class Board{
 	Arrows = new Vector<float[]>();
 	turns = 0;
 	current_player_id = 0;
-	WIND_DIRECTION = (int)(rand.nextDouble()*360);
-	WIND_DYNAMICS = rand.nextFloat()*(Piece.DYNAMICS/5) + WIND_DYNAMICS/2;
+	// WIND_DIRECTION = (int)(rand.nextDouble()*360);
+	WIND_DIRECTION = 100;
+	WIND_DYNAMICS = rand.nextFloat()*(Piece.DYNAMICS/5f) + WIND_DYNAMICS/2;
 	System.out.println("WIND DYNAMICS " + WIND_DYNAMICS);
 	System.out.println("WIND DERECTION " + WIND_DIRECTION);
 	int x = 0;

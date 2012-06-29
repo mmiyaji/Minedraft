@@ -4,12 +4,11 @@ import java.util.*;
 abstract class AI
 {
     abstract public void move(Board board);
-
     // 一手思考にかける最大時間(ミリ秒)を設定．
+    // 今回は思考時間に制限を設けていないので無視してよし
     public long limit_time = 1000;
     public long start_time = 0;
 }
-
 class AiAlgorithm extends AI
 {
     public AiAlgorithm()
@@ -17,27 +16,6 @@ class AiAlgorithm extends AI
 	this.start_time = 0;
 	this.limit_time = Long.MAX_VALUE;
     }	
-    // 一手思考にかける最大時間(秒で受け取ってミリ秒に変換)
-    public AiAlgorithm(int limit_time)
-    {
-	this.start_time = 0;
-	// 秒->ミリ秒
-	this.limit_time = (long)limit_time*1000;
-    }	
-    class Move extends Point
-    {
-	public int eval = 0;
-	public Move()
-	{
-	    super(0, 0);
-	}
-
-	public Move(int x, int y, int e)
-	{
-	    super(x, y);
-	    eval = e;
-	}
-    };
     public void move(Board board)
     {
 	// これ以降を工夫してAIを作る．
@@ -50,22 +28,33 @@ class AiAlgorithm extends AI
 	if (rand.nextDouble()*10 > 5) {
 	    board.move(p);
 	}
-	//		// 敵の位置取得
+	// すべての敵のインスタンス取得
 	Vector<Player> players = board.getEnemiesObject();
-	// for (int i = 0; i < players.size(); i++) {
-	//     System.out.println("#########/"+players.get(i).getName());
-	// }
-	//		Point playerPosition = players.get(0);
-	//		Player player = board.getPointPlayer(playerPosition.x, playerPosition.y);
-	//		
-	//		// 自分の位置取得
+	for (int i = 0; i < players.size(); i++) {
+	    System.out.println(players.get(i).getName());
+	}
+	// 自分の位置取得
 	Player me = (Player)board.getME();
-	//		Point currentPosition = board.getPosition(me.getID());
+	Point currentPosition = board.getPosition(me.getID());
 	// 適当に向き変える
 	float angle = rand.nextFloat()*360;
+	// board.angle((float)(Math.PI*(100.0/180.0)));
 	board.angle(angle);
 	// 適当に物投げる
 	Point hit = board.throwing();
-	System.out.println("Hit x:"+hit.x + ", y:"+ hit.y);
+	this.ah.hoge();
+	System.out.println("Hit "+hit);
     }
+    // public class AIHistory {
+    // 	int count = 0;
+    // 	public AIHistory(){
+    // 	    System.out.println("hoge");
+    // 	    count = 0;
+    // 	}
+    // 	public void hoge(){
+    // 	    System.out.println("huga"+count);
+    // 	    count++;
+    // 	}
+    // }
 }
+

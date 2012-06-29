@@ -56,10 +56,10 @@ class EnemyAlgorithm extends AI
 		
 	// 適当に向き変える
 	float angle = rand.nextFloat()*360;
-	board.angle(angle);
+	// board.angle((float)(Math.PI*(angle/180.0)));
 	// 適当に物投げる
-	Point hit = board.throwing();
-	System.out.println("Hit x:"+hit.x + ", y:"+ hit.y);
+	Point hit = board.throwing(angle);
+	System.out.println("Hit "+hit);
 	// if (rand.nextDouble()*10 > 5) {
 	//     board.throwing();
 	// }
