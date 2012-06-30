@@ -8,7 +8,7 @@ public class Board{
     public static final int HEIGHT = 20;
     public static final float tileSize = 1.0f;
     public static final int MAX_TURNS  = 100;
-    private static int SLEEP_TIME  = 1;
+    private static int SLEEP_TIME  = 5;
     private float WIND_DYNAMICS  = 0.002f;
     private int WIND_DIRECTION  = 160;
     public static final int MAX_THROWTIME  = Integer.MAX_VALUE;

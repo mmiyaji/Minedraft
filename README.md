@@ -9,7 +9,8 @@ Java製対戦ゲームっぽい何かです．
 
 ## 課題内容
 AI部分の作成を行ってもらいます．
-![Minedraft](https://github.com/mmiyaji/Minedraft/raw/master/images/screenshot1.png)
+詳細はminedraft_manual.pdf に記載
+![Minedraft](https://github.com/mmiyaji/Minedraft/raw/master/images/screenshot2.png)
 
 # License
 packege game:
