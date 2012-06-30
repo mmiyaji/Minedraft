@@ -4,8 +4,8 @@ import java.util.Random;
 import java.util.Vector;
 
 public class Board{
-    public static final int WIDTH = 5;
-    public static final int HEIGHT = 5;
+    public static final int WIDTH = 20;
+    public static final int HEIGHT = 20;
     public static final float tileSize = 1.0f;
     public static final int MAX_TURNS  = 100;
     private static int SLEEP_TIME  = 1;
@@ -131,7 +131,7 @@ public class Board{
 	**/
 	for(int i=0; i<Board.HEIGHT+2; i++){
 	    for(int j=0; j<Board.WIDTH+2; j++){
-		System.out.print(this.board[j][i]);
+		System.out.print(this.board[j][i]+",");
 	    }
 	    System.out.println("");
 	}
@@ -208,14 +208,11 @@ public class Board{
 	/**
 	   現在のプレーヤーの向きをセットし直す
 	**/
-	System.out.println("angle0 " + angle);
+	System.out.println("angle " + angle);
 	Player player = Players.get(current_player_id);
 	float now_angle = player.getAngle();
 	int cost = (int)Math.abs(now_angle - angle) % 180;
-	// System.out.println("angle " + angle + " cost "+cost);
-	System.out.println("angle " + angle);
 	player.setAngle(angle);
-	System.out.println("angle2 " + player.getAngle());
 	// player.spendEnergy(cost);
 	return true;
     }
@@ -244,7 +241,6 @@ public class Board{
 	System.out.println("throwing "+angle);
 	Point hit = new Point();
 	Player player = Players.get(current_player_id);
-	System.out.println(player.getEnergy());
 	if (!player.spendEnergy(Player.THROW_VAL)) {
 	    return null;
 	}

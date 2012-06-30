@@ -102,10 +102,8 @@ class AIPlayer implements Player, Cloneable
     {
 	System.out.println(name+"が思考中...");
 	this.refresh();
-	System.out.println("Energy1 "+this.getEnergy());
 	long start = System.currentTimeMillis();
 	Ai.move(board);
-	System.out.println("Energy2 "+this.getEnergy());
 	board.turnEnd();
 	System.out.println(" 完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
 	if(board.isGameOver()) throw new GameOverException();
@@ -173,7 +171,7 @@ public class Main implements Runnable{
     private static Main main;
     public static Window window;
     private static int SLEEP_TIME  = 100;
-    public static final boolean iswindow = true;
+    public static boolean iswindow = true;
     public static volatile boolean running = true;
 
     public Main(){
@@ -205,6 +203,9 @@ public class Main implements Runnable{
     public static void main(String[] args) {
 	System.out.println("Start");
 	main = new Main();
+	if(main.isWindow(args)){
+	    main.iswindow = false;
+	}
 	if(iswindow){
 	    window = new Window(true, main.getBoard());
 	    SLEEP_TIME = 100;
@@ -241,11 +242,9 @@ public class Main implements Runnable{
 	    ((Player) players.get(current_turn)).onTurn(board);
 	    if(iswindow){
 		window.repaint();
-		window.setBoard(board);
-		board.showBoard();
-	    }else{
 		board.showBoard();
 	    }
+	    board.showBoard();
 	}
 	catch(ExitException e)
 	    {
@@ -256,48 +255,49 @@ public class Main implements Runnable{
 		stop = System.currentTimeMillis();
 		diff = stop - start;
 		System.out.println("ゲーム終了");
-		board.judge();
+		// board.judge();
 		System.out.println("ゲーム時間 : "+diff/1000.0+"秒");
+		String message = "Game set \n";
+		Vector<Point> group_point = new Vector<Point>();
+		for (int i = 0; i < groups.size(); i++) {
+		    group_point.add(new Point(0,0));
+		}
+		for (int i = 0; i < players.size(); i++) {
+		    Player p = players.get(i);
+		    Point g = group_point.get(p.getGroupID());
+		    g.x += p.getDamage();
+		    g.y += p.getHitCount();
+		}
+		int tmp_id = 0;
+		int tmp_val = 0;
+		boolean draw_flag = false;
+		for (int i = 0; i < groups.size(); i++) {
+		    Point gp = group_point.get(i);
+		    Group g = groups.get(i);
+		    if(tmp_val == (gp.y - gp.x)){
+			draw_flag = true;
+		    }
+		    if(tmp_val > (gp.y - gp.x)){
+			tmp_val = gp.y - gp.x;
+			tmp_id = i;
+			draw_flag = false;
+		    }
+		}
+		if(draw_flag){
+		    message += "Draw game.\n\n";
+		}else{
+		    message += groups.get(tmp_id).getName()+" wins.\n\n";
+		}
+		for (int i = 0; i < groups.size(); i++) {
+		    Point gp = group_point.get(i);
+		    Group g = groups.get(i);
+		    message += g.getName()+" The number of hit:"+gp.x + " , damage:"+gp.y + "\n";
+		}
 		if(iswindow){
 		    JFrame frame = new JFrame();
-		    String message = "Game set \n";
-		    Vector<Point> group_point = new Vector<Point>();
-		    for (int i = 0; i < groups.size(); i++) {
-			group_point.add(new Point(0,0));
-		    }
-		    for (int i = 0; i < players.size(); i++) {
-			Player p = players.get(i);
-			Point g = group_point.get(p.getGroupID());
-			g.x += p.getDamage();
-			g.y += p.getHitCount();
-		    }
-		    int tmp_id = 0;
-		    int tmp_val = 0;
-		    boolean draw_flag = false;
-		    for (int i = 0; i < groups.size(); i++) {
-			Point gp = group_point.get(i);
-			Group g = groups.get(i);
-			if(tmp_val == (gp.y - gp.x)){
-			    draw_flag = true;
-			}
-			if(tmp_val > (gp.y - gp.x)){
-			    tmp_val = gp.y - gp.x;
-			    tmp_id = i;
-			    draw_flag = false;
-			}
-		    }
-		    if(draw_flag){
-			message += "Draw game.\n\n";
-		    }else{
-			message += groups.get(tmp_id).getName()+" wins.\n\n";
-		    }
-		    for (int i = 0; i < groups.size(); i++) {
-			Point gp = group_point.get(i);
-			Group g = groups.get(i);
-			message += g.getName()+" The number of hit:"+gp.x + " , damage:"+gp.y + "\n";
-		    }
 		    JOptionPane.showMessageDialog(frame, message);
 		}
+		System.out.println(message);
 		return 2;
 	    }
 	catch(Exception e)
