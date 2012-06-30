@@ -4,13 +4,14 @@ import java.util.Random;
 import java.util.Vector;
 
 public class Board{
-    public static final int WIDTH = 20;
-    public static final int HEIGHT = 20;
-    private static float tileSize = 1.0f;
+    public static final int WIDTH = 5;
+    public static final int HEIGHT = 5;
+    public static final float tileSize = 1.0f;
     public static final int MAX_TURNS  = 100;
     private static int SLEEP_TIME  = 1;
     private float WIND_DYNAMICS  = 0.002f;
     private int WIND_DIRECTION  = 160;
+    public static final int MAX_THROWTIME  = Integer.MAX_VALUE;
     private int[][] board = new int[WIDTH+2][HEIGHT+2];
     private Vector<Point> PlayersPos = new Vector<Point>();
     @SuppressWarnings("unchecked")
@@ -179,13 +180,13 @@ public class Board{
     }
     public int getPoint(int x, int y){
 	/**
-	   指定したフィールド上に何がいるのか返す
+	   指定したフィールド上に何がいるのか返す(空白 壁 グループID のどれか)
 	**/
 	return this.board[x][y];
     }
     public Player getPointPlayer(int x, int y){
 	/**
-	   指定した盤上の位置いるプレーヤーを返す
+	   指定した盤上の位置いるプレーヤーインスタンスを返す
 	**/
 	return (Player)getPointPlayerReal(x, y).clone();
     }
@@ -247,9 +248,9 @@ public class Board{
 	if (!player.spendEnergy(Player.THROW_VAL)) {
 	    return null;
 	}
-	float arrow[] = {
-	    PlayersPos.get(player.getID()).x*tileSize+tileSize/2,
-	    PlayersPos.get(player.getID()).y*tileSize+tileSize/2
+	float arrow[] = { // 玉の位置初期化 投げた人の中心座標
+	    getPosition(player.getID()).x*tileSize+tileSize/2,
+	    getPosition(player.getID()).y*tileSize+tileSize/2
 	};
 	// 玉(弓矢)オブジェクト生成、今は同時に飛ぶことがないからいらない
 	Arrows.add(arrow);
@@ -262,15 +263,14 @@ public class Board{
 	    	// dynamics = 1;
 	    	dynamics = Math.log(t);
 	    }
-	    // GUIの見かけ上の方向に統一
+	    // arrow[0] -> 玉(弓矢)のx座標，arrow[1] -> 玉のy座標 初期値は投げた人の中心座標
 	    arrow[0] += Math.cos(angle)*Piece.DYNAMICS
-		+ Math.cos(Math.PI*((float)WIND_DIRECTION/180.0))*WIND_DYNAMICS *dynamics;
-	    arrow[1] -= Math.sin(angle)*Piece.DYNAMICS
-		- Math.sin(Math.PI*((float)WIND_DIRECTION/180.0))*WIND_DYNAMICS * dynamics;
+		+ Math.cos(Math.PI*((float)WIND_DIRECTION/180.0))*WIND_DYNAMICS * dynamics;
+	    arrow[1] += Math.sin(angle)*Piece.DYNAMICS
+		+ Math.sin(Math.PI*((float)WIND_DIRECTION/180.0))*WIND_DYNAMICS * dynamics;
 	    // 盤上でのポイントに変換
 	    Point bpoint = convertRealToBoard(arrow[0], arrow[1]);
 	    if(getPoint(bpoint.x, bpoint.y) != Piece.EMPTY){
-		// getPoint(bpoint.x, bpoint.y) != player.getType()
 		// 壁かどうか判定
 		if(getPoint(bpoint.x, bpoint.y) != Piece.WALL){
 		    Player p = getPointPlayerReal(bpoint.x, bpoint.y);
@@ -302,12 +302,15 @@ public class Board{
 		    Thread.sleep(SLEEP_TIME);
 		}catch (InterruptedException e){}
 	    }
+	    // まずありえないけどint型のインクリメントオーバーフロー処理
+	    if(t >= MAX_THROWTIME){return null;}
 	}
 	// 玉(弓矢)オブジェクト破棄
 	Arrows.clear();
 	return hit;
     }
     public Point convertRealToBoard(float x, float y){
+	// 数値的な盤上の位置からフィールドにおけるポイントを返す
 	int bx = (int)(x/tileSize);
 	int by = (int)(y/tileSize);
 	return new Point(bx, by);
@@ -425,6 +428,7 @@ public class Board{
 	return getPointPlayer(x, y).getAngle();
     }
     public Vector<Point> getHazard(){
+	// 障害物の位置を返す
 	Vector<Point> p = new Vector<Point>();
 	for(int i=1;i<=WIDTH;i++){
 	    for(int j=1;j<=HEIGHT;j++){
@@ -457,23 +461,37 @@ public class Board{
     }
     public Vector<Point> getMovablePos()
     {
+	//自分が移動することができるすべての位置を返す
 	return MovablePos[turns];
     }
     public boolean move(Point point)
     {
 	if(point.x <= 0 || point.x > WIDTH) return false;
 	if(point.y <= 0 || point.y > HEIGHT) return false;
-	Point pos = PlayersPos.get(current_player_id);
-	int tmp = 0;
-	if(board[point.x][point.y] == Piece.EMPTY){
-	    if (!Players.get(current_player_id).spendEnergy(Player.MOVE_VAL)) {
-		return false;
+	Vector<Point> mp = getMovablePos();
+	boolean flag = false;
+	for (int i = 0; i < mp.size(); i++) {
+	    if(point.equals(mp.get(i))){
+		    flag = true;
+		    break;
 	    }
-	    tmp = board[pos.x][pos.y];
-	    board[pos.x][pos.y] = Piece.EMPTY;
-	    board[point.x][point.y] = tmp;
-	    PlayersPos.set(current_player_id, point);
 	}
-	return true;
+	if (flag) {
+	    Point pos = PlayersPos.get(current_player_id);
+	    int tmp = 0;
+	    if(board[point.x][point.y] == Piece.EMPTY){
+		if (!Players.get(current_player_id).spendEnergy(Player.MOVE_VAL)) {
+		    return false;
+		}
+		tmp = board[pos.x][pos.y];
+		board[pos.x][pos.y] = Piece.EMPTY;
+		board[point.x][point.y] = tmp;
+		PlayersPos.set(current_player_id, point);
+	    }
+	    return true;
+	}
+	else{
+	    return false;
+	}
     }
 }

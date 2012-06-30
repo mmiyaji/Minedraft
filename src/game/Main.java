@@ -11,13 +11,13 @@ interface Player{
     public static final int REFRESH_VAL = 1000;
     public Object clone();
     public int getType();
-    public int getID();
-    public int getGroupID();
-    public int getDamage();
-    public int getHitCount();
-    public float getAngle();
+    public int getID(); //このプレーヤーIDを返す
+    public int getGroupID(); //このプレーヤーが所属するグループIDを返す
+    public int getDamage(); //このプレーヤーが玉を受けた数を返す
+    public int getHitCount(); //このプレーヤーが玉を当てた数を返す
+    public float getAngle(); //このプレーヤーの向きを返す（0~360度）
     public float setAngle(float angle);
-    public String getName();
+    public String getName(); //このプレーヤーの名前を返す
     public int getEnergy();
     public int damage();
     public int hit();
@@ -161,8 +161,8 @@ class AIPlayer implements Player, Cloneable
     }
 };
 public class Main implements Runnable{
-    final static int ENEMY_NUM = 3;
-    final static int FRIEND_NUM = 3;
+    final static int ENEMY_NUM = 1;
+    final static int FRIEND_NUM = 1;
     final static int INDENT_NUM = 0;
     final static int GROUP_NUM = 2;
     int current_turn = 0;
@@ -289,7 +289,7 @@ public class Main implements Runnable{
 		    if(draw_flag){
 			message += "Draw game.\n\n";
 		    }else{
-			message += groups.get(tmp_id).getName()+" win.\n\n";
+			message += groups.get(tmp_id).getName()+" wins.\n\n";
 		    }
 		    for (int i = 0; i < groups.size(); i++) {
 			Point gp = group_point.get(i);
