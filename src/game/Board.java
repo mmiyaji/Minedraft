@@ -7,7 +7,7 @@ public class Board{
     public static final int WIDTH = 20;
     public static final int HEIGHT = 20;
     public static final float tileSize = 1.0f;
-    public static final int MAX_TURNS  = 100;
+    public static final int MAX_TURNS  = 60;
     private static int SLEEP_TIME  = 7;
     private float WIND_DYNAMICS  = 0.002f;
     private int WIND_DIRECTION  = 160;
@@ -422,7 +422,7 @@ public class Board{
     private void initMovable(){
 	MovablePos[turns].clear();
 	Player player = Players.get(current_player_id);
-	Point pos = PlayersPos.get(player.getID());
+	Point pos = PlayersPos.get(current_player_id);
 	for(int i=0;i<3;i++){
 	    for(int j=0;j<3;j++){
 		if(board[pos.x-1+i][pos.y-1+j] == Piece.EMPTY){

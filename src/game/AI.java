@@ -5,6 +5,7 @@ class AiAlgorithm extends AI
 {
     public AiAlgorithm()
     {
+	this.name = "AI";
 	this.start_time = 0;
 	this.limit_time = Long.MAX_VALUE;
     }	
@@ -17,6 +18,8 @@ class AiAlgorithm extends AI
 	Vector<Point> movables = board.getMovablePos();
 	// 適当に移動
 	p = (Point)movables.get((int)(rand.nextDouble()*movables.size()));
+	System.out.println(p);
+	board.move(p);
 	Player me = board.getME();
 	Point me_point = board.getPosition(me.getID());
 	Vector<Player> enemies = board.getEnemiesObject();

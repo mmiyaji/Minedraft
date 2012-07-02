@@ -28,6 +28,7 @@ interface Player{
 abstract class AI
 {
     abstract public void move(Board board);
+    public String name = "AI";
     public long limit_time = 1000;
     public long start_time = 0;
 }
@@ -166,8 +167,8 @@ class AIPlayer implements Player, Cloneable
     }
 };
 public class Main implements Runnable{
-    final static int ENEMY_NUM = 3;
-    final static int FRIEND_NUM = 3;
+    final static int ENEMY_NUM = 1;
+    final static int FRIEND_NUM = 1;
     final static int INDENT_NUM = 0;
     final static int GROUP_NUM = 2;
     int current_turn = 0;
@@ -191,13 +192,17 @@ public class Main implements Runnable{
 	}
 	players = new Vector<Player>();
 	for(int i=0; i<FRIEND_NUM; i++){
-	    System.out.println("join up AI"+i);
-	    players.add(new AIPlayer(new AiAlgorithm(), "AI"+i, i, 0));
+	    AI ai = new AiAlgorithm();
+	    String name = ai.name+i;
+	    players.add(new AIPlayer(ai, name, i, 0));
+	    System.out.println("join up "+name);
 	    groups.get(0).join(players.get(i));
 	}
 	for(int i=FRIEND_NUM; i<ENEMY_NUM+FRIEND_NUM; i++){
-	    System.out.println("join up ENEMY"+i);
-	    players.add(new AIPlayer(new EnemyAlgorithm(), "Enemy"+i, i, 1));
+	    AI ai = new EnemyAlgorithm();
+	    String name = ai.name+(i-FRIEND_NUM);
+	    players.add(new AIPlayer(ai, name, i, 1));
+	    System.out.println("join up "+name);
 	    groups.get(1).join(players.get(i));
 	}
 	// プレーヤーの初期行動順序をランダムにする
@@ -332,7 +337,7 @@ public class Main implements Runnable{
 	try{
 	    Thread.sleep(SLEEP_TIME);
 	}catch(InterruptedException e){}
-	//		ターン交代
+	// ターン交代
 	current_turn = ++current_turn % players.size();
 	return 0;
     }

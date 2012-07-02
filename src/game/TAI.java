@@ -5,6 +5,7 @@ class TAiAlgorithm extends AI
 {
     public TAiAlgorithm()
     {
+	this.name = "TAI";
 	this.start_time = 0;
 	this.limit_time = Long.MAX_VALUE;
     }	
@@ -17,6 +18,7 @@ class TAiAlgorithm extends AI
 	Vector<Point> movables = board.getMovablePos();
 	// 適当に移動
 	p = (Point)movables.get((int)(rand.nextDouble()*movables.size()));
+	board.move(p);
 	Player me = board.getME();
 	Point me_point = board.getPosition(me.getID());
 	Vector<Player> enemies = board.getEnemiesObject();

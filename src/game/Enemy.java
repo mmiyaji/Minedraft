@@ -5,6 +5,7 @@ class EnemyAlgorithm extends AI
 {
     public EnemyAlgorithm()
     {
+	this.name = "Enemy";
 	this.start_time = 0;
 	this.limit_time = Long.MAX_VALUE;
     }
@@ -22,6 +23,7 @@ class EnemyAlgorithm extends AI
 	Vector<Point> movables = board.getMovablePos();
 	// 適当に移動
 	p = (Point)movables.get((int)(rand.nextDouble()*movables.size()));
+	board.move(p);
 	Player me = board.getME();
 	Point me_point = board.getPosition(me.getID());
 	Vector<Player> enemies = board.getEnemiesObject();
