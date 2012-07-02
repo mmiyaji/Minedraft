@@ -1,5 +1,311 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" id="{UMLID=_od4icMJ0EeGfdL6vlmAUcQ,JavaID=game}" metadata="uml2-1.0" tag="10" key="32303037303632392044726561646E6F75676874">
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" name="gameClassDiagram" id="{UMLID=_od4icMJ0EeGfdL6vlmAUcQ,JavaID=game}" metadata="uml2-1.0" initialized="true" tag="10" key="32303037303632392044726561646E6F75676874">
+  <children xsi:type="editmodel:ClassEditModel" name="Point" location="392,2366" size="84,173" timstampe="24" stereotype="" id="{UMLID=_r92CMMJ0EeGfdL6vlmAUcQ,JavaID=game/Point}" runTimeClassModel="equals(Lgame.Point;),Point(Ljava.lang.String;),Point(II),Point(),y,toString(),x">
+    <children xsi:type="editmodel:CompartmentEditModel" size="33,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="x" size="33,16" id="{UMLID=_r_tqcMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="y" size="33,16" id="{UMLID=_r_ZhYMJ0EeGfdL6vlmAUcQ}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="63,90">
+      <children xsi:type="editmodel:MethodEditModel" name="Point" size="54,16" id="{UMLID=_sAMLkMJ0EeGfdL6vlmAUcQ,JavaID=game/Point#Point()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Point" size="54,16" id="{UMLID=_r_vfoMJ0EeGfdL6vlmAUcQ,JavaID=game/Point#Point(II)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Point" size="54,16" id="{UMLID=_sADBoMJ0EeGfdL6vlmAUcQ,JavaID=game/Point#Point(Ljava.lang.String;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" size="63,16" id="{UMLID=_sAMyoMJ0EeGfdL6vlmAUcQ,JavaID=game/Point#toString()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="equals" size="59,16" id="{UMLID=_sAJIQMJ0EeGfdL6vlmAUcQ,JavaID=game/Point#equals(Lgame.Point;)}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Main" location="202,1477" size="103,496" timstampe="4716" stereotype="" id="{UMLID=_sJnNUMJ0EeGfdL6vlmAUcQ,JavaID=game/Main}" runTimeClassModel="main([Ljava.lang.String;),iswindow,stop,current_turn,GROUP_NUM,diff,ENEMY_NUM,board,running,mainLoop(),main,getBoard(),INDENT_NUM,window,start,run(),players,FRIEND_NUM,coreExec(),Main(),groups,SLEEP_TIME,isWindow([Ljava.lang.String;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="82,198">
+      <children xsi:type="editmodel:AttributeEditModel" name="ENEMY_NUM" size="80,16" id="{UMLID=_sKldsMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="FRIEND_NUM" size="82,16" id="{UMLID=_sKuAkMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="INDENT_NUM" size="82,16" id="{UMLID=_sKqWMMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="GROUP_NUM" size="81,16" id="{UMLID=_sKjogMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="current_turn" size="70,16" id="{UMLID=_sKiaYMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="players" size="60,21" id="{UMLID=_sKvOsMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="groups" size="58,21" id="{UMLID=_sKySAMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="board" size="54,21" id="{UMLID=_sKmr0MJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="start" size="44,16" id="{UMLID=_sKsycsJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="stop" size="43,16" id="{UMLID=_sKhMQMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="diff" size="39,16" id="{UMLID=_sKk2oMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="main" size="52,21" id="{UMLID=_sKpIEMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="window" size="61,21" id="{UMLID=_sKrkUMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="SLEEP_TIME" size="76,16" id="{UMLID=_sKxD4cJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="iswindow" size="61,16" id="{UMLID=_sKf-IMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="running" size="54,16" id="{UMLID=_sKn58MJ0EeGfdL6vlmAUcQ}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="73,136">
+      <children xsi:type="editmodel:MethodEditModel" name="Main" size="54,16" id="{UMLID=_sK94McJ0EeGfdL6vlmAUcQ,JavaID=game/Main#Main()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getBoard" size="73,21" id="{UMLID=_sK2jcMJ0EeGfdL6vlmAUcQ,JavaID=game/Main#getBoard()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="main" size="60,21" id="{UMLID=_sK_tYMJ0EeGfdL6vlmAUcQ,JavaID=game/Main#main([Ljava.lang.String;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isWindow" size="71,16" id="{UMLID=_sK3xkcJ0EeGfdL6vlmAUcQ,JavaID=game/Main#isWindow([Ljava.lang.String;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mainLoop" size="70,16" id="{UMLID=_sK18YMJ0EeGfdL6vlmAUcQ,JavaID=game/Main#mainLoop()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="run" size="48,16" id="{UMLID=_sK-fQMJ0EeGfdL6vlmAUcQ,JavaID=game/Main#run()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="coreExec" size="69,16" id="{UMLID=_sK0HMcJ0EeGfdL6vlmAUcQ,JavaID=game/Main#coreExec()}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Piece" location="504,2366" size="92,173" timstampe="440" stereotype="" id="{UMLID=_sRjoYMJ0EeGfdL6vlmAUcQ,JavaID=game/Piece}" runTimeClassModel="COLORS,WALL,ME,DYNAMICS,COLORS(I),EMPTY,ENEMY">
+    <children xsi:type="editmodel:CompartmentEditModel" size="71,108">
+      <children xsi:type="editmodel:AttributeEditModel" name="EMPTY" size="56,16" id="{UMLID=_sSMhkMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="WALL" size="50,16" id="{UMLID=_sSIQIcJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="ME" size="41,16" id="{UMLID=_sSHpEMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="ENEMY" size="57,16" id="{UMLID=_sSLTcMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="DYNAMICS" size="71,16" id="{UMLID=_sSJeQMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="COLORS" size="62,16" id="{UMLID=_sSDXoMJ0EeGfdL6vlmAUcQ}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="70,18">
+      <children xsi:type="editmodel:MethodEditModel" name="COLORS" size="70,16" id="{UMLID=_sSNvsMJ0EeGfdL6vlmAUcQ,JavaID=game/Piece#COLORS(I)}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="GameOverException" location="378,2702" size="142,55" timstampe="4716" stereotype="" id="{UMLID=_sS_LwMJ0EeGfdL6vlmAUcQ,JavaID=game/GameOverException}" runTimeClassModel="serialVersionUID">
+    <children xsi:type="editmodel:CompartmentEditModel" size="88,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="serialVersionUID" size="88,16" id="{UMLID=_sTSGsMJ0EeGfdL6vlmAUcQ}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Field" location="50,2567" size="113,206" timstampe="103" stereotype="" id="{UMLID=_sT6Y0MJ0EeGfdL6vlmAUcQ,JavaID=game/Field}" runTimeClassModel="arrows,paintComponent(Ljava.awt.Graphics;),Field(),Field(Lgame.Board;),setBoard(Lgame.Board;),serialVersionUID,board,paintArrow(Ljava.util.Vector;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="88,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="serialVersionUID" size="88,16" id="{UMLID=_sUXEwMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="arrows" size="59,21" id="{UMLID=_sUV2oMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="board" size="54,21" id="{UMLID=_sUYS4MJ0EeGfdL6vlmAUcQ}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="92,95">
+      <children xsi:type="editmodel:MethodEditModel" name="Field" size="54,16" id="{UMLID=_sUjSAMJ0EeGfdL6vlmAUcQ,JavaID=game/Field#Field()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Field" size="54,16" id="{UMLID=_sUhc0MJ0EeGfdL6vlmAUcQ,JavaID=game/Field#Field(Lgame.Board;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setBoard" size="73,21" id="{UMLID=_sUZhAMJ0EeGfdL6vlmAUcQ,JavaID=game/Field#setBoard(Lgame.Board;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="paintArrow" size="74,16" id="{UMLID=_sUfnoMJ0EeGfdL6vlmAUcQ,JavaID=game/Field#paintArrow(Ljava.util.Vector;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="paintComponent" size="92,16" id="{UMLID=_sUbWMMJ0EeGfdL6vlmAUcQ,JavaID=game/Field#paintComponent(Ljava.awt.Graphics;)}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="ExitException" location="546,2702" size="109,55" timstampe="4716" stereotype="" id="{UMLID=_sYOREMJ0EeGfdL6vlmAUcQ,JavaID=game/ExitException}" runTimeClassModel="serialVersionUID">
+    <children xsi:type="editmodel:CompartmentEditModel" size="88,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="serialVersionUID" size="88,16" id="{UMLID=_sYmEgMJ0EeGfdL6vlmAUcQ}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" name="Player" location="50,2119" size="106,398" timstampe="4716" id="{UMLID=_sKwc0MJ0EeGfdL6vlmAUcQ,JavaID=game/Player}" runTimeClassModel="MOVE_VAL,onTurn(Lgame.Board;),MAX_ENERGY,spendEnergy(I),getType(),getID(),getDamage(),getGroupID(),getName(),THROW_VAL,refresh(),getAngle(),REFRESH_VAL,hit(),setAngle(F),clone(),getEnergy(),damage(),getHitCount()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="85,72">
+      <children xsi:type="editmodel:AttributeEditModel" name="MAX_ENERGY" size="83,16" id="{UMLID=_seJS4cJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="THROW_VAL" size="78,16" id="{UMLID=_seHdsMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="MOVE_VAL" size="70,16" id="{UMLID=_seGPkMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="REFRESH_VAL" size="85,16" id="{UMLID=_seIr0MJ0EeGfdL6vlmAUcQ}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="81,270">
+      <children xsi:type="editmodel:MethodEditModel" name="clone" size="55,16" id="{UMLID=_sel-0cJ0EeGfdL6vlmAUcQ,JavaID=game/Player#clone()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getType" size="64,16" id="{UMLID=_seWuQMJ0EeGfdL6vlmAUcQ,JavaID=game/Player#getType()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getID" size="55,16" id="{UMLID=_seX8YcJ0EeGfdL6vlmAUcQ,JavaID=game/Player#getID()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getGroupID" size="76,16" id="{UMLID=_sei7gcJ0EeGfdL6vlmAUcQ,JavaID=game/Player#getGroupID()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getDamage" size="76,16" id="{UMLID=_sekwsMJ0EeGfdL6vlmAUcQ,JavaID=game/Player#getDamage()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getHitCount" size="77,16" id="{UMLID=_seU5EMJ0EeGfdL6vlmAUcQ,JavaID=game/Player#getHitCount()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getAngle" size="66,16" id="{UMLID=_seR1wMJ0EeGfdL6vlmAUcQ,JavaID=game/Player#getAngle()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setAngle" size="66,16" id="{UMLID=_seKhAMJ0EeGfdL6vlmAUcQ,JavaID=game/Player#setAngle(F)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getName" size="68,16" id="{UMLID=_seTD4cJ0EeGfdL6vlmAUcQ,JavaID=game/Player#getName()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getEnergy" size="71,16" id="{UMLID=_seQAkcJ0EeGfdL6vlmAUcQ,JavaID=game/Player#getEnergy()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="damage" size="64,16" id="{UMLID=_seM9QcJ0EeGfdL6vlmAUcQ,JavaID=game/Player#damage()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="hit" size="45,16" id="{UMLID=_sehGUMJ0EeGfdL6vlmAUcQ,JavaID=game/Player#hit()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="refresh" size="61,16" id="{UMLID=_seOycMJ0EeGfdL6vlmAUcQ,JavaID=game/Player#refresh()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="spendEnergy" size="81,16" id="{UMLID=_seZxkMJ0EeGfdL6vlmAUcQ,JavaID=game/Player#spendEnergy(I)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="onTurn" size="61,16" id="{UMLID=_secN0MJ0EeGfdL6vlmAUcQ,JavaID=game/Player#onTurn(Lgame.Board;)}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="AIPlayer" location="50,1477" size="102,592" timstampe="4716" stereotype="" id="{UMLID=_sgVrQMJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer}" runTimeClassModel="onTurn(Lgame.Board;),spendEnergy(I),getType(),AIPlayer(Lgame.AI;Ljava.lang.String;II),getDamage(),getGroupID(),type,id,getName(),AIPlayer(Lgame.AI;Ljava.lang.String;I),getAngle(),setAngle(F),name,Ai,AIPlayer(I),damage(),getHitCount(),AIPlayer(Ljava.lang.String;I),hitcount,group_id,damage,getID(),AIPlayer(Ljava.lang.String;II),angle,refresh(),AIPlayer(Lgame.AI;I),hit(),getEnergy(),clone(),energy">
+    <children xsi:type="editmodel:CompartmentEditModel" size="58,144">
+      <children xsi:type="editmodel:AttributeEditModel" name="Ai" size="42,21" id="{UMLID=_shJjkcJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="id" size="35,16" id="{UMLID=_shDc8MJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="group_id" size="58,16" id="{UMLID=_shHuYMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="damage" size="56,16" id="{UMLID=_shGgQMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="hitcount" size="55,16" id="{UMLID=_shErEMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="energy" size="52,16" id="{UMLID=_shL_0MJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="name" size="48,16" id="{UMLID=_shF5MMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="angle" size="47,16" id="{UMLID=_shKxsMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="type" size="43,16" id="{UMLID=_shI8gMJ0EeGfdL6vlmAUcQ}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="81,378">
+      <children xsi:type="editmodel:MethodEditModel" name="AIPlayer" size="66,16" id="{UMLID=_shxOoMJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#AIPlayer(I)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="AIPlayer" size="66,16" id="{UMLID=_shh-EMJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#AIPlayer(Ljava.lang.String;I)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="AIPlayer" size="66,16" id="{UMLID=_shloccJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#AIPlayer(Ljava.lang.String;II)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="AIPlayer" size="66,16" id="{UMLID=_shMm4MJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#AIPlayer(Lgame.AI;I)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="AIPlayer" size="66,16" id="{UMLID=_shbQYMJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#AIPlayer(Lgame.AI;Ljava.lang.String;I)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="AIPlayer" size="66,16" id="{UMLID=_shsWIMJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#AIPlayer(Lgame.AI;Ljava.lang.String;II)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="onTurn" size="61,16" id="{UMLID=_shSGccJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#onTurn(Lgame.Board;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="clone" size="55,16" id="{UMLID=_shkaUMJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#clone()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getID" size="55,16" id="{UMLID=_shgI4MJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#getID()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getGroupID" size="76,16" id="{UMLID=_sh-C8MJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#getGroupID()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getType" size="64,16" id="{UMLID=_shqg8cJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#getType()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getDamage" size="76,16" id="{UMLID=_shaCQMJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#getDamage()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getHitCount" size="77,16" id="{UMLID=_sh2uMMJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#getHitCount()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getEnergy" size="71,16" id="{UMLID=_sh05AMJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#getEnergy()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getName" size="68,16" id="{UMLID=_she6wMJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#getName()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getAngle" size="66,16" id="{UMLID=_shQ4UMJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#getAngle()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setAngle" size="66,16" id="{UMLID=_sh38UMJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#setAngle(F)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="damage" size="64,16" id="{UMLID=_shpS0MJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#damage()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="hit" size="45,16" id="{UMLID=_shYNEMJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#hit()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="refresh" size="61,16" id="{UMLID=_shPDIcJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#refresh()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="spendEnergy" size="81,16" id="{UMLID=_shycwcJ0EeGfdL6vlmAUcQ,JavaID=game/AIPlayer#spendEnergy(I)}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Board" location="78,18" size="151,1054" timstampe="7878" stereotype="" id="{UMLID=_sGgO8MJ0EeGfdL6vlmAUcQ,JavaID=game/Board}" runTimeClassModel="getPointPlayerReal(II),MAX_THROWTIME,tileSize,Players,showBoard(),turnEnd(),getPosition(I),convertRealToBoard(FF),getBoard(),getPointPlayerAngle(II),getMembers(),angle(F),Board(ILgame.Player;Lgame.Main;),getPointPlayer(II),WIND_DYNAMICS,getPlayers(),getPoint(II),getEnemiesObject(),getMembersPositon(),board,throwing(I),getMaxTurn(),Board(),getPointPlayerName(II),initMovable(),HEIGHT,throwing(F),getPlayersObject(),Arrows,turns,MovablePos,getHazard(),checkLabeling(II),WIND_DIRECTION,getTurn(),getArrow(),current_player_id,getMovablePos(),throwing(),judge(),getME(),WIDTH,main,getPlayersPosition(),PlayersPos,isGameOver(),getPlayersDamage(),getMembersObject(),initBoard(JLgame.Player;),getEnemiesPositon(),MAX_TURNS,SLEEP_TIME,getEnemies(),move(Lgame.Point;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="99,180">
+      <children xsi:type="editmodel:AttributeEditModel" name="WIDTH" size="56,16" id="{UMLID=_s5fyIMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="HEIGHT" size="59,16" id="{UMLID=_s5YdYMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="tileSize" size="54,16" id="{UMLID=_s5XPQMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="MAX_TURNS" size="78,16" id="{UMLID=_s5mf0MJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="SLEEP_TIME" size="76,16" id="{UMLID=_s5nt8MJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="WIND_DYNAMICS" size="97,16" id="{UMLID=_s5WBIMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="WIND_DIRECTION" size="99,16" id="{UMLID=_s5lRsMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="MAX_THROWTIME" size="100,16" id="{UMLID=_mPqAQMKIEeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="board" size="48,16" id="{UMLID=_s5cu0MJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="PlayersPos" size="74,21" id="{UMLID=_s5kDkMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="MovablePos" size="77,21" id="{UMLID=_s5gZMMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Players" size="61,21" id="{UMLID=_s5ZrgMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Arrows" size="60,21" id="{UMLID=_s5a5oMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="main" size="52,21" id="{UMLID=_s5i1cMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="turns" size="46,16" id="{UMLID=_s5ekAMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="current_player_id" size="88,16" id="{UMLID=_s5UzAMJ0EeGfdL6vlmAUcQ}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="107,694">
+      <children xsi:type="editmodel:MethodEditModel" name="getPlayers" location="-4,303" size="79,21" id="{UMLID=_s6aYIMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getPlayers()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getPlayersObject" size="95,16" id="{UMLID=_s6sE8cJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getPlayersObject()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getPlayersPosition" size="100,16" id="{UMLID=_s5vCsMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getPlayersPosition()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getEnemies" size="77,16" id="{UMLID=_s6Ox8MJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getEnemies()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getEnemiesObject" size="99,16" id="{UMLID=_s7AOAMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getEnemiesObject()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getEnemiesPositon" size="102,16" id="{UMLID=_s6cNUMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getEnemiesPositon()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getMembers" size="80,16" id="{UMLID=_s5rYUMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getMembers()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getMembersObject" size="102,16" id="{UMLID=_s6xkgcJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getMembersObject()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getMembersPositon" size="105,16" id="{UMLID=_s6zZsMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getMembersPositon()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getME" size="59,16" id="{UMLID=_s5tNgMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getME()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="showBoard" size="75,16" id="{UMLID=_s64SMMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#showBoard()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getBoard" size="67,16" id="{UMLID=_s6vvUMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getBoard()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getTurn" size="63,16" id="{UMLID=_s5w34MJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getTurn()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getMaxTurn" size="78,16" id="{UMLID=_s6-_4MJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getMaxTurn()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getPosition" size="74,16" id="{UMLID=_s6X74MJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getPosition(I)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getPoint" size="64,16" id="{UMLID=_s61O4MJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getPoint(II)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getPointPlayer" size="86,16" id="{UMLID=_s6FA8MJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getPointPlayer(II)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getPointPlayerReal" size="102,16" id="{UMLID=_s6pBoMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getPointPlayerReal(II)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="angle" size="55,16" id="{UMLID=_s68joMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#angle(F)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="throwing" size="66,16" id="{UMLID=_s6WGsMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#throwing()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="throwing" size="66,16" id="{UMLID=_s6LuoMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#throwing(I)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="throwing" size="66,16" id="{UMLID=_s6TqcMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#throwing(F)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="convertRealToBoard" size="107,16" id="{UMLID=_s6lXQMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#convertRealToBoard(FF)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getPointPlayerName" size="107,16" id="{UMLID=_s54MoMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getPointPlayerName(II)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getPlayersDamage" size="102,16" id="{UMLID=_s6dbccJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getPlayersDamage()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="turnEnd" size="63,16" id="{UMLID=_s6kwMMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#turnEnd()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Board" size="57,16" id="{UMLID=_s678kMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#Board()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Board" size="57,16" id="{UMLID=_s5yGAcJ0EeGfdL6vlmAUcQ,JavaID=game/Board#Board(ILgame.Player;Lgame.Main;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="initBoard" size="67,16" id="{UMLID=_s645QMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#initBoard(JLgame.Player;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="initMovable" size="76,16" id="{UMLID=_s6kJIMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#initMovable()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="checkLabeling" size="85,16" id="{UMLID=_s6IrUMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#checkLabeling(II)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getArrow" size="68,16" id="{UMLID=_s6t6IMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getArrow()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getPointPlayerAngle" size="105,16" id="{UMLID=_s6QnIMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getPointPlayerAngle(II)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getHazard" size="72,16" id="{UMLID=_s6DLwMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getHazard()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isGameOver" size="81,16" id="{UMLID=_s52XcMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#isGameOver()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="judge" size="55,16" id="{UMLID=_s6f3scJ0EeGfdL6vlmAUcQ,JavaID=game/Board#judge()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getMovablePos" size="95,21" id="{UMLID=_s5o8EMJ0EeGfdL6vlmAUcQ,JavaID=game/Board#getMovablePos()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="move" size="56,16" id="{UMLID=_s6hs4MJ0EeGfdL6vlmAUcQ,JavaID=game/Board#move(Lgame.Point;)}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Window" location="206,2119" size="109,232" timstampe="15" stereotype="" id="{UMLID=_sKsycMJ0EeGfdL6vlmAUcQ,JavaID=game/Window}" runTimeClassModel="field,Window(Ljava.lang.Boolean;Lgame.Board;),init(Lgame.Board;),initLookFeel(),initBounds(),setBoard(Lgame.Board;),Window(Ljava.lang.Boolean;),repaint(),serialVersionUID,paintArrow(Ljava.util.Vector;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="88,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="serialVersionUID" size="88,16" id="{UMLID=_tFp-0MJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="field" size="49,21" id="{UMLID=_tFlGUMJ0EeGfdL6vlmAUcQ}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="78,144">
+      <children xsi:type="editmodel:MethodEditModel" name="Window" size="65,16" id="{UMLID=_tF7roMJ0EeGfdL6vlmAUcQ,JavaID=game/Window#Window(Ljava.lang.Boolean;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Window" size="65,16" id="{UMLID=_tF2zIMJ0EeGfdL6vlmAUcQ,JavaID=game/Window#Window(Ljava.lang.Boolean;Lgame.Board;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="repaint" size="60,16" id="{UMLID=_tF0W4MJ0EeGfdL6vlmAUcQ,JavaID=game/Window#repaint()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="init" size="47,16" id="{UMLID=_tFtCIMJ0EeGfdL6vlmAUcQ,JavaID=game/Window#init(Lgame.Board;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="initBounds" size="72,16" id="{UMLID=_tFsbEMJ0EeGfdL6vlmAUcQ,JavaID=game/Window#initBounds()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="initLookFeel" size="78,16" id="{UMLID=_tFzv0MJ0EeGfdL6vlmAUcQ,JavaID=game/Window#initLookFeel()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setBoard" size="67,16" id="{UMLID=_tF098MJ0EeGfdL6vlmAUcQ,JavaID=game/Window#setBoard(Lgame.Board;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="paintArrow" size="74,16" id="{UMLID=_tF85wMJ0EeGfdL6vlmAUcQ,JavaID=game/Window#paintArrow(Ljava.util.Vector;)}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Group" location="213,2567" size="98,232" timstampe="489" stereotype="" id="{UMLID=_sKzgIMJ0EeGfdL6vlmAUcQ,JavaID=game/Group}" runTimeClassModel="getName(),id,Group(Ljava.lang.String;I),getMenbers(),setID(I),name,getID(),join(Lgame.Player;),members,remove(Lgame.Player;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="48,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="id" size="35,16" id="{UMLID=_tJTvwMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="name" size="48,16" id="{UMLID=_tJU94MJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="members" size="68,21" id="{UMLID=_tJWMAMJ0EeGfdL6vlmAUcQ}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="77,126">
+      <children xsi:type="editmodel:MethodEditModel" name="Group" size="58,16" id="{UMLID=_tJeH0MJ0EeGfdL6vlmAUcQ,JavaID=game/Group#Group(Ljava.lang.String;I)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setID" size="55,16" id="{UMLID=_tJZPUMJ0EeGfdL6vlmAUcQ,JavaID=game/Group#setID(I)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getID" size="55,16" id="{UMLID=_tJcSocJ0EeGfdL6vlmAUcQ,JavaID=game/Group#getID()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getName" size="68,16" id="{UMLID=_tJadcMJ0EeGfdL6vlmAUcQ,JavaID=game/Group#getName()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="join" size="49,16" id="{UMLID=_tJjAUMJ0EeGfdL6vlmAUcQ,JavaID=game/Group#join(Lgame.Player;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="remove" size="63,16" id="{UMLID=_tJgkEMJ0EeGfdL6vlmAUcQ,JavaID=game/Group#remove(Lgame.Player;)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getMenbers" size="77,16" id="{UMLID=_tJXaIMJ0EeGfdL6vlmAUcQ,JavaID=game/Group#getMenbers()}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="EnemyAlgorithm" location="50,1287" size="121,140" timstampe="961" stereotype="" id="{UMLID=_r-BoYMJ0EeGfdL6vlmAUcQ,JavaID=game/EnemyAlgorithm}" runTimeClassModel="game.EnemyAlgorithm.Move,move(Lgame.Board;),EnemyAlgorithm(I),EnemyAlgorithm()">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="94,54">
+      <children xsi:type="editmodel:MethodEditModel" name="EnemyAlgorithm" size="94,16" id="{UMLID=_sGdysMJ0EeGfdL6vlmAUcQ,JavaID=game/EnemyAlgorithm#EnemyAlgorithm()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="EnemyAlgorithm" size="94,16" id="{UMLID=_sGb9gMJ0EeGfdL6vlmAUcQ,JavaID=game/EnemyAlgorithm#EnemyAlgorithm(I)}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="move" size="56,16" id="{UMLID=_sGeZwMJ0EeGfdL6vlmAUcQ,JavaID=game/EnemyAlgorithm#move(Lgame.Board;)}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="66,29">
+      <children xsi:type="editmodel:ClassEditModel" name="Move" size="66,47" timstampe="961" stereotype="" id="{UMLID=_r-CPccJ0EeGfdL6vlmAUcQ,JavaID=game/EnemyAlgorithm$Move}" shortShow="true" runTimeClassModel="eval,Move(),Move(III)">
+        <children xsi:type="editmodel:CompartmentEditModel" size="43,18">
+          <children xsi:type="editmodel:AttributeEditModel" name="eval" size="43,16" id="{UMLID=_sJFB0MJ0EeGfdL6vlmAUcQ}"/>
+        </children>
+        <children xsi:type="editmodel:CompartmentEditModel" size="56,36">
+          <children xsi:type="editmodel:MethodEditModel" name="Move" size="56,16" id="{UMLID=_sJHeEMJ0EeGfdL6vlmAUcQ,JavaID=game/EnemyAlgorithm$Move#Move()}"/>
+          <children xsi:type="editmodel:MethodEditModel" name="Move" size="56,16" id="{UMLID=_sJIFIMJ0EeGfdL6vlmAUcQ,JavaID=game/EnemyAlgorithm$Move#Move(III)}"/>
+        </children>
+        <children xsi:type="editmodel:CompartmentEditModel"/>
+        <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+      </children>
+    </children>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" targetConnections="//@children.12/@sourceConnections.0" size="2,1" autoLocated="true" id="{UMLID=_sGZhQcJ0EeGfdL6vlmAUcQ}" source="//@children.11" target="//@children.13" targetEnd="//@children.11/@sourceConnections.0/@children.1" sourceEnd="//@children.11/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="60,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="42,101" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="AiAlgorithm" location="201,1287" size="98,83" timstampe="447" stereotype="" id="{UMLID=_sLYH4sJ0EeGfdL6vlmAUcQ,JavaID=game/AiAlgorithm}" runTimeClassModel="AiAlgorithm(),move(Lgame.Board;)">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="77,36">
+      <children xsi:type="editmodel:MethodEditModel" name="AiAlgorithm" size="77,16" id="{UMLID=_sZ4d8MJ0EeGfdL6vlmAUcQ,JavaID=game/AiAlgorithm#AiAlgorithm()}"/>
+      <children xsi:type="editmodel:MethodEditModel" name="move" size="56,16" id="{UMLID=_sZ5FAMJ0EeGfdL6vlmAUcQ,JavaID=game/AiAlgorithm#move(Lgame.Board;)}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" size="2,1" autoLocated="true" id="{UMLID=_sZ2owMJ0EeGfdL6vlmAUcQ}" source="//@children.12" target="//@children.11/@sourceConnections.0" targetEnd="//@children.12/@sourceConnections.0/@children.1" sourceEnd="//@children.12/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="49,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,83"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.11/@sourceConnections.0" name="AI" location="141,1120" size="84,101" timstampe="447" stereotype="" id="{UMLID=_sGY6MMJ0EeGfdL6vlmAUcQ,JavaID=game/AI}" runTimeClassModel="move(Lgame.Board;),start_time,limit_time">
+    <children xsi:type="editmodel:CompartmentEditModel" size="63,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="limit_time" size="63,16" id="{UMLID=_sZZVwMJ0EeGfdL6vlmAUcQ}"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="start_time" size="63,16" id="{UMLID=_sZYHoMJ0EeGfdL6vlmAUcQ}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="56,18">
+      <children xsi:type="editmodel:MethodEditModel" name="move" size="56,16" id="{UMLID=_sZaj4MJ0EeGfdL6vlmAUcQ,JavaID=game/AI#move(Lgame.Board;)}"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" attributeSorter="ナチュラル" methodSorter="ナチュラル" innerClassSorter="ナチュラル" showPrivateAttributes="true" showProtectedAttributes="true" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showPrivateMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showPrivateInnerClasses="true" showStaticInnerClasses="true" showMethods="true" showAttributes="true" showLiterals="true" ShowInnerEntity="true"/>
+  </children>
   <diagramOptions xsi:type="options:ClassDiagramOptions" properties="wireOptions=1" autoName="false"/>
   <boardSetting snapToGeometry="true" gridEnabled="true" gridSpacing="14,14" gridOrigin="0,0" rulerUnit="cm" gridShow="true">
     <leftRuler/>

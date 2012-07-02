@@ -8,7 +8,7 @@ public class Board{
     public static final int HEIGHT = 20;
     public static final float tileSize = 1.0f;
     public static final int MAX_TURNS  = 100;
-    private static int SLEEP_TIME  = 5;
+    private static int SLEEP_TIME  = 7;
     private float WIND_DYNAMICS  = 0.002f;
     private int WIND_DIRECTION  = 160;
     public static final int MAX_THROWTIME  = Integer.MAX_VALUE;
@@ -345,17 +345,34 @@ public class Board{
 	}
 	initBoard(10, players);
     }
-    public void initBoard(long seed, Vector<Player> players){
+    public Board(int num, Vector<Player> players, Main main, int wind_dis, float wind_dyn){
+	Players = players;
+	Board.main = main;
+	if(!Main.iswindow){
+	    SLEEP_TIME = 0;
+	}
+	// Vectorの配列を初期化
+	for(int i=0; i<=MAX_TURNS; i++){
+	    MovablePos[i] = new Vector<Point>();
+	}
+	initBoard(10, players, wind_dis, wind_dyn);
+    }
+    private void initBoard(long seed, Vector<Player> players){
+	Random rand = new Random();
+	this.initBoard(seed, players,
+		       (int)(rand.nextDouble()*360),
+		       rand.nextFloat()*(Piece.DYNAMICS/5f) + WIND_DYNAMICS/2);
+    }
+    private void initBoard(long seed, Vector<Player> players, int wind_dis, float wind_dyn){
 	/**
 	   初期化処理
 	**/
-	Random rand = new Random(seed);
+	Random rand = new Random();
 	Arrows = new Vector<float[]>();
 	turns = 0;
 	current_player_id = 0;
-	// WIND_DIRECTION = (int)(rand.nextDouble()*360);
-	WIND_DIRECTION = 100;
-	WIND_DYNAMICS = rand.nextFloat()*(Piece.DYNAMICS/5f) + WIND_DYNAMICS/2;
+	WIND_DIRECTION = wind_dis;
+	WIND_DYNAMICS = wind_dyn;
 	System.out.println("WIND DYNAMICS " + WIND_DYNAMICS);
 	System.out.println("WIND DERECTION " + WIND_DIRECTION);
 	int x = 0;
@@ -446,7 +463,6 @@ public class Board{
 	int tmp_id = 0;
 	for(int i=0;i<Players.size();i++){
 	    player = Players.get(i);
-	    System.out.println(player.getName() + " :"+player.getDamage());
 	    if(tmp_val <= player.getDamage()){
 		tmp_val = player.getDamage();
 		tmp_id = i;

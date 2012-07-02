@@ -1,6 +1,6 @@
 package game;
 import java.util.Vector;
-
+import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -25,6 +25,13 @@ interface Player{
     public boolean spendEnergy(int energy);
     public void onTurn(Board board) throws Exception;
 }
+abstract class AI
+{
+    abstract public void move(Board board);
+    public long limit_time = 1000;
+    public long start_time = 0;
+}
+
 class UndoException extends Exception{private static final long serialVersionUID = 1L;}
 class ExitException extends Exception{private static final long serialVersionUID = 1L;}
 class GameOverException extends Exception{private static final long serialVersionUID = 1L;}
@@ -105,7 +112,7 @@ class AIPlayer implements Player, Cloneable
 	long start = System.currentTimeMillis();
 	Ai.move(board);
 	board.turnEnd();
-	System.out.println(" 完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
+	System.out.println("完了 思考時間："+(System.currentTimeMillis()-start)/1000.0+"秒");
 	if(board.isGameOver()) throw new GameOverException();
     }
     @Override
@@ -176,6 +183,7 @@ public class Main implements Runnable{
 
     public Main(){
 	System.out.println("Program start");
+	Random rand = new Random();
 	groups = new Vector<Group>();
 	for(int i=0;i<GROUP_NUM;i++){
 	    System.out.println("Create group "+i);
@@ -192,7 +200,22 @@ public class Main implements Runnable{
 	    players.add(new AIPlayer(new EnemyAlgorithm(), "Enemy"+i, i, 1));
 	    groups.get(1).join(players.get(i));
 	}
+	// プレーヤーの初期行動順序をランダムにする
+	Player tmp1;
+	Player tmp2;
+	int tmpi=0;
+	int tmpj=0;
+	for(int i=0;i<players.size()*2;i++){
+	    tmpi = (int)(rand.nextDouble()*players.size());
+	    tmpj = (int)(rand.nextDouble()*players.size());
+	    tmp1 = players.get(tmpi);
+	    tmp2 = players.get(tmpj);
+	    players.set(tmpi, tmp2);
+	    players.set(tmpj, tmp1);
+	}
 	board = new Board(ENEMY_NUM, players, this);
+	// 4, 5 引数にゼロをセットすると風なし状態で初期化
+	// board = new Board(ENEMY_NUM, players, this, 0, 0f);
 	window = null;
 	start = System.currentTimeMillis();
     }
@@ -238,7 +261,7 @@ public class Main implements Runnable{
     }
     public int coreExec(){
 	try{
-	    System.out.println(current_turn);
+	    System.out.println("現在 "+current_turn +" ターン目");
 	    ((Player) players.get(current_turn)).onTurn(board);
 	    if(iswindow){
 		window.repaint();
@@ -257,7 +280,7 @@ public class Main implements Runnable{
 		System.out.println("ゲーム終了");
 		// board.judge();
 		System.out.println("ゲーム時間 : "+diff/1000.0+"秒");
-		String message = "Game set \n";
+		String message = "Game set\n";
 		Vector<Point> group_point = new Vector<Point>();
 		for (int i = 0; i < groups.size(); i++) {
 		    group_point.add(new Point(0,0));

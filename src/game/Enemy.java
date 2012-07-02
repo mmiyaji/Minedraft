@@ -8,62 +8,32 @@ class EnemyAlgorithm extends AI
 	this.start_time = 0;
 	this.limit_time = Long.MAX_VALUE;
     }
-    // 一手思考にかける最大時間(秒で受け取ってミリ秒に変換)
     public EnemyAlgorithm(int limit_time)
     {
 	this.start_time = 0;
-	// 秒->ミリ秒
 	this.limit_time = (long)limit_time*1000;
     }
-    class Move extends Point
-    {
-	public int eval = 0;
-	public Move()
-	{
-	    super(0, 0);
-	}
-
-	public Move(int x, int y, int e)
-	{
-	    super(x, y);
-	    eval = e;
-	}
-    };	
     public void move(Board board)
     {
-	// 移動可能位置の取得
-	Vector<Point> movables = board.getMovablePos();
 	// これ以降を工夫してAIを作る．
 	Point p = null;
 	Random rand = new Random();
+	// 移動可能位置の取得
+	Vector<Point> movables = board.getMovablePos();
 	// 適当に移動
 	p = (Point)movables.get((int)(rand.nextDouble()*movables.size()));
-	if (rand.nextDouble()*10 > 5) {
-	    board.move(p);
+	Player me = board.getME();
+	Point me_point = board.getPosition(me.getID());
+	Vector<Player> enemies = board.getEnemiesObject();
+	for (int i = 0; i < enemies.size(); i++) {
+	    Point p2 = board.getPosition(enemies.get(i).getID());
+	    System.out.println(enemies.get(i).getName()+"を "+p2+"で発見");
 	}
-	// 適当に物投げる
-	// 敵の位置取得
-	//		Vector<Point> players = board.getPlayers();
-	//		Point playerPosition = players.get(0);
-	//		Player player = board.getPointPlayer(playerPosition.x, playerPosition.y);
-	// Vector<Player> players = board.getEnemiesObject();
-	// for (int i = 0; i < players.size(); i++) {
-	//     System.out.println("#########/"+players.get(i).getName());
-	// }
-	// 自分の位置取得
-	//		Player me = (Player)board.getME();
-	//		Point currentPosition = board.getPosition(me.getID());
-		
-	// 適当に向き変える
+	// // 適当に向き変える
 	float angle = rand.nextFloat()*360;
-	// board.angle((float)(Math.PI*(angle/180.0)));
-	// 適当に物投げる
-	Point hit = board.throwing(angle);
-	System.out.println("Hit "+hit);
-	// if (rand.nextDouble()*10 > 5) {
-	//     board.throwing();
-	// }
-
+	// // 適当に物投げる 返り値に着弾点
+	Point hit = board.throwing((int)angle);
+	System.out.println("玉の着弾点： "+hit);
     }
 }
 
