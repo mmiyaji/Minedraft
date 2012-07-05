@@ -4,28 +4,47 @@ import java.util.Random;
 import java.util.Vector;
 
 public class Board{
-    public static final int WIDTH = 20;
-    public static final int HEIGHT = 20;
-    public static final float tileSize = 1.0f;
-    public static final int MAX_TURNS  = 60;
-    private static int SLEEP_TIME  = 7;
-    private float WIND_DYNAMICS  = 0.002f;
-    private int WIND_DIRECTION  = 160;
-    public static final int MAX_THROWTIME  = Integer.MAX_VALUE;
+    public static final int WIDTH = 20; // フィールド横マスの数
+    public static final int HEIGHT = 20; // フィールド縦マスの数
+    public static final float tileSize = 1.0f; // フィールドマスの大きさ
+    public static final int MAX_TURNS  = 60; // 最大ターン数
+    private static int SLEEP_TIME  = 7; // 画面描画用スリープ変数
+    private float WIND_DYNAMICS  = 0.002f; // 風の強さ
+    private int WIND_DIRECTION  = 160; // 風の向き
+    public static final int MAX_THROWTIME  = Integer.MAX_VALUE; // 玉の最大飛距離(存在できる時間)
+    private static final int MAX_THROWTICS  = 50; // 一ターンに玉がどれだけの時間飛ぶか
     private int[][] board = new int[WIDTH+2][HEIGHT+2];
     private Vector<Point> PlayersPos = new Vector<Point>();
     @SuppressWarnings("unchecked")
 	private Vector<Point> MovablePos[] = new Vector[MAX_TURNS+1];
     private Vector<Player> Players;
     private Vector<float[]> Arrows;
+    private Vector<Ball> Balls;
     private static Main main;
     private int turns; // 手数(0からはじまる)
     private int current_player_id;
+    private boolean isthrowing = false;
+    private int count_ball = 0;
     /*#######################################################
      * 便利関数
      ####################################################### */
+    public Vector<Ball> getBalls(){
+	/**
+	   フィールド上に存在する玉のインスタンスを返す
+	   不正防止の為、コピーしているが、
+	   clone()はshallow copyなので全てコピーしてから返す
+	 **/
+	Vector<Ball> balls = new Vector<Ball>();
+	for (int i = 0; i < Balls.size(); i++) {
+	    balls.add((Ball)(Balls.get(i)).clone());
+	}
+	return balls;
+    }
     public Vector<Point> getPlayers(){
-	return  getPlayersPosition();
+	/**
+	   すべてのプレーヤーの位置を返す
+	**/
+	return getPlayersPosition();
     }
     @SuppressWarnings("unchecked")
 	public Vector<Player> getPlayersObject(){
@@ -237,72 +256,108 @@ public class Board{
 	   ex. 45度 を入力として与えると、右上に飛ぶようにしているが、
 	   実際のフィールド上での扱いは、右下にズレていってる(フィールドは左上原点だから)。
 	**/
+	isthrowing = true;
+	count_ball++;
 	this.angle((float)(angle*180f/Math.PI));
 	System.out.println("throwing "+angle);
-	Point hit = new Point();
 	Player player = Players.get(current_player_id);
 	if (!player.spendEnergy(Player.THROW_VAL)) {
 	    return null;
 	}
-	float arrow[] = { // 玉の位置初期化 投げた人の中心座標
-	    getPosition(player.getID()).x*tileSize+tileSize/2,
-	    getPosition(player.getID()).y*tileSize+tileSize/2
-	};
-	// 玉(弓矢)オブジェクト生成、今は同時に飛ぶことがないからいらない
-	Arrows.add(arrow);
-	int t = 1;
+	Point hit = new Point();
+	Ball ball = new Ball(count_ball, player,
+			     getPosition(player.getID()).x*tileSize+tileSize/2,
+			     getPosition(player.getID()).y*tileSize+tileSize/2,
+			     angle);
+	System.out.println(ball);
+	// float arrow[] = { // 玉の位置初期化 投げた人の中心座標
+	//     getPosition(player.getID()).x*tileSize+tileSize/2,
+	//     getPosition(player.getID()).y*tileSize+tileSize/2
+	// };
+	// 玉(弓矢)オブジェクト生成 Arrows -> Balls に変更(最初は弓のつもりで作ってました)
+	Balls.add(ball);
+	hit = this.runBallThread(ball);
+	for (int i = 0; i < Balls.size(); i++) {
+	    System.out.println(Balls.get(i));
+	}
+	// 玉(弓矢)オブジェクト破棄 玉が同時に存在することが出来るようになったので不要に
+	// 前と同じモードにするには MAX_THROWTICS を極端に大きくすればよい
+	// Balls.clear();
+	return hit;
+    }
+    private Point runBallThread(Ball ball){
+	return this.runBallThread(ball.id);
+    }
+    private Point runBallThread(int id){
 	double dynamics = 0;
+	Point hit = new Point();
+	int tics = 0;
 	while(true){
-	    dynamics = (0.001)* t*t;
-	    t++;
-	    if (dynamics > 1) {
-	    	// dynamics = 1;
-	    	dynamics = Math.log(t);
-	    }
-	    // arrow[0] -> 玉(弓矢)のx座標，arrow[1] -> 玉のy座標 初期値は投げた人の中心座標
-	    arrow[0] += Math.cos(angle)*Piece.DYNAMICS
-		+ Math.cos(Math.PI*((float)WIND_DIRECTION/180.0))*WIND_DYNAMICS * dynamics;
-	    arrow[1] += Math.sin(angle)*Piece.DYNAMICS
-		+ Math.sin(Math.PI*((float)WIND_DIRECTION/180.0))*WIND_DYNAMICS * dynamics;
-	    // 盤上でのポイントに変換
-	    Point bpoint = convertRealToBoard(arrow[0], arrow[1]);
-	    if(getPoint(bpoint.x, bpoint.y) != Piece.EMPTY){
-		// 壁かどうか判定
-		if(getPoint(bpoint.x, bpoint.y) != Piece.WALL){
-		    Player p = getPointPlayerReal(bpoint.x, bpoint.y);
-		    // 玉を投げた人とあたった人が同一だった場合、無視
-		    if(p.getID() != player.getID()){
+	    if(Balls.size() > 0){
+		tics++;
+		if(tics > MAX_THROWTICS){break;}
+		for (int i = 0; i < Balls.size(); i++) {
+		    Ball ball = Balls.get(i);
+		    dynamics = (0.001)* ball.time* ball.time;
+		    ball.time++;
+		    if (dynamics > 1) {
+			// dynamics = 1;
+			dynamics = Math.log(ball.time);
+		    }
+		    // arrow[0] -> 玉(弓矢)のx座標，arrow[1] -> 玉のy座標 初期値は投げた人の中心座標
+		    ball.x += Math.cos(ball.angle)*Piece.DYNAMICS
+			+ Math.cos(Math.PI*((float)WIND_DIRECTION/180.0))*WIND_DYNAMICS * dynamics;
+		    ball.y += Math.sin(ball.angle)*Piece.DYNAMICS
+			+ Math.sin(Math.PI*((float)WIND_DIRECTION/180.0))*WIND_DYNAMICS * dynamics;
+		    // 盤上でのポイントに変換
+		    Point bpoint = convertRealToBoard(ball.x, ball.y);
+		    if(ball.id == id){
 			hit.x = bpoint.x;
 			hit.y = bpoint.y;
-			p.damage();
-			player.hit();
+		    }
+		    if(getPoint(bpoint.x, bpoint.y) != Piece.EMPTY){
+			// 壁かどうか判定
+			if(getPoint(bpoint.x, bpoint.y) != Piece.WALL){
+			    Player p = getPointPlayerReal(bpoint.x, bpoint.y);
+			    // 玉を投げた人とあたった人が同一だった場合、無視
+			    if(p.getID() != ball.owner.getID()){
+				p.damage();
+				ball.owner.hit();
+				Balls.remove(ball);
+				break;
+			    }
+			}else{
+			    Balls.remove(ball);
+			    break;
+			}
+		    }
+		    // もしかしたらバグで外に出た場合終わらないはずなのでエラー処理
+		    if(ball.x>(WIDTH+2)*tileSize || ball.x<0 ||
+		       ball.y>(HEIGHT+2)*tileSize || ball.y<0 ){
+			Balls.remove(ball);
 			break;
 		    }
-		}else{
-		    hit.x = bpoint.x;
-		    hit.y = bpoint.y;
-		    break;
+		    // まずありえないけどint型のインクリメントオーバーフロー処理
+		    if(ball.time >= MAX_THROWTIME){
+			Balls.remove(ball);
+			break;
+		    }
+		}
+		// GUIモードの場合、描画処理
+		if(main.window != null){
+		    // main.window.paintArrow(Arrows);
+		    main.window.paintBall(Balls);
+		    main.window.repaint();
+		    // アニメーションっぽくするため、適度にスリープ挟む
+		    try{
+			Thread.sleep(SLEEP_TIME);
+		    }catch (InterruptedException e){}
 		}
 	    }
-	    // もしかしたらバグで外に出た場合終わらないはずなのでエラー処理
-	    if(arrow[0]>(WIDTH+2)*tileSize || arrow[0]<0 ||
-	       arrow[1]>(HEIGHT+2)*tileSize || arrow[1]<0 ){
+	    else{
 		break;
 	    }
-	    // GUIモードの場合、描画処理
-	    if(main.window != null){
-		main.window.paintArrow(Arrows);
-		main.window.repaint();
-		// アニメーションっぽくするため、適度にスリープ挟む
-		try{
-		    Thread.sleep(SLEEP_TIME);
-		}catch (InterruptedException e){}
-	    }
-	    // まずありえないけどint型のインクリメントオーバーフロー処理
-	    if(t >= MAX_THROWTIME){return null;}
 	}
-	// 玉(弓矢)オブジェクト破棄
-	Arrows.clear();
 	return hit;
     }
     public Point convertRealToBoard(float x, float y){
@@ -322,6 +377,9 @@ public class Board{
 	return d;
     }
     public void turnEnd(){
+	if(!this.isthrowing){
+	    this.runBallThread(0);
+	}
 	turns++;
 	current_player_id = ++current_player_id % (Players.size());
 	initMovable();
@@ -369,7 +427,10 @@ public class Board{
 	**/
 	Random rand = new Random();
 	Arrows = new Vector<float[]>();
+	Balls = new Vector<Ball>();
 	turns = 0;
+	isthrowing = false;
+	count_ball = 0;
 	current_player_id = 0;
 	WIND_DIRECTION = wind_dis;
 	WIND_DYNAMICS = wind_dyn;
@@ -420,6 +481,7 @@ public class Board{
 	initMovable();
     }
     private void initMovable(){
+	isthrowing = false;
 	MovablePos[turns].clear();
 	Player player = Players.get(current_player_id);
 	Point pos = PlayersPos.get(current_player_id);

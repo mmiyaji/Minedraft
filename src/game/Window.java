@@ -76,5 +76,8 @@ public class Window extends JFrame{
 	public void paintArrow(Vector<float[]> arrows){
 		field.paintArrow(arrows);
 	}
+	public void paintBall(Vector<Ball> balls){
+		field.paintBall(balls);
+	}
 
 }

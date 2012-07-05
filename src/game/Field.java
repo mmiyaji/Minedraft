@@ -14,6 +14,7 @@ public class Field extends JPanel{
 
     private static final long serialVersionUID = 1L;
     volatile Vector<float[]> arrows;
+    volatile Vector<Ball> balls;
     private Board board;
     public Field(){
 	setBoard(new Board());
@@ -27,6 +28,9 @@ public class Field extends JPanel{
     }
     public void paintArrow(Vector<float[]> arrows){
 	this.arrows = arrows;
+    }
+    public void paintBall(Vector<Ball> balls){
+	this.balls = balls;
     }
     @Override
 	public void paintComponent(Graphics g) {
@@ -65,11 +69,20 @@ public class Field extends JPanel{
 		}
 	    }
 	}
-	for(int i=0;i<this.arrows.size();i++){
+	// for(int i=0;i<this.arrows.size();i++){
+	//     g.setColor(Piece.COLORS[5]);
+	//     float arrow[] = (float[])arrows.get(i);
+	//     g2.fillArc((int)((float)(w*(arrow[0]))/(Board.WIDTH+2)-7),
+	// 	       (int)((float)(h*(arrow[1]))/(Board.HEIGHT+2)-7),
+	// 	       15, 15,
+	// 	       0, 360);
+	// }
+	for(int i=0;i<this.balls.size();i++){
 	    g.setColor(Piece.COLORS[5]);
-	    float arrow[] = (float[])arrows.get(i);
-	    g2.fillArc((int)((float)(w*(arrow[0]))/(Board.WIDTH+2)-7),
-		       (int)((float)(h*(arrow[1]))/(Board.HEIGHT+2)-7),
+	    // float arrow[] = (float[])arrows.get(i);
+	    Ball ball = (Ball)balls.get(i);
+	    g2.fillArc((int)((float)(w*(ball.x))/(Board.WIDTH+2)-7),
+		       (int)((float)(h*(ball.y))/(Board.HEIGHT+2)-7),
 		       15, 15,
 		       0, 360);
 	}

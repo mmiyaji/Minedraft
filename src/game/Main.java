@@ -266,7 +266,7 @@ public class Main implements Runnable{
     }
     public int coreExec(){
 	try{
-	    System.out.println("現在 "+current_turn +" ターン目");
+	    System.out.println("現在 "+board.getTurn() +" ターン目");
 	    ((Player) players.get(current_turn)).onTurn(board);
 	    if(iswindow){
 		window.repaint();

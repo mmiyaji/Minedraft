@@ -32,6 +32,12 @@ class AiAlgorithm extends AI
 	// // 適当に物投げる 返り値に着弾点
 	Point hit = board.throwing((int)angle);
 	System.out.println("玉の着弾点： "+hit);
+
+	Vector<Ball> balls = board.getBalls();
+	for (int i = 0; i < balls.size(); i++) {
+	    System.out.println(balls.get(i));
+	    balls.get(i).x =0;
+	}
     }
 }
 
