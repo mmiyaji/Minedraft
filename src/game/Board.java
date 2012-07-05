@@ -261,34 +261,40 @@ public class Board{
 	this.angle((float)(angle*180f/Math.PI));
 	System.out.println("throwing "+angle);
 	Player player = Players.get(current_player_id);
-	if (!player.spendEnergy(Player.THROW_VAL)) {
+	Point hit = new Point();
+	if (player.spendEnergy(Player.THROW_VAL)) {
+	    Ball ball = new Ball(count_ball, player,
+				 getPosition(player.getID()).x*tileSize+tileSize/2,
+				 getPosition(player.getID()).y*tileSize+tileSize/2,
+				 angle);
+	    System.out.println(ball);
+	    Balls.add(ball);
+	    // float arrow[] = { // 玉の位置初期化 投げた人の中心座標
+	    //     getPosition(player.getID()).x*tileSize+tileSize/2,
+	    //     getPosition(player.getID()).y*tileSize+tileSize/2
+	    // };
+	    // 玉(弓矢)オブジェクト生成 Arrows -> Balls に変更(最初は弓のつもりで作ってました)
+	    hit = this.runBallThread(ball);
+	    for (int i = 0; i < Balls.size(); i++) {
+		System.out.println(Balls.get(i));
+	    }
+	    // 玉(弓矢)オブジェクト破棄 玉が同時に存在することが出来るようになったので不要に
+	    // 前と同じモードにするには MAX_THROWTICS を極端に大きくすればよい
+	    // Balls.clear();
+	}else{
+	    this.runBallThread(0);
 	    return null;
 	}
-	Point hit = new Point();
-	Ball ball = new Ball(count_ball, player,
-			     getPosition(player.getID()).x*tileSize+tileSize/2,
-			     getPosition(player.getID()).y*tileSize+tileSize/2,
-			     angle);
-	System.out.println(ball);
-	// float arrow[] = { // 玉の位置初期化 投げた人の中心座標
-	//     getPosition(player.getID()).x*tileSize+tileSize/2,
-	//     getPosition(player.getID()).y*tileSize+tileSize/2
-	// };
-	// 玉(弓矢)オブジェクト生成 Arrows -> Balls に変更(最初は弓のつもりで作ってました)
-	Balls.add(ball);
-	hit = this.runBallThread(ball);
-	for (int i = 0; i < Balls.size(); i++) {
-	    System.out.println(Balls.get(i));
-	}
-	// 玉(弓矢)オブジェクト破棄 玉が同時に存在することが出来るようになったので不要に
-	// 前と同じモードにするには MAX_THROWTICS を極端に大きくすればよい
-	// Balls.clear();
 	return hit;
     }
     private Point runBallThread(Ball ball){
 	return this.runBallThread(ball.id);
     }
     private Point runBallThread(int id){
+	/**
+	   一定時間分だけ玉の位置を移動する
+	   throwing関数 or ターン終了した時 呼ばれる
+	 **/
 	double dynamics = 0;
 	Point hit = new Point();
 	int tics = 0;
@@ -381,7 +387,7 @@ public class Board{
 	    this.runBallThread(0);
 	}
 	turns++;
-	current_player_id = ++current_player_id % (Players.size());
+	current_player_id = main.getNextTurn();
 	initMovable();
     }
     public Board(){
@@ -431,7 +437,7 @@ public class Board{
 	turns = 0;
 	isthrowing = false;
 	count_ball = 0;
-	current_player_id = 0;
+	current_player_id = main.getCurrentTurn();
 	WIND_DIRECTION = wind_dis;
 	WIND_DYNAMICS = wind_dyn;
 	System.out.println("WIND DYNAMICS " + WIND_DYNAMICS);

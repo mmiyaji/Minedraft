@@ -6,9 +6,9 @@ import javax.swing.JOptionPane;
 
 interface Player{
     public static final int MAX_ENERGY = 1000;
-    public static final int THROW_VAL = 300;
+    public static final int THROW_VAL = 500;
     public static final int MOVE_VAL = 200;
-    public static final int REFRESH_VAL = 1000;
+    public static final int REFRESH_VAL = 500;
     public Object clone();
     public int getType();
     public int getID(); //このプレーヤーIDを返す
@@ -159,7 +159,7 @@ class AIPlayer implements Player, Cloneable
 	public boolean spendEnergy(int energy){
 	if (this.energy - energy < 0) {
 	    System.out.println("too tired!");
-	    this.energy = 0;
+	    // this.energy = 0;
 	    return false;
 	}
 	this.energy -= energy;
@@ -167,11 +167,11 @@ class AIPlayer implements Player, Cloneable
     }
 };
 public class Main implements Runnable{
-    final static int ENEMY_NUM = 1;
-    final static int FRIEND_NUM = 1;
+    final static int ENEMY_NUM = 3;
+    final static int FRIEND_NUM = 3;
     final static int INDENT_NUM = 0;
     final static int GROUP_NUM = 2;
-    int current_turn = 0;
+    private int current_turn = 0;
     Vector<Player> players;
     Vector<Group> groups;
     private Board board;
@@ -192,7 +192,7 @@ public class Main implements Runnable{
 	}
 	players = new Vector<Player>();
 	for(int i=0; i<FRIEND_NUM; i++){
-	    AI ai = new AiAlgorithm();
+	    AI ai = new TAiAlgorithm();
 	    String name = ai.name+i;
 	    players.add(new AIPlayer(ai, name, i, 0));
 	    System.out.println("join up "+name);
@@ -227,7 +227,14 @@ public class Main implements Runnable{
     public Board getBoard(){
 	return this.board;
     }
-
+    public int getCurrentTurn(){
+	return current_turn;
+    }
+    public int getNextTurn(){
+	int c = current_turn;
+	c = ++c % players.size();
+	return c;
+    }
     public static void main(String[] args) {
 	System.out.println("Start");
 	main = new Main();
@@ -338,7 +345,8 @@ public class Main implements Runnable{
 	    Thread.sleep(SLEEP_TIME);
 	}catch(InterruptedException e){}
 	// ターン交代
-	current_turn = ++current_turn % players.size();
+	// current_turn = ++current_turn % players.size();
+	current_turn = this.getNextTurn();
 	return 0;
     }
 }

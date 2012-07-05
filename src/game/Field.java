@@ -92,7 +92,7 @@ public class Field extends JPanel{
 //	Vector<Object> d = board.getPlayersDamage();
 	for(int i=0;i<players.size();i++){
 	    //	g.setColor(Piece.COLORS[3-i]);
-	    g2.drawString(players.get(i).getName()+" d:"+players.get(i).getDamage()+" h:"+players.get(i).getHitCount(), 150+150*i, 20);
+	    g2.drawString(players.get(i).getName()+" e:"+players.get(i).getEnergy()+" d:"+players.get(i).getDamage()+" h:"+players.get(i).getHitCount(), 150+150*i, 20);
 	}
     }
 }

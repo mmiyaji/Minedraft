@@ -26,7 +26,8 @@ public class Ball implements Cloneable{
 	return coord;
     }
     @Override
-	public Object clone() {	//throwsを無くす
+	public Object clone() {
+	// cloneを許可 エラーが出たら諦める
 	try {
 	    return super.clone();
 	} catch (CloneNotSupportedException e) {
