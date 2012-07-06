@@ -18,7 +18,7 @@ interface Player{
     public float getAngle(); //このプレーヤーの向きを返す（0~360度）
     public float setAngle(float angle);
     public String getName(); //このプレーヤーの名前を返す
-    public int getEnergy();
+    public int getEnergy(); // プレーヤーの現在体力を返す
     public int damage();
     public int hit();
     public boolean refresh();
@@ -167,8 +167,8 @@ class AIPlayer implements Player, Cloneable
     }
 };
 public class Main implements Runnable{
-    final static int ENEMY_NUM = 3;
-    final static int FRIEND_NUM = 3;
+    final static int ENEMY_NUM = 1;
+    final static int FRIEND_NUM = 1;
     final static int INDENT_NUM = 0;
     final static int GROUP_NUM = 2;
     private int current_turn = 0;
@@ -192,7 +192,7 @@ public class Main implements Runnable{
 	}
 	players = new Vector<Player>();
 	for(int i=0; i<FRIEND_NUM; i++){
-	    AI ai = new TAiAlgorithm();
+	    AI ai = new AiAlgorithm();
 	    String name = ai.name+i;
 	    players.add(new AIPlayer(ai, name, i, 0));
 	    System.out.println("join up "+name);

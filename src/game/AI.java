@@ -33,10 +33,10 @@ class AiAlgorithm extends AI
 	Point hit = board.throwing((int)angle);
 	System.out.println("玉の着弾点： "+hit);
 
+	// 玉の位置を取得してみるサンプル
 	Vector<Ball> balls = board.getBalls();
 	for (int i = 0; i < balls.size(); i++) {
 	    System.out.println(balls.get(i));
-	    balls.get(i).x =0;
 	}
     }
 }

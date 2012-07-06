@@ -5,7 +5,7 @@ public class Ball implements Cloneable{
     int time;
     float x;
     float y;
-    Player owner;
+    private Player owner;
     float angle;
     public Ball(int id, Player p, float x, float y, float angle){
 	this.id = id;
@@ -24,6 +24,9 @@ public class Ball implements Cloneable{
 	coord += ", y:"+y;
 	coord += ", angle:"+angle;
 	return coord;
+    }
+    public Player getOwner(){
+	return (Player)this.owner.clone();
     }
     @Override
 	public Object clone() {

@@ -3,7 +3,7 @@ package game;
 import java.util.Random;
 import java.util.Vector;
 
-public class Board{
+public class Board implements Cloneable{
     public static final int WIDTH = 20; // フィールド横マスの数
     public static final int HEIGHT = 20; // フィールド縦マスの数
     public static final float tileSize = 1.0f; // フィールドマスの大きさ
@@ -12,7 +12,8 @@ public class Board{
     private float WIND_DYNAMICS  = 0.002f; // 風の強さ
     private int WIND_DIRECTION  = 160; // 風の向き
     public static final int MAX_THROWTIME  = Integer.MAX_VALUE; // 玉の最大飛距離(存在できる時間)
-    private static final int MAX_THROWTICS  = 50; // 一ターンに玉がどれだけの時間飛ぶか
+    public static final int MAX_THROWTICKS  = 150; // 次自分のターンまでに玉がどれだけ飛ぶか
+    private int THROWTICKS  = 100; // 一ターンに玉がどれだけの時間飛ぶか MAX_THROWTICKS / playerの数で初期化する
     private int[][] board = new int[WIDTH+2][HEIGHT+2];
     private Vector<Point> PlayersPos = new Vector<Point>();
     @SuppressWarnings("unchecked")
@@ -250,12 +251,10 @@ public class Board{
 
 	   6/29追記
 	   風の概念追加
-
-	   6/30追記
-	   角度をGUIの見かけ上の方向に統一
-	   ex. 45度 を入力として与えると、右上に飛ぶようにしているが、
-	   実際のフィールド上での扱いは、右下にズレていってる(フィールドは左上原点だから)。
 	**/
+	if(isthrowing){
+	    return null;
+	}
 	isthrowing = true;
 	count_ball++;
 	this.angle((float)(angle*180f/Math.PI));
@@ -269,39 +268,41 @@ public class Board{
 				 angle);
 	    System.out.println(ball);
 	    Balls.add(ball);
-	    // float arrow[] = { // 玉の位置初期化 投げた人の中心座標
-	    //     getPosition(player.getID()).x*tileSize+tileSize/2,
-	    //     getPosition(player.getID()).y*tileSize+tileSize/2
-	    // };
 	    // 玉(弓矢)オブジェクト生成 Arrows -> Balls に変更(最初は弓のつもりで作ってました)
 	    hit = this.runBallThread(ball);
-	    for (int i = 0; i < Balls.size(); i++) {
-		System.out.println(Balls.get(i));
-	    }
+	    // Board bclone = (Board)this.clone();
+	    // hit = bclone.runBallThread(ball, 0);
 	    // 玉(弓矢)オブジェクト破棄 玉が同時に存在することが出来るようになったので不要に
-	    // 前と同じモードにするには MAX_THROWTICS を極端に大きくすればよい
+	    // 前と同じモードにするには MAX_THROWTICKS を極端に大きくすればよい
 	    // Balls.clear();
-	}else{
+	}
+	else{
 	    this.runBallThread(0);
 	    return null;
 	}
 	return hit;
     }
     private Point runBallThread(Ball ball){
-	return this.runBallThread(ball.id);
+	return this.runBallThread(ball.id, SLEEP_TIME);
     }
     private Point runBallThread(int id){
+	return this.runBallThread(id, SLEEP_TIME);
+    }
+    private Point runBallThread(Ball ball, int sleep){
+	return this.runBallThread(ball.id, sleep);
+    }
+    private Point runBallThread(int id, int sleep){
 	/**
 	   一定時間分だけ玉の位置を移動する
 	   throwing関数 or ターン終了した時 呼ばれる
 	 **/
 	double dynamics = 0;
 	Point hit = new Point();
-	int tics = 0;
+	int ticks = 0;
 	while(true){
 	    if(Balls.size() > 0){
-		tics++;
-		if(tics > MAX_THROWTICS){break;}
+		ticks++;
+		if(ticks > THROWTICKS){break;}
 		for (int i = 0; i < Balls.size(); i++) {
 		    Ball ball = Balls.get(i);
 		    dynamics = (0.001)* ball.time* ball.time;
@@ -326,9 +327,9 @@ public class Board{
 			if(getPoint(bpoint.x, bpoint.y) != Piece.WALL){
 			    Player p = getPointPlayerReal(bpoint.x, bpoint.y);
 			    // 玉を投げた人とあたった人が同一だった場合、無視
-			    if(p.getID() != ball.owner.getID()){
+			    if(p.getID() != ball.getOwner().getID()){
 				p.damage();
-				ball.owner.hit();
+				ball.getOwner().hit();
 				Balls.remove(ball);
 				break;
 			    }
@@ -356,7 +357,7 @@ public class Board{
 		    main.window.repaint();
 		    // アニメーションっぽくするため、適度にスリープ挟む
 		    try{
-			Thread.sleep(SLEEP_TIME);
+			Thread.sleep(sleep);
 		    }catch (InterruptedException e){}
 		}
 	    }
@@ -438,6 +439,7 @@ public class Board{
 	isthrowing = false;
 	count_ball = 0;
 	current_player_id = main.getCurrentTurn();
+	THROWTICKS =(int)(MAX_THROWTICKS / players.size());
 	WIND_DIRECTION = wind_dis;
 	WIND_DYNAMICS = wind_dyn;
 	System.out.println("WIND DYNAMICS " + WIND_DYNAMICS);
@@ -572,6 +574,15 @@ public class Board{
 	}
 	else{
 	    return false;
+	}
+    }
+    @Override
+	public Object clone() {
+	// cloneを許可 エラーが出たら諦める
+	try {
+	    return super.clone();
+	} catch (CloneNotSupportedException e) {
+	    throw new InternalError(e.toString());
 	}
     }
 }
